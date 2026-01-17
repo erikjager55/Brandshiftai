@@ -4,6 +4,7 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { PageCard } from './ui/page-card';
 import { Progress } from './ui/progress';
+import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { 
   Edit,
@@ -26,15 +27,16 @@ import {
   BarChart3,
   Play,
   Eye,
+  Search,
   Filter,
   Clock,
   X,
   LayoutGrid,
   List,
   RotateCcw,
+  Trash,
   Sparkles
 } from 'lucide-react';
-import { SearchBar } from './ui/unified';
 import { CampaignSettingsModal } from './CampaignSettingsModal';
 import { DeliverableCard } from './campaign-strategy/DeliverableCard';
 import { getAllCampaigns, campaignToStrategy } from '../data/mock-campaigns';
@@ -325,13 +327,13 @@ export function ActiveCampaignsPage({ onNavigateToCampaign }: ActiveCampaignsPag
           </Card>
         </div>
 
-        {/* Filters - Unified Components */}
+        {/* Filters */}
         <div className="mb-6">
           <div className="flex items-stretch gap-3">
-            <SearchBar
-              value={searchTerm}
-              onChange={setSearchTerm}
+            <Input
               placeholder="Search campaigns..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-1"
             />
             <Select
@@ -535,10 +537,10 @@ export function ActiveCampaignsPage({ onNavigateToCampaign }: ActiveCampaignsPag
                           key={deliverable.id}
                           deliverable={deliverable}
                           onWorkClick={() => {
-                            // Work on deliverable
+                            console.log('Work on deliverable:', deliverable.name);
                           }}
                           onViewClick={() => {
-                            // View deliverable
+                            console.log('View deliverable:', deliverable.name);
                           }}
                         />
                       ))}

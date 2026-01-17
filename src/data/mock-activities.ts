@@ -202,9 +202,9 @@ export function generateMockActivities() {
     }
   );
 
-  
-  
-  
+  console.log('✅ Mock activities generated');
+  console.log('📊 Total activities:', activityService.getActivities().length);
+  console.log('🔔 Unread count:', activityService.getUnreadCount());
 }
 
 /**
@@ -212,5 +212,5 @@ export function generateMockActivities() {
  */
 export function clearMockActivities() {
   activityService.clear();
-  
+  console.log('🗑️ Mock activities cleared');
 }

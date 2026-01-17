@@ -177,11 +177,11 @@ export function CampaignStrategyGeneratorDetail({
 
   // Mock navigation functions
   const navigateToBrandAssets = () => {
-    // Navigate to Brand Assets
+    console.log('Navigate to Brand Assets');
   };
 
   const navigateToPersonas = () => {
-    // Navigate to Personas
+    console.log('Navigate to Personas');
   };
 
   // Strategy Management Functions
@@ -313,7 +313,7 @@ export function CampaignStrategyGeneratorDetail({
     if (!strategy) return;
     
     // In real app: trigger export
-    // Exporting strategy
+    console.log('Exporting strategy:', strategy);
     alert(`Exporting "${strategy.name}"... (Dit zou in de echte app een PDF/Word export triggeren)`);
   };
 
@@ -674,7 +674,7 @@ export function CampaignStrategyGeneratorDetail({
                   failedItems={decisionGate.failedItems}
                   onFixItem={(itemId, itemType) => {
                     // Navigate to brand or personas section
-                    // Fix item
+                    console.log('Fix item:', itemId, itemType);
                     // In real app, this would navigate to the specific item's detail page
                     alert(`Navigeer naar ${itemType === 'asset' ? 'Brand Assets' : 'Personas'} sectie om ${itemId} te repareren`);
                   }}
@@ -691,7 +691,7 @@ export function CampaignStrategyGeneratorDetail({
                     }}
                     onDismiss={() => {
                       // User heeft gezien en kiest ervoor om later te bekijken
-                      // Notification dismissed
+                      console.log('Campaign impact notification dismissed');
                     }}
                   />
                 )}
@@ -865,7 +865,7 @@ export function CampaignStrategyGeneratorDetail({
                     })()}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-5">
                   {/* Campaign Name */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -1276,7 +1276,7 @@ export function CampaignStrategyGeneratorDetail({
                     })()}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-5">
                   {/* Campaign Duration */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">

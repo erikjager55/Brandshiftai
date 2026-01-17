@@ -34,7 +34,7 @@ import {
   Heart,
   ChevronDown,
   RefreshCw,
-  Edit,
+  Edit3,
   Save,
   X,
 } from 'lucide-react';
@@ -442,7 +442,7 @@ export function TransformativeGoalsDashboard({ onBack, onStartResearch }: Transf
                         onClick={() => setIsEditing(true)}
                         className="gap-2"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit3 className="h-4 w-4" />
                         Edit
                       </Button>
                     </>

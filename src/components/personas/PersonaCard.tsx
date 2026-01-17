@@ -3,7 +3,7 @@
  * Displays persona with demographics, chat button, and accordion validation methods
  */
 
-import React, { useState, memo } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -34,8 +34,7 @@ interface PersonaCardProps {
   onChatClick?: (persona: Persona) => void;
 }
 
-// Wrapped with React.memo for performance optimization
-export const PersonaCard = memo(function PersonaCard({
+export function PersonaCard({
   persona,
   onClick,
   onMethodClick,

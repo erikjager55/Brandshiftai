@@ -286,7 +286,7 @@ export function CommercialDemoPage() {
                         }}
                         className="gap-2"
                       >
-                        <CheckCircle2 className="h-4 w-4" />
+                        <CheckCircle className="h-4 w-4" />
                         Initialize Demo State
                       </Button>
                       <Button

@@ -3,7 +3,7 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { 
-  CheckCircle2, 
+  CheckCircle, 
   Calendar, 
   Users, 
   Download, 

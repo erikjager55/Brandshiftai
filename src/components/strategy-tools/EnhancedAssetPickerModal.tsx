@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { Input } from '../ui/input';
 import {
   X,
-  CheckCircle2,
+  CheckCircle,
   AlertCircle,
   ArrowUpRight,
+  Search,
   Shield,
   Sparkles,
   TrendingUp,
   Plus
 } from 'lucide-react';
-import { SearchBar } from '../ui/unified';
 
 interface EnhancedAssetPickerModalProps {
   title: string;
@@ -55,15 +56,15 @@ export function EnhancedAssetPickerModal({
   const getStatusIcon = (status?: string) => {
     switch (status) {
       case 'validated':
-        return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
       case 'ready-to-validate':
-        return <CheckCircle2 className="w-4 h-4 text-blue-600" />;
+        return <CheckCircle className="w-4 h-4 text-blue-600" />;
       case 'in-development':
         return <AlertCircle className="w-4 h-4 text-orange-600" />;
       case 'awaiting-research':
         return <AlertCircle className="w-4 h-4 text-gray-400" />;
       default:
-        return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
     }
   };
 
@@ -185,14 +186,17 @@ export function EnhancedAssetPickerModal({
             </Button>
           </div>
 
-          {/* Search and Filters - Unified */}
+          {/* Search and Filters */}
           <div className="flex gap-3 mt-4">
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search by name or category..."
-              className="flex-1"
-            />
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name or category..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
             <div className="flex gap-2">
               <Button
                 variant={filterStatus === 'all' ? 'default' : 'outline'}
@@ -227,7 +231,7 @@ export function EnhancedAssetPickerModal({
             <div className="mt-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <CheckCircle className="h-4 w-4 text-primary" />
                   <span className="text-sm font-medium">
                     {tempSelected.length} {tempSelected.length === 1 ? 'item' : 'items'} selected
                   </span>
@@ -288,7 +292,7 @@ export function EnhancedAssetPickerModal({
                           }`}
                           onClick={() => selectable && toggleItem(item.id)}
                         >
-                          <div className="p-6">
+                          <div className="p-5">
                             <div className="flex items-start gap-4">
                               {getItemIcon(item)}
                               
@@ -352,7 +356,7 @@ export function EnhancedAssetPickerModal({
                           {isSelected && selectable && (
                             <div className="absolute top-3 right-3">
                               <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
-                                <CheckCircle2 className="h-4 w-4 text-white" />
+                                <CheckCircle className="h-4 w-4 text-white" />
                               </div>
                             </div>
                           )}
@@ -436,7 +440,7 @@ export function EnhancedAssetPickerModal({
                           {isSelected && selectable && (
                             <div className="absolute top-2 right-2">
                               <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
-                                <CheckCircle2 className="h-3 w-3 text-white" />
+                                <CheckCircle className="h-3 w-3 text-white" />
                               </div>
                             </div>
                           )}
@@ -451,7 +455,7 @@ export function EnhancedAssetPickerModal({
         </CardContent>
 
         {/* Footer */}
-        <div className="p-6 border-t bg-muted/30 flex justify-between items-center">
+        <div className="p-5 border-t bg-muted/30 flex justify-between items-center">
           <div>
             <p className="font-medium">
               {tempSelected.length} {tempSelected.length === 1 ? 'item' : 'items'} selected
@@ -465,7 +469,7 @@ export function EnhancedAssetPickerModal({
               Cancel
             </Button>
             <Button onClick={() => { onSelect(tempSelected); onClose(); }} size="lg" className="gap-2">
-              <CheckCircle2 className="h-4 w-4" />
+              <CheckCircle className="h-4 w-4" />
               Apply Selection
             </Button>
             {onAddNew && (

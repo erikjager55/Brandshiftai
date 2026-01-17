@@ -86,8 +86,8 @@ const assetTypeConfig = {
   brand: {
     icon: Shield,
     label: 'Brand',
-    color: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-100 dark:bg-orange-900/30'
+    color: 'text-orange-600 dark:text-orange-400',
+    bg: 'bg-orange-100 dark:bg-orange-900/30'
   },
   persona: {
     icon: UserCheck,
@@ -255,7 +255,7 @@ export function ResearchValidationPage() {
                 <Card
                   key={method.id}
                   className="group cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200"
-                  onClick={() => {}}
+                  onClick={() => console.log('Start:', method.id)}
                 >
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -298,7 +298,7 @@ export function ResearchValidationPage() {
                   className="group hover:shadow-md transition-all duration-200 border-2"
                 >
                   <CardContent className="p-6">
-                    <div className="space-y-6">
+                    <div className="space-y-5">
                       {/* Header Row: Project Name + Method */}
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -334,7 +334,7 @@ export function ResearchValidationPage() {
                           variant="outline"
                           size="sm"
                           className="flex-shrink-0"
-                          onClick={() => {}}
+                          onClick={() => console.log('View details:', project.id)}
                         >
                           View Details
                           <ChevronRight className="h-4 w-4 ml-1" />

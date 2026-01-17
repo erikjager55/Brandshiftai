@@ -114,7 +114,7 @@ export function ResearchPlansPage({ onSelectBundle, onNavigateToCustomValidation
                         key={plan.id}
                         className="border hover:border-gray-300 dark:hover:border-gray-600 transition-all group"
                       >
-                        <CardContent className="p-6 space-y-4">
+                        <CardContent className="p-5 space-y-4">
                           {/* 1. Header: Title + Badges */}
                           <div>
                             <h5 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">

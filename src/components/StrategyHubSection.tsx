@@ -34,7 +34,7 @@ import {
   getPopularTools,
   getToolsRequiringResearch
 } from '../data/strategy-tools';
-import { SearchBar } from './ui/unified';
+import { Input } from './ui/input';
 import { CampaignStrategyGeneratorDetail } from './strategy-tools/CampaignStrategyGeneratorDetail';
 import { UniversalAIExploration } from './strategy-tools/UniversalAIExploration';
 import { useResearchBundles } from '../contexts/ResearchBundleContext';
@@ -240,17 +240,21 @@ export function StrategyHubSection() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Search - Unified Component */}
+          {/* Search */}
           {searchExpanded ? (
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search tools..."
-              size="sm"
-              autoFocus
-              className="w-64"
-              onClear={() => setSearchExpanded(false)}
-            />
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search tools..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9"
+                autoFocus
+                onBlur={() => {
+                  if (!searchQuery) setSearchExpanded(false);
+                }}
+              />
+            </div>
           ) : (
             <Button
               variant="outline"
@@ -548,7 +552,7 @@ function StrategyToolDetail({ tool, onBack }: StrategyToolDetailProps) {
         tool={tool}
         onBack={() => setShowAIExploration(false)}
         onComplete={(results) => {
-          // AI Exploration completed
+          console.log('AI Exploration completed:', results);
           setShowAIExploration(false);
         }}
       />

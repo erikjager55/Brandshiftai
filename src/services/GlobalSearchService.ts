@@ -103,7 +103,7 @@ class GlobalSearchService {
             title: 'Start New Research',
             subtitle: 'Create a research plan',
             icon: 'Plus',
-            action: () => {}
+            action: () => console.log('New research')
           },
           {
             id: 'new-persona',
@@ -111,7 +111,7 @@ class GlobalSearchService {
             title: 'Create Persona',
             subtitle: 'Add a new persona',
             icon: 'UserPlus',
-            action: () => {}
+            action: () => console.log('New persona')
           },
           {
             id: 'view-relationships',
@@ -260,7 +260,7 @@ class GlobalSearchService {
         subtitle: 'Quick Action',
         description: action.description,
         icon: 'Zap',
-        action: () => {},
+        action: () => console.log(`Execute: ${action.id}`),
         metadata: {
           score: this.calculateRelevance(query, action.title, action.description)
         }

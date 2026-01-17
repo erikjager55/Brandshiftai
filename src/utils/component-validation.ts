@@ -426,26 +426,26 @@ export function useClassNameMonitor(
  */
 export function logComponentInfo(componentName: string) {
   if (!isComponentProtected(componentName)) {
-    // console.log(`ℹ️ Component "${componentName}" is not protected`);
+    console.log(`ℹ️ Component "${componentName}" is not protected`);
     return;
   }
 
   const component = PROTECTED_COMPONENTS[componentName];
   console.group(`🔒 Protection Info: ${componentName}`);
-  // console.log('Protection Level:', component.protection);
-  // console.log('Category:', component.category);
-  // console.log('Allowed Variants:', component.allowedVariants);
-  // console.log('Allowed Props:', component.allowedProps);
-  // console.log('Forbidden ClassNames:', component.forbiddenClassNames);
-  // console.log('Required Tokens:', component.requiredTokens);
-  // console.log('Last Reviewed:', component.lastReviewed);
-  // console.log('Owner:', component.owner);
+  console.log('Protection Level:', component.protection);
+  console.log('Category:', component.category);
+  console.log('Allowed Variants:', component.allowedVariants);
+  console.log('Allowed Props:', component.allowedProps);
+  console.log('Forbidden ClassNames:', component.forbiddenClassNames);
+  console.log('Required Tokens:', component.requiredTokens);
+  console.log('Last Reviewed:', component.lastReviewed);
+  console.log('Owner:', component.owner);
   console.groupEnd();
 
   const recommendations = getComponentRecommendations(componentName);
   if (recommendations.length > 0) {
     console.group('📋 Recommendations');
-    // recommendations.forEach(rec => console.log(rec));
+    recommendations.forEach(rec => console.log(rec));
     console.groupEnd();
   }
 }
@@ -457,20 +457,20 @@ export function logProtectionStatistics() {
   const components = Object.values(PROTECTED_COMPONENTS);
   
   console.group('🔒 Component Protection Statistics');
-  // console.log('Total Protected Components:', components.length);
-  // console.log('By Protection Level:');
-  // console.log('  - LOCKED:', components.filter(c => c.protection === ProtectionLevel.LOCKED).length);
-  // console.log('  - RESTRICTED:', components.filter(c => c.protection === ProtectionLevel.RESTRICTED).length);
-  // console.log('  - MONITORED:', components.filter(c => c.protection === ProtectionLevel.MONITORED).length);
-  // console.log('  - FLEXIBLE:', components.filter(c => c.protection === ProtectionLevel.FLEXIBLE).length);
+  console.log('Total Protected Components:', components.length);
+  console.log('By Protection Level:');
+  console.log('  - LOCKED:', components.filter(c => c.protection === ProtectionLevel.LOCKED).length);
+  console.log('  - RESTRICTED:', components.filter(c => c.protection === ProtectionLevel.RESTRICTED).length);
+  console.log('  - MONITORED:', components.filter(c => c.protection === ProtectionLevel.MONITORED).length);
+  console.log('  - FLEXIBLE:', components.filter(c => c.protection === ProtectionLevel.FLEXIBLE).length);
   console.groupEnd();
 
   const violationStats = getViolationStatistics();
   console.group('📊 Violation Statistics');
-  // console.log('Total Violations:', violationStats.total);
-  // console.log('By Type:', violationStats.byType);
-  // console.log('By Severity:', violationStats.bySeverity);
-  // console.log('By Component:', violationStats.byComponent);
+  console.log('Total Violations:', violationStats.total);
+  console.log('By Type:', violationStats.byType);
+  console.log('By Severity:', violationStats.bySeverity);
+  console.log('By Component:', violationStats.byComponent);
   console.groupEnd();
 }
 

@@ -15,7 +15,7 @@ import {
   Plus,
   ArrowRight,
   Clock,
-  CheckCircle2,
+  CheckCircle,
   AlertCircle,
   Award,
   Activity,
@@ -277,10 +277,10 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
 
   // Recent activity timeline
   const recentActivity = [
-    { id: 1, type: 'completed', title: 'Brand Positioning Workshop completed', timestamp: '2 hours ago', icon: CheckCircle2, color: 'green' },
+    { id: 1, type: 'completed', title: 'Brand Positioning Workshop completed', timestamp: '2 hours ago', icon: CheckCircle, color: 'green' },
     { id: 2, type: 'started', title: 'Customer Interviews started for "Tech Savvy Millennial"', timestamp: '1 day ago', icon: PlayCircle, color: 'blue' },
     { id: 3, type: 'validated', title: 'Brand Values validated', timestamp: '3 days ago', icon: Award, color: 'purple' },
-    { id: 4, type: 'completed', title: 'AI Exploration completed for Brand Voice', timestamp: '1 week ago', icon: CheckCircle2, color: 'green' },
+    { id: 4, type: 'completed', title: 'AI Exploration completed for Brand Voice', timestamp: '1 week ago', icon: CheckCircle, color: 'green' },
   ];
 
   // Calculate priority research recommendations based on decision quality
@@ -355,7 +355,7 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <div className="p-2 rounded-lg bg-green-500/10">
-                  <CheckCircle2 className="w-5 h-5 text-green-600" />
+                  <CheckCircle className="w-5 h-5 text-green-600" />
                 </div>
                 <TrendingUp className="w-4 h-4 text-green-600" />
               </div>
@@ -555,12 +555,12 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                       <div className="flex items-center justify-between">
                         <div>
                           <CardTitle className="flex items-center gap-2">
-                            <AlertCircle className="h-5 w-5 text-amber-600" />
+                            <AlertCircle className="h-5 w-5 text-orange-600" />
                             Validation Needed
                           </CardTitle>
                           <CardDescription>Review and approve completed research</CardDescription>
                         </div>
-                        <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200">
+                        <Badge variant="secondary" className="bg-orange-50 text-orange-700 border-orange-200">
                           {validationNeeded.length} ready
                         </Badge>
                       </div>
@@ -572,11 +572,11 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                         return (
                           <div 
                             key={idx} 
-                            className="flex items-center justify-between p-4 rounded-lg border-2 hover:border-orange-300 hover:bg-amber-50/50 dark:hover:bg-orange-950/20 transition-all cursor-pointer"
+                            className="flex items-center justify-between p-4 rounded-lg border-2 hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all cursor-pointer"
                           >
                             <div className="flex items-center gap-3 flex-1">
-                              <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-                                <Icon className="h-5 w-5 text-amber-600" />
+                              <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
+                                <Icon className="h-5 w-5 text-orange-600" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium truncate">{item.name}</p>
@@ -589,7 +589,7 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                               </div>
                             </div>
                             <Button size="sm" variant="outline" className="gap-2 shrink-0 ml-3">
-                              <CheckCircle2 className="h-4 w-4" />
+                              <CheckCircle className="h-4 w-4" />
                               Validate
                             </Button>
                           </div>

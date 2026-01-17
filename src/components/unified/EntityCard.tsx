@@ -12,7 +12,7 @@
  * 7. Footer Meta: last updated
  */
 
-import React, { useState, memo } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -78,10 +78,10 @@ export interface EntityCardData {
 }
 
 // ============================================================================
-// ENTITY CARD COMPONENT (wrapped with React.memo for performance)
+// ENTITY CARD COMPONENT
 // ============================================================================
 
-export const EntityCard = memo(function EntityCard({ data }: { data: EntityCardData }) {
+export function EntityCard({ data }: { data: EntityCardData }) {
   const {
     entityType,
     title,

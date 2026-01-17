@@ -65,7 +65,7 @@ const getStatusBadge = (status: ProfileStatus) => {
       );
     case 'expired':
       return (
-        <Badge variant="outline" className="border-amber-200 bg-amber-50 text-amber-700">
+        <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700">
           <Clock className="h-3 w-3 mr-1" />
           Expired
         </Badge>
@@ -148,18 +148,18 @@ export function StoredPaymentProfile({
   // Expired state
   if (variant === 'expired') {
     return (
-      <div className={cn('rounded-lg border-2 border-amber-200 bg-amber-50 p-4', className)}>
+      <div className={cn('rounded-lg border-2 border-orange-200 bg-orange-50 p-4', className)}>
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-            <Clock className="h-5 w-5 text-amber-600" />
+          <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+            <Clock className="h-5 w-5 text-orange-600" />
           </div>
           <div className="flex-1">
-            <h4 className="font-medium text-amber-900 mb-1">Payment Method Expired</h4>
-            <p className="text-sm text-amber-700 mb-3">
+            <h4 className="font-medium text-orange-900 mb-1">Payment Method Expired</h4>
+            <p className="text-sm text-orange-700 mb-3">
               Your saved payment method has expired. Please update your payment details to continue.
             </p>
             {showActions && onManagePayments && (
-              <Button onClick={onManagePayments} variant="outline" size="sm" className="border-orange-300 hover:bg-amber-100">
+              <Button onClick={onManagePayments} variant="outline" size="sm" className="border-orange-300 hover:bg-orange-100">
                 Update Payment Method
               </Button>
             )}

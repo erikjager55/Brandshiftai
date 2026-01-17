@@ -799,7 +799,7 @@ export function CanvasWorkshopInProgress({
                           {/* Facilitator Tips */}
                           {!isPresentationExpanded && (
                             <Card className="border-2 shadow-sm bg-amber-50/50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-900">
-                              <CardContent className="p-6 space-y-3">
+                              <CardContent className="p-5 space-y-3">
                                 <div className="flex items-center gap-2">
                                   <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
                                     <Lightbulb className="h-4 w-4 text-amber-600 dark:text-amber-500" />

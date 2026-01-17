@@ -10,7 +10,7 @@ import {
   Lightbulb, 
   Users, 
   ArrowRight, 
-  CheckCircle2,
+  CheckCircle,
   Sparkles,
   ArrowLeft,
   MessageSquare,
@@ -385,7 +385,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
       case 'medium':
         return <Badge className="bg-yellow-600">Medium Confidence</Badge>;
       case 'low':
-        return <Badge className="bg-amber-600">Low Confidence</Badge>;
+        return <Badge className="bg-orange-600">Low Confidence</Badge>;
       default:
         return null;
     }
@@ -529,19 +529,19 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-green-600" />
                       <span>{preSelectedPlan.assetsUnlocked} validated brand assets</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-green-600" />
                       <span>Complete research data and insights</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-green-600" />
                       <span>Actionable recommendations</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-green-600" />
                       <span>Track progress and performance</span>
                     </div>
                   </div>
@@ -604,7 +604,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                               +{scoreImpact}
                             </Badge>
                             {isSelected && (
-                              <CheckCircle2 className="h-4 w-4 text-purple-600" />
+                              <CheckCircle className="h-4 w-4 text-purple-600" />
                             )}
                           </div>
                         </button>
@@ -710,15 +710,15 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>Start with method selection</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>See compatible assets</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>Combine tools if needed</span>
                 </div>
               </CardContent>
@@ -736,8 +736,8 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform" />
               <CardHeader>
-                <div className="h-14 w-14 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
-                  <Package className="h-7 w-7 text-amber-600" />
+                <div className="h-14 w-14 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
+                  <Package className="h-7 w-7 text-orange-600" />
                 </div>
                 <CardTitle className="text-xl">Use a proven bundle</CardTitle>
                 <CardDescription className="text-base">
@@ -746,15 +746,15 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>Pre-selected tools & assets</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>Proven combinations</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-green-600" />
                   <span>Bundle savings</span>
                 </div>
               </CardContent>
@@ -876,7 +876,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                         </div>
                         <div className="flex flex-col items-end gap-2">
                           {getConfidenceBadge(tool.confidence)}
-                          {isSelected && <CheckCircle2 className="h-6 w-6 text-primary" />}
+                          {isSelected && <CheckCircle className="h-6 w-6 text-primary" />}
                         </div>
                       </div>
                       <CardTitle className="text-xl mb-2">{tool.name}</CardTitle>
@@ -950,7 +950,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                           </div>
                           <div className="flex flex-col items-end gap-2">
                             {getConfidenceBadge(tool.confidence)}
-                            {isSelected && <CheckCircle2 className="h-6 w-6 text-primary" />}
+                            {isSelected && <CheckCircle className="h-6 w-6 text-primary" />}
                           </div>
                         </div>
                         <CardTitle className="text-xl mb-2">{tool.name}</CardTitle>
@@ -994,11 +994,11 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
 
           {/* AI Agent Warning */}
           {primaryTool === 'ai-agent' && (
-            <Alert className="mb-8 border-amber-200 bg-amber-50 dark:bg-orange-950/20">
-              <AlertCircle className="h-5 w-5 text-amber-600" />
-              <AlertDescription className="text-amber-900 dark:text-amber-100">
+            <Alert className="mb-8 border-orange-200 bg-orange-50 dark:bg-orange-950/20">
+              <AlertCircle className="h-5 w-5 text-orange-600" />
+              <AlertDescription className="text-orange-900 dark:text-orange-100">
                 <p className="font-medium mb-1">⚠️ AI-generated outputs are directional only</p>
-                <p className="text-sm text-amber-700 dark:text-amber-200">
+                <p className="text-sm text-orange-700 dark:text-orange-200">
                   Plan to validate with stakeholders before finalizing. This tool is best for rapid exploration, not final strategy.
                 </p>
               </AlertDescription>
@@ -1056,7 +1056,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
 
           {/* Tool Context Bar */}
           <Card className="mb-8 border-2 border-primary/20 bg-primary/5">
-            <CardContent className="p-6">
+            <CardContent className="p-5">
               <div className="flex items-center gap-4">
                 {ToolIcon && (
                   <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -1116,14 +1116,14 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                   }`}
                   onClick={() => toggleAsset(item.id)}
                 >
-                  <CardContent className="p-6">
+                  <CardContent className="p-5">
                     <div className="flex items-start gap-4">
                       <div className={`flex items-center justify-center h-6 w-6 rounded border-2 shrink-0 transition-all ${
                         isSelected 
                           ? 'bg-primary border-primary' 
                           : 'border-muted-foreground/30'
                       }`}>
-                        {isSelected && <CheckCircle2 className="h-4 w-4 text-white" />}
+                        {isSelected && <CheckCircle className="h-4 w-4 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
@@ -1272,7 +1272,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                       bundle.color === 'purple' ? 'bg-purple-500' :
                       bundle.color === 'pink' ? 'bg-pink-500' :
                       bundle.color === 'amber' ? 'bg-amber-500' :
-                      'bg-amber-500'
+                      'bg-orange-500'
                     }`}>
                       {bundle.badge}
                     </Badge>
@@ -1286,7 +1286,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                         bundle.color === 'purple' ? 'bg-purple-500/10' :
                         bundle.color === 'pink' ? 'bg-pink-500/10' :
                         bundle.color === 'amber' ? 'bg-amber-500/10' :
-                        'bg-amber-500/10'
+                        'bg-orange-500/10'
                       }`}>
                         <BundleIcon className={`h-6 w-6 ${
                           bundle.color === 'blue' ? 'text-blue-600' :
@@ -1294,7 +1294,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                           bundle.color === 'purple' ? 'text-purple-600' :
                           bundle.color === 'pink' ? 'text-pink-600' :
                           bundle.color === 'amber' ? 'text-amber-600' :
-                          'text-amber-600'
+                          'text-orange-600'
                         }`} />
                       </div>
                       <div className="flex-1">
@@ -1660,7 +1660,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                     size="lg"
                     onClick={handleConfirmPlan}
                   >
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    <CheckCircle className="h-4 w-4 mr-2" />
                     Confirm Research Plan
                   </Button>
                 </CardContent>
@@ -1678,7 +1678,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                   <CardContent className="space-y-3">
                     {Object.entries(rationale).map(([key, value]) => (
                       <div key={key} className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
                         <p className="text-sm text-muted-foreground">{value}</p>
                       </div>
                     ))}

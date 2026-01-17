@@ -811,10 +811,10 @@ export function CampaignWorkspace({ campaignId, initialTab, onBack }: CampaignWo
                           key={deliverable.id}
                           deliverable={deliverable}
                           onWorkClick={() => {
-                            // Work on deliverable
+                            console.log('Work on deliverable:', deliverable.name);
                           }}
                           onViewClick={() => {
-                            // View deliverable
+                            console.log('View deliverable:', deliverable.name);
                           }}
                         />
                       ))}

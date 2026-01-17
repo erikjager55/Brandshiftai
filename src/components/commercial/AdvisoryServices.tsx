@@ -12,7 +12,7 @@ import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import {
   Calendar,
-  CheckCircle2,
+  CheckCircle,
   Users,
   Lightbulb,
   ArrowRight,
@@ -146,7 +146,7 @@ export function AdvisoryServices({ onScheduleConsultation, currentTier = 'strate
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {tierInfo.features.map((feature, index) => (
                   <div key={index} className="flex items-start gap-3 p-4 rounded-lg bg-background border">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}
@@ -291,7 +291,7 @@ export function AdvisoryServices({ onScheduleConsultation, currentTier = 'strate
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
+                  <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
                   <div className="flex-1">
                     <p className="font-medium text-sm">Brand Messaging Review Afgerond</p>
                     <p className="text-sm text-muted-foreground">
@@ -354,7 +354,7 @@ export function AdvisoryServices({ onScheduleConsultation, currentTier = 'strate
                     <div className="space-y-1">
                       {review.topics.map((topic, index) => (
                         <div key={index} className="flex items-start gap-2 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                          <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                           <span>{topic}</span>
                         </div>
                       ))}
@@ -406,7 +406,7 @@ export function AdvisoryServices({ onScheduleConsultation, currentTier = 'strate
                     <div className="space-y-1">
                       {validation.deliverables.map((deliverable, index) => (
                         <div key={index} className="flex items-start gap-2 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                          <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                           <span>{deliverable}</span>
                         </div>
                       ))}

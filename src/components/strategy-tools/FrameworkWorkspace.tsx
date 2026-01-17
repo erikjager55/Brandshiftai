@@ -653,7 +653,7 @@ export function FrameworkWorkspace({ frameworkId, config, onBack }: FrameworkWor
                   
                   <div className="grid grid-cols-4 gap-3">
                     {/* Card 1 */}
-                    <button className="group flex flex-col items-center gap-3 p-4 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
+                    <button className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
                       <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 dark:from-purple-900/30 dark:to-purple-900/20 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
                         <FileText className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                       </div>
@@ -661,7 +661,7 @@ export function FrameworkWorkspace({ frameworkId, config, onBack }: FrameworkWor
                     </button>
 
                     {/* Card 2 */}
-                    <button className="group flex flex-col items-center gap-3 p-4 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
+                    <button className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
                       <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-900/20 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
                         <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                       </div>
@@ -669,7 +669,7 @@ export function FrameworkWorkspace({ frameworkId, config, onBack }: FrameworkWor
                     </button>
 
                     {/* Card 3 */}
-                    <button className="group flex flex-col items-center gap-3 p-4 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
+                    <button className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
                       <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-900/20 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
                         <Download className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
@@ -677,7 +677,7 @@ export function FrameworkWorkspace({ frameworkId, config, onBack }: FrameworkWor
                     </button>
 
                     {/* Card 4 */}
-                    <button className="group flex flex-col items-center gap-3 p-4 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
+                    <button className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-background border border-border hover:border-primary/40 hover:shadow-md transition-all">
                       <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-900/20 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
                         <Pencil className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                       </div>

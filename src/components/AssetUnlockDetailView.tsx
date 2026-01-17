@@ -510,7 +510,7 @@ export function AssetUnlockDetailView({ assetId, onBack, onStartResearch }: Asse
                 `}
                 onClick={() => !isCompleted && !isInProgress && handleStartResearch(method.id)}
               >
-                <CardContent className="p-6">
+                <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-3">
                     <div className={`
                       h-10 w-10 rounded-lg flex items-center justify-center

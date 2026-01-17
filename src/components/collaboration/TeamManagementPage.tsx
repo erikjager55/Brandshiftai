@@ -17,14 +17,14 @@ import {
   Mail,
   Shield,
   Crown,
-  Edit,
+  Edit2,
   Trash2,
+  Search,
   CheckCircle2,
   Clock,
   XCircle,
   MoreVertical,
 } from 'lucide-react';
-import { SearchBar } from '../ui/unified';
 import { mockTeamMembers, TeamMember, TeamRole } from '../../data/mock-collaboration';
 
 export function TeamManagementPage() {
@@ -89,7 +89,7 @@ export function TeamManagementPage() {
       case 'admin':
         return <Shield className="h-4 w-4 text-blue-500" />;
       case 'editor':
-        return <Edit className="h-4 w-4 text-green-500" />;
+        return <Edit2 className="h-4 w-4 text-green-500" />;
       case 'viewer':
         return <Users className="h-4 w-4 text-gray-500" />;
     }
@@ -159,7 +159,7 @@ export function TeamManagementPage() {
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                <Edit className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <Edit2 className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Editors</p>
@@ -181,14 +181,17 @@ export function TeamManagementPage() {
           </Card>
         </div>
 
-        {/* Actions Bar - Unified Search */}
+        {/* Actions Bar */}
         <div className="flex items-center gap-3">
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search team members..."
-            className="flex-1"
-          />
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search team members..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
           <Button onClick={() => setShowInviteForm(!showInviteForm)} className="gap-2">
             <UserPlus className="h-4 w-4" />
             Invite Member
@@ -237,7 +240,7 @@ export function TeamManagementPage() {
                       </SelectItem>
                       <SelectItem value="editor">
                         <div className="flex items-center gap-2">
-                          <Edit className="h-4 w-4" />
+                          <Edit2 className="h-4 w-4" />
                           <span>Editor</span>
                         </div>
                       </SelectItem>
@@ -387,7 +390,7 @@ export function TeamManagementPage() {
 
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <Edit className="h-5 w-5 text-green-500 mt-0.5" />
+                <Edit2 className="h-5 w-5 text-green-500 mt-0.5" />
                 <div>
                   <h4 className="font-semibold">Editor</h4>
                   <p className="text-sm text-muted-foreground">

@@ -12,7 +12,7 @@ import { Badge } from '../ui/badge';
 import {
   Lock,
   ArrowRight,
-  CheckCircle2,
+  CheckCircle,
   Shield,
   TrendingUp,
   X
@@ -44,7 +44,7 @@ export function UpgradePrompt({
   const certaintyComparison = {
     'decision-scan': { level: 1, label: 'Basic', icon: Shield },
     'strategic-control': { level: 2, label: 'Control', icon: TrendingUp },
-    'advisory-services': { level: 3, label: 'Confidence', icon: CheckCircle2 }
+    'advisory-services': { level: 3, label: 'Confidence', icon: CheckCircle }
   };
 
   const current = certaintyComparison[currentTier];
@@ -183,7 +183,7 @@ export function UpgradePrompt({
             <div className="grid gap-2">
               {tierInfo.features.slice(0, 4).map((feature, index) => (
                 <div key={index} className="flex items-start gap-2 text-sm">
-                  <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                   <span>{feature}</span>
                 </div>
               ))}

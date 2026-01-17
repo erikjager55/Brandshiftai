@@ -1,77 +1,56 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
-
-// =============================================================================
-// CORE COMPONENTS (always loaded)
-// =============================================================================
+import React, { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard';
+import { ResearchDashboard } from './components/ResearchDashboard';
+import { StrategicResearchPlanner } from './components/StrategicResearchPlanner';
+import { ResearchPlansSectionGamified } from './components/ResearchPlansSectionGamified';
+import { ResearchPlansPage } from './components/ResearchPlansPage';
+import { ResearchHubEnhanced } from './components/ResearchHubEnhanced';
+import { PersonasSection } from './components/PersonasSection';
+import { StrategyHubSection } from './components/StrategyHubSection';
+import { RelationshipsPage } from './components/RelationshipsPage';
 import { WorkflowEnhancer } from './components/WorkflowEnhancer';
 import { TopNavigationBar } from './components/TopNavigationBar';
+import { ProductsServices } from './components/ProductsServices';
+import { ProductServiceView } from './components/ProductServiceView';
+import { TrendLibrary } from './components/TrendLibrary';
+import { KnowledgeLibrary } from './components/KnowledgeLibrary';
+import { researchBundles } from './data/research-bundles';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { TooltipProvider } from './components/ui/tooltip';
 import { AppProviders, useBrandAssets, useResearchPlan, useUIState } from './contexts';
+import { BrandAssetsViewSimple } from './components/BrandAssetsViewSimple';
 import { EnhancedSidebarSimple } from './components/EnhancedSidebarSimple';
-import { ActivityFeed } from './components/ActivityFeed';
-
-// =============================================================================
-// LAZY LOADED COMPONENTS (loaded on demand for better performance)
-// =============================================================================
-const ResearchDashboard = lazy(() => import('./components/ResearchDashboard').then(m => ({ default: m.ResearchDashboard })));
-const StrategicResearchPlanner = lazy(() => import('./components/StrategicResearchPlanner').then(m => ({ default: m.StrategicResearchPlanner })));
-const ResearchPlansSectionGamified = lazy(() => import('./components/ResearchPlansSectionGamified').then(m => ({ default: m.ResearchPlansSectionGamified })));
-const ResearchPlansPage = lazy(() => import('./components/ResearchPlansPage').then(m => ({ default: m.ResearchPlansPage })));
-const ResearchHubEnhanced = lazy(() => import('./components/ResearchHubEnhanced').then(m => ({ default: m.ResearchHubEnhanced })));
-const PersonasSection = lazy(() => import('./components/PersonasSection').then(m => ({ default: m.PersonasSection })));
-const StrategyHubSection = lazy(() => import('./components/StrategyHubSection').then(m => ({ default: m.StrategyHubSection })));
-const RelationshipsPage = lazy(() => import('./components/RelationshipsPage').then(m => ({ default: m.RelationshipsPage })));
-const ProductsServices = lazy(() => import('./components/ProductsServices').then(m => ({ default: m.ProductsServices })));
-const ProductServiceView = lazy(() => import('./components/ProductServiceView').then(m => ({ default: m.ProductServiceView })));
-const TrendLibrary = lazy(() => import('./components/TrendLibrary').then(m => ({ default: m.TrendLibrary })));
-const KnowledgeLibrary = lazy(() => import('./components/KnowledgeLibrary').then(m => ({ default: m.KnowledgeLibrary })));
-const BrandAssetsViewSimple = lazy(() => import('./components/BrandAssetsViewSimple').then(m => ({ default: m.BrandAssetsViewSimple })));
-const AssetUnlockDetailView = lazy(() => import('./components/AssetUnlockDetailView').then(m => ({ default: m.AssetUnlockDetailView })));
-const TransformativeGoalsDashboard = lazy(() => import('./components/TransformativeGoalsDashboard').then(m => ({ default: m.TransformativeGoalsDashboard })));
-const SocialRelevancyDashboard = lazy(() => import('./components/SocialRelevancyDashboard').then(m => ({ default: m.SocialRelevancyDashboard })));
-const UniversalAssetDashboard = lazy(() => import('./components/UniversalAssetDashboard').then(m => ({ default: m.UniversalAssetDashboard })));
-const TemplateLibraryPage = lazy(() => import('./components/templates/TemplateLibraryPage').then(m => ({ default: m.TemplateLibraryPage })));
-const AgencySettingsPage = lazy(() => import('./components/white-label/AgencySettingsPage').then(m => ({ default: m.AgencySettingsPage })));
-const ClientManagementPage = lazy(() => import('./components/white-label/ClientManagementPage').then(m => ({ default: m.ClientManagementPage })));
-const TeamManagementPage = lazy(() => import('./components/collaboration/TeamManagementPage').then(m => ({ default: m.TeamManagementPage })));
-const AccountSettingsPage = lazy(() => import('./components/settings/AccountSettingsPage').then(m => ({ default: m.AccountSettingsPage })));
-const NotificationsSettingsPage = lazy(() => import('./components/settings/NotificationsSettingsPage').then(m => ({ default: m.NotificationsSettingsPage })));
-const AppearanceSettingsPage = lazy(() => import('./components/settings/AppearanceSettingsPage').then(m => ({ default: m.AppearanceSettingsPage })));
-const BillingSettingsPage = lazy(() => import('./components/settings/BillingSettingsPage').then(m => ({ default: m.BillingSettingsPage })));
-const CommercialDemoPage = lazy(() => import('./components/commercial/CommercialDemoPage').then(m => ({ default: m.CommercialDemoPage })));
-const ActiveCampaignsPage = lazy(() => import('./components/ActiveCampaignsPage').then(m => ({ default: m.ActiveCampaignsPage })));
-const NewStrategyPage = lazy(() => import('./components/NewStrategyPage').then(m => ({ default: m.NewStrategyPage })));
-const CampaignWorkspace = lazy(() => import('./components/CampaignWorkspace').then(m => ({ default: m.CampaignWorkspace })));
-const ResearchValidationPage = lazy(() => import('./components/ResearchValidationPage').then(m => ({ default: m.ResearchValidationPage })));
-const ValidationPlanLandingPage = lazy(() => import('./components/ValidationPlanLandingPage').then(m => ({ default: m.ValidationPlanLandingPage })));
-const BundleDetailsPage = lazy(() => import('./components/BundleDetailsPage').then(m => ({ default: m.BundleDetailsPage })));
-const ValidationMethodDemo = lazy(() => import('./components/ValidationMethodDemo').then(m => ({ default: m.ValidationMethodDemo })));
-const BrandstyleView = lazy(() => import('./components/BrandstyleView').then(m => ({ default: m.BrandstyleView })));
-
-// =============================================================================
-// DATA & UTILITIES
-// =============================================================================
-import { researchBundles } from './data/research-bundles';
+import { AssetUnlockDetailView } from './components/AssetUnlockDetailView';
+import { TransformativeGoalsDashboard } from './components/TransformativeGoalsDashboard';
+import { SocialRelevancyDashboard } from './components/SocialRelevancyDashboard';
+import { UniversalAssetDashboard } from './components/UniversalAssetDashboard';
 import { getResearchOptionId, ResearchMethodType } from './utils/research-method-helpers';
 import { logger } from './utils/logger';
 import { recentItems } from './services/RecentItemsService';
 import { calculateBrandScore } from './utils/brand-score-calculator';
 import { generateMockActivities } from './data/mock-activities';
+import { ActivityFeed } from './components/ActivityFeed';
 import { BrandAsset } from './data/brand-assets';
 import { useBreadcrumbs } from './hooks/useBreadcrumbs';
 import { mockBrandAssets } from './data/mock-brand-assets';
+import { TemplateLibraryPage } from './components/templates/TemplateLibraryPage';
+import { AgencySettingsPage } from './components/white-label/AgencySettingsPage';
+import { ClientManagementPage } from './components/white-label/ClientManagementPage';
+import { TeamManagementPage } from './components/collaboration/TeamManagementPage';
+import { AccountSettingsPage } from './components/settings/AccountSettingsPage';
+import { NotificationsSettingsPage } from './components/settings/NotificationsSettingsPage';
+import { AppearanceSettingsPage } from './components/settings/AppearanceSettingsPage';
+import { BillingSettingsPage } from './components/settings/BillingSettingsPage';
+import { CommercialDemoPage } from './components/commercial/CommercialDemoPage';
+import { ActiveCampaignsPage } from './components/ActiveCampaignsPage';
+import { NewStrategyPage } from './components/NewStrategyPage';
+import { CampaignWorkspace } from './components/CampaignWorkspace';
+import { ResearchValidationPage } from './components/ResearchValidationPage';
+import { ValidationPlanLandingPage } from './components/ValidationPlanLandingPage';
+import { BundleDetailsPage } from './components/BundleDetailsPage';
 import { ResearchBundle } from './data/research-bundles';
-
-// =============================================================================
-// LOADING FALLBACK COMPONENT
-// =============================================================================
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center h-full">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-  </div>
-);
+import { ValidationMethodDemo } from './components/ValidationMethodDemo';
+import { BrandstyleView } from './components/BrandstyleView';
 
 function AppContent() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -602,9 +581,7 @@ function AppContent() {
             onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
           <main className="flex-1 overflow-y-auto bg-background">
-            <Suspense fallback={<LoadingFallback />}>
-              {renderContent()}
-            </Suspense>
+            {renderContent()}
           </main>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { getStatusColors } from '@/constants/design-system';
 import { 
   Info, 
-  CheckCircle2, 
+  CheckCircle, 
   AlertTriangle, 
   XCircle,
   LucideIcon 
@@ -20,7 +20,7 @@ import {
  * NO LOCAL OVERRIDES ALLOWED - All styling comes from design-system.ts
  * 
  * Used by:
- * - CanvasWorkshopManager (multiple instances)
+ * - CanvasWorkshopManager_INTEGRATED (multiple instances)
  * - ResearchDashboard (recommendations, warnings)
  * - TransformativeGoalsDashboard (next steps)
  * - SocialRelevancyDashboard (next steps)
@@ -77,7 +77,7 @@ export interface InfoBoxProps {
 
 const DEFAULT_ICONS: Record<InfoBoxVariant, LucideIcon> = {
   info: Info,
-  success: CheckCircle2,
+  success: CheckCircle,
   warning: AlertTriangle,
   error: XCircle,
 };

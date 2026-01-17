@@ -12,14 +12,15 @@ import {
   Share2,
   Plus,
   Layers,
+  Search,
   ArrowRight,
   Package,
   AlertCircle
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { SearchBar } from './ui/unified';
 import { useBrandAssets } from '../contexts';
 import { StatusCard } from './unified/StatusCard';
 import { PurchaseModal } from './PurchaseModal';
@@ -28,7 +29,7 @@ import { calculateDecisionStatus } from '../utils/decision-status-calculator';
 import { DecisionStatus } from '../types/decision-status';
 import { ResearchMethodType } from '../utils/research-method-helpers';
 import { UnlockableTool } from '../data/research-tools';
-import { EnhancedAssetCard } from './brand-assets/EnhancedAssetCard';
+import { EnhancedAssetCardUnified } from './brand-assets/EnhancedAssetCardUnified';
 import { BrandAssetOption } from '../types/brand-asset';
 import {
   SPACING,
@@ -263,12 +264,16 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
           </Card>
         </div>
 
-        {/* BLOCK 2: Search - Unified Component */}
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search brand assets..."
-        />
+        {/* BLOCK 2: Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search brand assets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
 
         {/* BLOCK 3: Assets List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -283,7 +288,7 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
             );
 
             return (
-              <EnhancedAssetCard
+              <EnhancedAssetCardUnified
                 key={asset.id}
                 asset={asset}
                 onClick={() => onAssetClick?.(asset.id)}

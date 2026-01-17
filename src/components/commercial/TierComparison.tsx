@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import {
-  CheckCircle2,
+  CheckCircle,
   X,
   Shield,
   TrendingUp,
@@ -78,7 +78,7 @@ export function TierComparison({ onSelectTier, currentTier }: TierComparisonProp
 
   const renderFeatureCell = (value: boolean | 'limited') => {
     if (value === true) {
-      return <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mx-auto" />;
+      return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mx-auto" />;
     } else if (value === 'limited') {
       return (
         <div className="text-center">
@@ -162,7 +162,7 @@ export function TierComparison({ onSelectTier, currentTier }: TierComparisonProp
                 <div className="space-y-2 min-h-[200px]">
                   {tier.features.slice(0, 5).map((feature, index) => (
                     <div key={index} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                       <span>{feature}</span>
                     </div>
                   ))}

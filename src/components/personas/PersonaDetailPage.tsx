@@ -28,7 +28,7 @@ import {
   ChartBar,
   FlaskConical,
   BookOpen,
-  Edit,
+  Edit3,
   Save,
   X,
   Lock,
@@ -343,7 +343,7 @@ export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExp
                 size="sm"
                 className={cn(BUTTON_VARIANTS.sm)}
               >
-                <Edit className="h-4 w-4 mr-2" />
+                <Edit3 className="h-4 w-4 mr-2" />
                 Edit Content
               </Button>
               <Button

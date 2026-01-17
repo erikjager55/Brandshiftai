@@ -22,7 +22,7 @@ import {
   Sparkles,
   Lock,
   Unlock,
-  Edit,
+  Edit3,
   Save,
   X as XIcon,
   Plus,
@@ -350,7 +350,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
 
   const handleSave = () => {
     setIsEditing(false);
-    // Saved changes
+    console.log('Saved changes:', editableData);
   };
 
   const handleCancel = () => {
@@ -486,7 +486,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                     </Badge>
                   ) : isEditing ? (
                     <Badge variant="default" className="gap-1.5 bg-primary">
-                      <Edit className="h-3 w-3" />
+                      <Edit3 className="h-3 w-3" />
                       Editing
                     </Badge>
                   ) : null}
@@ -534,7 +534,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                     onClick={handleEdit}
                     disabled={isLocked}
                   >
-                    <Edit className="h-4 w-4 mr-2" />
+                    <Edit3 className="h-4 w-4 mr-2" />
                     Edit
                   </Button>
                   <Button variant="outline" size="sm">

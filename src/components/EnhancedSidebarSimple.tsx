@@ -353,7 +353,7 @@ export function EnhancedSidebarSimple({
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 h-9 px-3 text-gray-700 hover:bg-gray-100"
-          onClick={() => {}}
+          onClick={() => console.log('Help & support')}
         >
           <HelpCircle className="h-4 w-4 flex-shrink-0 text-gray-600" />
           <span className="flex-1 text-left text-sm">Help & Support</span>

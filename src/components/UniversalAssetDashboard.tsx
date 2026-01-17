@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import {
-  Edit,
+  Edit3,
   Save,
   X,
   Lock,
@@ -377,7 +377,7 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
                       disabled={isLocked && lockedBy !== 'You'}
                       className="h-9 px-4 font-medium border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-all"
                     >
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit3 className="h-4 w-4 mr-2" />
                       Edit Content
                     </Button>
                     {config.showRegenerateButton && (

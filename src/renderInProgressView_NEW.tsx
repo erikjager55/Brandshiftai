@@ -46,7 +46,7 @@
           <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top">
             <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
               <CardContent className="p-4 flex items-center space-x-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <span className="text-sm font-medium text-green-900 dark:text-green-100">
                   Progress saved successfully
                 </span>
@@ -147,7 +147,7 @@
                           <Calendar className="h-4 w-4 text-primary" />
                           <span>{workshop.date} at {workshop.time}</span>
                           {selectedWorkshopId === workshop.id && (
-                            <CheckCircle2 className="h-4 w-4 text-primary ml-auto" />
+                            <CheckCircle className="h-4 w-4 text-primary ml-auto" />
                           )}
                         </div>
                       </DropdownMenuItem>
@@ -283,7 +283,7 @@
                               : 'bg-gray-200 dark:bg-gray-700 text-gray-500'
                           }`}
                         >
-                          {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : stepNumber}
+                          {isCompleted ? <CheckCircle className="h-4 w-4" /> : stepNumber}
                         </div>
                         <p className={`text-xs text-center mt-2 max-w-[80px] ${isCurrent ? 'font-medium' : 'text-muted-foreground'}`}>
                           {step.title.split(' ')[0]}
@@ -354,7 +354,7 @@
             {/* Step-by-Step Guide */}
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
+                <CheckCircle className="h-5 w-5 text-primary" />
                 <h3 className="font-medium">Step-by-Step Guide</h3>
               </div>
               <ol className="space-y-3">
@@ -527,20 +527,20 @@
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start space-x-2">
-                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Watch the video tutorial first to understand the step objectives</span>
               </li>
               <li className="flex items-start space-x-2">
-                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Follow the guide sequentially for best results</span>
               </li>
               <li className="flex items-start space-x-2">
-                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Progress auto-saves every few minutes - use Save buttons for manual saves</span>
               </li>
               {workshopAssets.length > 1 && (
                 <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>Remember to document results for each asset using the tabs above</span>
                 </li>
               )}

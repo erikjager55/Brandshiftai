@@ -485,35 +485,46 @@ export function PersonaChatModal({ persona, open, onOpenChange }: PersonaChatMod
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0">
-        {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
-          <div className="flex items-start gap-4">
-            <Avatar className="h-12 w-12 flex-shrink-0 ring-2 ring-primary/20">
-              <AvatarImage src={persona.avatar} alt={persona.name} />
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold">
-                {persona.name.split(' ').map(n => n[0]).join('')}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <DialogTitle className="text-xl">Chat met {persona.name}</DialogTitle>
-                <Badge variant="outline" className="gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  AI Persona
-                </Badge>
-                <MoodIcon className={cn("h-4 w-4", moodColor)} />
+      <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0 gap-0" aria-describedby={undefined}>
+        {/* Accessibility - Hidden title */}
+        <DialogTitle className="sr-only">
+          Chat met {persona.name}
+        </DialogTitle>
+        
+        {/* Header - Compact Design */}
+        <div className="px-6 py-3 flex-shrink-0 border-b">
+          <div className="flex items-center justify-between gap-4">
+            {/* Left: Avatar + Info */}
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <Avatar className="h-10 w-10 flex-shrink-0 ring-2 ring-primary/20">
+                <AvatarImage src={persona.avatar} alt={persona.name} />
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
+                  {persona.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-semibold truncate">
+                    {persona.name}
+                  </h2>
+                  <Badge variant="outline" className="gap-1 flex-shrink-0">
+                    <Sparkles className="h-3 w-3" />
+                    AI
+                  </Badge>
+                  <MoodIcon className={cn("h-4 w-4 flex-shrink-0", moodColor)} />
+                </div>
+                <p className="text-sm text-muted-foreground truncate">
+                  {persona.demographics?.occupation || 'Professional'} • {persona.demographics?.age || 'N/A'}
+                </p>
               </div>
-              <DialogDescription>
-                {persona.demographics?.occupation || 'Professional'} • {persona.demographics?.age || 'N/A'}
-              </DialogDescription>
             </div>
-            <div className="flex gap-2">
+
+            {/* Right: Actions */}
+            <div className="flex gap-1 flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={exportConversation}
-                className="flex-shrink-0"
                 title="Export conversatie"
               >
                 <Download className="h-4 w-4" />
@@ -522,43 +533,18 @@ export function PersonaChatModal({ persona, open, onOpenChange }: PersonaChatMod
                 variant="ghost"
                 size="sm"
                 onClick={handleReset}
-                className="flex-shrink-0"
                 title="Reset conversatie"
               >
                 <RotateCcw className="h-4 w-4" />
               </Button>
             </div>
           </div>
-
-          {/* Chat Mode Selector */}
-          <div className="mt-4 flex gap-2 flex-wrap">
-            {(Object.keys(CHAT_MODES) as ChatMode[]).map((mode) => {
-              const config = CHAT_MODES[mode];
-              const Icon = config.icon;
-              return (
-                <button
-                  key={mode}
-                  onClick={() => setChatMode(mode)}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all text-sm",
-                    chatMode === mode
-                      ? "border-primary bg-primary/10 font-medium"
-                      : "border-border hover:border-primary/50 hover:bg-muted"
-                  )}
-                  title={config.description}
-                >
-                  <Icon className={cn("h-4 w-4", chatMode === mode && config.color)} />
-                  {config.label}
-                </button>
-              );
-            })}
-          </div>
-        </DialogHeader>
+        </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex min-h-0">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1 flex flex-col">
-            <TabsList className="mx-6 mt-3">
+        <div className="flex-1 flex flex-col min-h-0">
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1 flex flex-col gap-0">
+            <TabsList className="mx-6 mt-3 mb-2">
               <TabsTrigger value="chat" className="gap-2">
                 <MessageCircle className="h-4 w-4" />
                 Conversation
@@ -676,7 +662,7 @@ export function PersonaChatModal({ persona, open, onOpenChange }: PersonaChatMod
               </ScrollArea>
 
               {/* Input Area */}
-              <div className="px-6 pb-6 pt-4 border-t flex-shrink-0">
+              <div className="px-6 pb-6 pt-4 flex-shrink-0">
                 <div className="flex items-center gap-2 mb-3">
                   <AlertCircle className="h-4 w-4 text-muted-foreground" />
                   <p className="text-xs text-muted-foreground">

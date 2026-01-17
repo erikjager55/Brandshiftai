@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
 import { Badge } from '../../ui/badge';
+import { Input } from '../../ui/input';
 import { ScrollArea } from '../../ui/scroll-area';
 import {
   FileText,
@@ -18,14 +19,14 @@ import {
   Download,
   Calendar,
   Target,
+  Search,
   ChevronDown,
-  CheckCircle2,
+  CheckCircle,
   Clock,
-  Edit,
+  Edit2,
   X,
   Check
 } from 'lucide-react';
-import { SearchBar } from '../../ui/unified';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -147,13 +148,16 @@ export function SavedStrategiesPanel({
           </div>
         </div>
 
-        {/* Search - Unified */}
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search strategies..."
-          size="sm"
-        />
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search strategies..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 h-9"
+          />
+        </div>
 
         {/* New Strategy Button */}
         <Button
@@ -300,7 +304,7 @@ export function SavedStrategiesPanel({
                             Open
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleStartEdit(strategy)}>
-                            <Edit className="h-4 w-4 mr-2" />
+                            <Edit2 className="h-4 w-4 mr-2" />
                             Rename
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onDuplicateStrategy(strategy.id)}>

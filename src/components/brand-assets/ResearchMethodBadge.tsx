@@ -110,6 +110,7 @@ export function ResearchMethodBadge({
       onClick={(e) => {
         if (onClick) {
           e.stopPropagation(); // Prevent parent card click
+          console.log('Research Method Badge Clicked:', methodInfo.label, method.type, method.status);
           onClick();
         }
       }}

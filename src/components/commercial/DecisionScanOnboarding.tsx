@@ -12,7 +12,7 @@ import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import {
   ArrowRight,
-  CheckCircle2,
+  CheckCircle,
   Shield,
   AlertTriangle,
   ListChecks,
@@ -128,7 +128,7 @@ export function DecisionScanOnboarding({ onComplete, onUpgrade }: DecisionScanOn
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {tierInfo.features.map((feature, index) => (
                   <div key={index} className="flex items-start gap-3 p-4 rounded-lg bg-background border">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}
@@ -322,7 +322,7 @@ export function DecisionScanOnboarding({ onComplete, onUpgrade }: DecisionScanOn
             <div className="space-y-2">
               {scanResults.actionPlan.shortTerm.map((action, index) => (
                 <div key={index} className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-                  <CheckCircle2 className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                   <span className="text-sm text-amber-900 dark:text-amber-100">{action}</span>
                 </div>
               ))}

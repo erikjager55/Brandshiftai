@@ -33,7 +33,7 @@ import {
   Table,
   Loader,
   Zap,
-  Edit,
+  Edit3,
   Heart,
   Globe,
   Package,
@@ -71,7 +71,7 @@ import { BrandValuesCanvas } from './canvases/BrandValuesCanvas';
 import { WorkshopReport } from './canvases/WorkshopReport';
 import { InterviewsManager } from './canvases/InterviewsManager';
 import { QuestionnaireManager } from './canvases/QuestionnaireManager';
-import { CanvasWorkshopManager } from './canvases/CanvasWorkshopManager';
+import { CanvasWorkshopManager } from './canvases/CanvasWorkshopManager_INTEGRATED';
 import { GenericToolManager } from './canvases/GenericToolManager';
 import { SessionOutcomeHeader } from './SessionOutcomeHeader';
 import { SessionNavigator } from './SessionNavigator';
@@ -572,7 +572,7 @@ export function ResearchDashboard({
                      <CardTitle className="text-lg">Alignment Metrics</CardTitle>
                    </CardHeader>
                    <CardContent>
-                      <div className="space-y-6">
+                      <div className="space-y-5">
                         {result.metrics && Object.entries(result.metrics).map(([key, value]: [string, any]) => (
                           <div key={key}>
                             <div className="flex justify-between text-sm mb-2">
@@ -681,7 +681,7 @@ export function ResearchDashboard({
                 isLocked={isReportLocked}
                 onLockToggle={() => setIsReportLocked(!isReportLocked)}
                 onRegenerate={() => {
-                  // Regenerating report
+                  console.log('Regenerating report...');
                 }}
               />
 

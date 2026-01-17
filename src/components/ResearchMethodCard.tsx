@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { CheckCircle2, Clock, ArrowRight, Users, Timer } from 'lucide-react';
+import { CheckCircle, Clock, ArrowRight, Users, Timer } from 'lucide-react';
 
 interface ResearchMethodCardProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -47,7 +47,7 @@ export function ResearchMethodCard({
   const getStatusIcon = () => {
     switch (status) {
       case 'completed':
-        return <CheckCircle2 className="h-3 w-3" />;
+        return <CheckCircle className="h-3 w-3" />;
       case 'in-progress':
         return <Clock className="h-3 w-3" />;
       default:

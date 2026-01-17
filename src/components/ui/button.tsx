@@ -23,10 +23,6 @@ const buttonVariants = cva(
         success: "bg-green-600 text-white hover:bg-green-700 shadow-sm",
         warning: "bg-yellow-600 text-white hover:bg-yellow-700 shadow-sm",
         gradient: "bg-gradient-to-r from-[#5252E3] to-[#1FD1B2] text-white hover:opacity-90 shadow-md",
-        // Animated CTA variant - draws attention with subtle pulse
-        cta: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
-        // Animated success CTA
-        ctaSuccess: "bg-green-600 text-white hover:bg-green-700 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2 has-[>svg]:px-3",
@@ -41,16 +37,11 @@ const buttonVariants = cva(
         true: "w-full",
         false: "",
       },
-      animated: {
-        true: "[&_svg.arrow-icon]:transition-transform [&_svg.arrow-icon]:duration-200 hover:[&_svg.arrow-icon]:translate-x-1",
-        false: "",
-      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
       fullWidth: false,
-      animated: false,
     },
   },
 );
@@ -61,13 +52,13 @@ const Button = React.forwardRef<
     VariantProps<typeof buttonVariants> & {
       asChild?: boolean;
     }
->(({ className, variant, size, fullWidth, animated, asChild = false, ...props }, ref) => {
+>(({ className, variant, size, fullWidth, asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "button";
 
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, fullWidth, animated }), className)}
+      className={cn(buttonVariants({ variant, size, fullWidth }), className)}
       ref={ref}
       {...props}
     />

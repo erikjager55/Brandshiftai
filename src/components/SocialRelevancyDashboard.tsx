@@ -33,7 +33,7 @@ import {
   Heart,
   ChevronDown,
   RefreshCw,
-  Edit,
+  Edit3,
   Save,
   X,
   Globe,
@@ -172,6 +172,8 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
   const asset = brandAssets.find((a) => a.type === 'Social Relevancy');
   
   // 🔍 DEBUG: Log the entire asset to see what's in it
+  console.log('🔍 [SocialRelevancyDashboard] Full asset:', asset);
+  console.log('🔍 [SocialRelevancyDashboard] Research methods:', asset?.researchMethods);
   
   if (!asset) return null;
 
@@ -451,7 +453,7 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
                         onClick={() => setIsEditing(true)}
                         className="gap-2"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit3 className="h-4 w-4" />
                         Edit
                       </Button>
                     </>
