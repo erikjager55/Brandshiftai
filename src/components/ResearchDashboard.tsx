@@ -33,7 +33,7 @@ import {
   Table,
   Loader,
   Zap,
-  Edit3,
+  Edit,
   Heart,
   Globe,
   Package,

@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { 
@@ -21,7 +20,6 @@ import {
   Download, 
   Heart,
   Trash2,
-  Search,
   SlidersHorizontal,
   Grid3x3,
   List,
@@ -31,6 +29,7 @@ import {
   Clock,
   Filter
 } from 'lucide-react';
+import { SearchBar } from './ui/unified';
 import { AddResourceModal } from './knowledge/AddResourceModal';
 import { ResourceDetailModal } from './knowledge/ResourceDetailModal';
 import { mockKnowledgeResources, mockCollections, KnowledgeResource, Collection } from '../data/knowledge-resources';
@@ -238,17 +237,14 @@ export function KnowledgeLibrary() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-8 py-8">
-        {/* Search & Filters Bar - Moved to Content */}
+        {/* Search & Filters Bar - Unified Components */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search resources by title, author, tags..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
-          </div>
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Search resources by title, author, tags..."
+            className="flex-1"
+          />
           
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-[180px]">

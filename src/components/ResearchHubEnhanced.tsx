@@ -15,7 +15,7 @@ import {
   Plus,
   ArrowRight,
   Clock,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Award,
   Activity,
@@ -277,10 +277,10 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
 
   // Recent activity timeline
   const recentActivity = [
-    { id: 1, type: 'completed', title: 'Brand Positioning Workshop completed', timestamp: '2 hours ago', icon: CheckCircle, color: 'green' },
+    { id: 1, type: 'completed', title: 'Brand Positioning Workshop completed', timestamp: '2 hours ago', icon: CheckCircle2, color: 'green' },
     { id: 2, type: 'started', title: 'Customer Interviews started for "Tech Savvy Millennial"', timestamp: '1 day ago', icon: PlayCircle, color: 'blue' },
     { id: 3, type: 'validated', title: 'Brand Values validated', timestamp: '3 days ago', icon: Award, color: 'purple' },
-    { id: 4, type: 'completed', title: 'AI Exploration completed for Brand Voice', timestamp: '1 week ago', icon: CheckCircle, color: 'green' },
+    { id: 4, type: 'completed', title: 'AI Exploration completed for Brand Voice', timestamp: '1 week ago', icon: CheckCircle2, color: 'green' },
   ];
 
   // Calculate priority research recommendations based on decision quality
@@ -355,7 +355,7 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <div className="p-2 rounded-lg bg-green-500/10">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <CheckCircle2 className="w-5 h-5 text-green-600" />
                 </div>
                 <TrendingUp className="w-4 h-4 text-green-600" />
               </div>
@@ -589,7 +589,7 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                               </div>
                             </div>
                             <Button size="sm" variant="outline" className="gap-2 shrink-0 ml-3">
-                              <CheckCircle className="h-4 w-4" />
+                              <CheckCircle2 className="h-4 w-4" />
                               Validate
                             </Button>
                           </div>

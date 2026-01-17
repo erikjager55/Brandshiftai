@@ -36,7 +36,7 @@ import {
   Unlock,
   Mail,
   Phone,
-  Edit3,
+  Edit,
   Save,
   X,
   Package,
@@ -634,7 +634,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openDetailView(interview.id)}>
-                            <Edit3 className="h-4 w-4 mr-2" />
+                            <Edit className="h-4 w-4 mr-2" />
                             Edit Details
                           </DropdownMenuItem>
                           {interview.status === 'results-added' && interview.lockStatus === 'editable' && (

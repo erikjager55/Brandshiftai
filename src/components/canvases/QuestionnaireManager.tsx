@@ -25,7 +25,7 @@ import {
   Globe,
   TrendingUp,
   Mail,
-  Edit3,
+  Edit,
   Save,
   X,
   Package,

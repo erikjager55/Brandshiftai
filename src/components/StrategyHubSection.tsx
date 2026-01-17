@@ -34,7 +34,7 @@ import {
   getPopularTools,
   getToolsRequiringResearch
 } from '../data/strategy-tools';
-import { Input } from './ui/input';
+import { SearchBar } from './ui/unified';
 import { CampaignStrategyGeneratorDetail } from './strategy-tools/CampaignStrategyGeneratorDetail';
 import { UniversalAIExploration } from './strategy-tools/UniversalAIExploration';
 import { useResearchBundles } from '../contexts/ResearchBundleContext';
@@ -240,21 +240,17 @@ export function StrategyHubSection() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Search */}
+          {/* Search - Unified Component */}
           {searchExpanded ? (
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search tools..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-9"
-                autoFocus
-                onBlur={() => {
-                  if (!searchQuery) setSearchExpanded(false);
-                }}
-              />
-            </div>
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search tools..."
+              size="sm"
+              autoFocus
+              className="w-64"
+              onClear={() => setSearchExpanded(false)}
+            />
           ) : (
             <Button
               variant="outline"

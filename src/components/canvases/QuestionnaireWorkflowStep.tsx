@@ -25,7 +25,7 @@ import {
   ClipboardCheck,
   Plus,
   Trash2,
-  Edit3,
+  Edit,
   GripVertical,
   ChevronDown,
   BarChart3,

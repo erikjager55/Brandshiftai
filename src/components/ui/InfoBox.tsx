@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { getStatusColors } from '@/constants/design-system';
 import { 
   Info, 
-  CheckCircle, 
+  CheckCircle2, 
   AlertTriangle, 
   XCircle,
   LucideIcon 
@@ -77,7 +77,7 @@ export interface InfoBoxProps {
 
 const DEFAULT_ICONS: Record<InfoBoxVariant, LucideIcon> = {
   info: Info,
-  success: CheckCircle,
+  success: CheckCircle2,
   warning: AlertTriangle,
   error: XCircle,
 };

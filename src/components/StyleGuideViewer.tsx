@@ -22,7 +22,7 @@ import {
   Sparkles,
   Lock,
   Unlock,
-  Edit3,
+  Edit,
   Save,
   X as XIcon,
   Plus,
@@ -486,7 +486,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                     </Badge>
                   ) : isEditing ? (
                     <Badge variant="default" className="gap-1.5 bg-primary">
-                      <Edit3 className="h-3 w-3" />
+                      <Edit className="h-3 w-3" />
                       Editing
                     </Badge>
                   ) : null}
@@ -534,7 +534,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                     onClick={handleEdit}
                     disabled={isLocked}
                   >
-                    <Edit3 className="h-4 w-4 mr-2" />
+                    <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </Button>
                   <Button variant="outline" size="sm">

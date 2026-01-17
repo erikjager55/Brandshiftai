@@ -3,7 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { Lock, RefreshCw, Edit3, Eye, Heart, Target, Users, Sparkles } from 'lucide-react';
+import { Lock, RefreshCw, Edit, Eye, Heart, Target, Users, Sparkles } from 'lucide-react';
 
 interface CanvasBlock {
   id: string;
@@ -84,7 +84,7 @@ export function CanvasWorkspaceShared({
                         className="h-8 w-8 p-0 rounded-lg hover:bg-primary/10 hover:text-primary"
                         title="Edit content"
                       >
-                        <Edit3 className="h-3.5 w-3.5" />
+                        <Edit className="h-3.5 w-3.5" />
                       </Button>
                     )}
                   </div>

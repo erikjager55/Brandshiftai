@@ -10,7 +10,7 @@ import {
   Lightbulb, 
   Users, 
   ArrowRight, 
-  CheckCircle,
+  CheckCircle2,
   Sparkles,
   ArrowLeft,
   MessageSquare,
@@ -529,19 +529,19 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                       <span>{preSelectedPlan.assetsUnlocked} validated brand assets</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                       <span>Complete research data and insights</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                       <span>Actionable recommendations</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                       <span>Track progress and performance</span>
                     </div>
                   </div>
@@ -604,7 +604,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                               +{scoreImpact}
                             </Badge>
                             {isSelected && (
-                              <CheckCircle className="h-4 w-4 text-purple-600" />
+                              <CheckCircle2 className="h-4 w-4 text-purple-600" />
                             )}
                           </div>
                         </button>
@@ -710,15 +710,15 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>Start with method selection</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>See compatible assets</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>Combine tools if needed</span>
                 </div>
               </CardContent>
@@ -746,15 +746,15 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>Pre-selected tools & assets</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>Proven combinations</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
                   <span>Bundle savings</span>
                 </div>
               </CardContent>
@@ -876,7 +876,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                         </div>
                         <div className="flex flex-col items-end gap-2">
                           {getConfidenceBadge(tool.confidence)}
-                          {isSelected && <CheckCircle className="h-6 w-6 text-primary" />}
+                          {isSelected && <CheckCircle2 className="h-6 w-6 text-primary" />}
                         </div>
                       </div>
                       <CardTitle className="text-xl mb-2">{tool.name}</CardTitle>
@@ -950,7 +950,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                           </div>
                           <div className="flex flex-col items-end gap-2">
                             {getConfidenceBadge(tool.confidence)}
-                            {isSelected && <CheckCircle className="h-6 w-6 text-primary" />}
+                            {isSelected && <CheckCircle2 className="h-6 w-6 text-primary" />}
                           </div>
                         </div>
                         <CardTitle className="text-xl mb-2">{tool.name}</CardTitle>
@@ -1123,7 +1123,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                           ? 'bg-primary border-primary' 
                           : 'border-muted-foreground/30'
                       }`}>
-                        {isSelected && <CheckCircle className="h-4 w-4 text-white" />}
+                        {isSelected && <CheckCircle2 className="h-4 w-4 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
@@ -1660,7 +1660,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                     size="lg"
                     onClick={handleConfirmPlan}
                   >
-                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
                     Confirm Research Plan
                   </Button>
                 </CardContent>
@@ -1678,7 +1678,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                   <CardContent className="space-y-3">
                     {Object.entries(rationale).map(([key, value]) => (
                       <div key={key} className="flex items-start gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
                         <p className="text-sm text-muted-foreground">{value}</p>
                       </div>
                     ))}

@@ -24,7 +24,7 @@ import {
   Image as ImageIcon,
   StickyNote,
   Plus,
-  Edit2,
+  Edit,
   Save,
   X,
   Trash2
@@ -210,7 +210,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                       variant="outline"
                       size="sm"
                     >
-                      <Edit2 className="h-4 w-4 mr-2" />
+                      <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </Button>
                   )}
@@ -324,7 +324,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               size="sm"
                               className="mt-2"
                             >
-                              <Edit2 className="h-4 w-4 mr-2" />
+                              <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
                           )}
@@ -415,7 +415,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               size="sm"
                               className="mt-2"
                             >
-                              <Edit2 className="h-4 w-4 mr-2" />
+                              <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
                           )}
@@ -538,7 +538,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                             size="sm"
                             className="mt-2"
                           >
-                            <Edit2 className="h-4 w-4 mr-2" />
+                            <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </Button>
                         )}
@@ -640,7 +640,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               size="sm"
                               className="mt-1 w-full"
                             >
-                              <Edit2 className="h-4 w-4 mr-2" />
+                              <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
                           )}

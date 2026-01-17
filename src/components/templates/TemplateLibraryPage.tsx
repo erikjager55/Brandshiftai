@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useTemplates } from '../../contexts';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { 
-  Search, Star, TrendingUp, Bookmark, BookmarkCheck, 
+  Star, TrendingUp, Bookmark, BookmarkCheck, 
   Play, Clock, Users, Download, Filter, Grid, List 
 } from 'lucide-react';
+import { SearchBar, FilterSelect } from '../ui/unified';
 import { CampaignTemplate, TemplateCategory } from '../../types/templates';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -65,26 +65,26 @@ export function TemplateLibraryPage({ onSelectTemplate }: { onSelectTemplate?: (
           </div>
         </div>
 
-        {/* Search & Filter */}
+        {/* Search & Filter - Unified Components */}
         <div className="flex gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search templates..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <select
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search templates..."
+            className="flex-1"
+          />
+          <FilterSelect
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value as any)}
-            className="px-4 py-2 border border-border rounded-md bg-background"
-          >
-            {categories.map(cat => (
-              <option key={cat.value} value={cat.value}>{cat.label}</option>
-            ))}
-          </select>
+            onChange={(value) => setSelectedCategory(value as TemplateCategory | 'all')}
+            options={[
+              { value: 'product-launch', label: 'Product Launch' },
+              { value: 'brand-awareness', label: 'Brand Awareness' },
+              { value: 'lead-generation', label: 'Lead Generation' },
+              { value: 'seasonal-campaign', label: 'Seasonal' },
+              { value: 'content-marketing', label: 'Content Marketing' },
+            ]}
+            allLabel="All Templates"
+          />
         </div>
 
         <Tabs defaultValue="all" className="space-y-6">

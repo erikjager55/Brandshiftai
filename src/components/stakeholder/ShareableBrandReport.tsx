@@ -16,7 +16,7 @@ import {
   Printer,
   Package,
   BarChart3,
-  CheckCircle,
+  CheckCircle2,
   AlertTriangle,
   AlertCircle,
   Calendar,
@@ -211,7 +211,7 @@ export function ShareableBrandReport({ asset, onBack }: ShareableBrandReportProp
                 <div className="space-y-2">
                   {decisionStatus.keyInsights.map((insight, index) => (
                     <div key={index} className="flex items-start gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                       <span>{insight}</span>
                     </div>
                   ))}
@@ -247,7 +247,7 @@ export function ShareableBrandReport({ asset, onBack }: ShareableBrandReportProp
           <CardContent className="space-y-6">
             <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800">
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-green-900 dark:text-green-100 mb-1">
                     Asset is Actueel

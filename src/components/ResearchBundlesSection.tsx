@@ -52,7 +52,7 @@ import { strategyTools } from '../data/strategy-tools';
 import { useResearchBundles } from '../contexts/ResearchBundleContext';
 import { UnifiedResearchCard } from './UnifiedResearchCard';
 import { ResearchFoundationMatrix } from './ResearchFoundationMatrix';
-import { Input } from './ui/input';
+import { SearchBar } from './ui/unified';
 
 interface ResearchBundlesSectionProps {
   onSelectBundle: (bundle: ResearchBundle) => void;
@@ -170,15 +170,12 @@ export function ResearchBundlesSection({ onSelectBundle }: ResearchBundlesSectio
     <div className="space-y-6">
       {/* Header with Search and View Toggle */}
       <div className="flex items-center justify-between gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search bundles by name, description, or outcome..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search bundles by name, description, or outcome..."
+          className="flex-1"
+        />
         <div className="flex items-center gap-2">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'outline'}

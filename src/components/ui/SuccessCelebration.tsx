@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle, Sparkles, Trophy, Star, PartyPopper } from 'lucide-react';
+import { CheckCircle2, Sparkles, Trophy, Star, PartyPopper } from 'lucide-react';
 import { CustomConfetti } from '../CustomConfetti';
 import { cn } from '../../lib/utils';
 
@@ -20,7 +20,7 @@ interface SuccessCelebrationProps {
 
 const variantConfig = {
   default: {
-    icon: CheckCircle,
+    icon: CheckCircle2,
     iconColor: 'text-green-500',
     bgColor: 'bg-green-50',
     borderColor: 'border-green-200',
@@ -198,7 +198,7 @@ export function SuccessCheckmark({ show }: { show: boolean }) {
           exit={{ scale: 0, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         >
-          <CheckCircle className="h-5 w-5 text-green-500" />
+          <CheckCircle2 className="h-5 w-5 text-green-500" />
         </motion.div>
       )}
     </AnimatePresence>
