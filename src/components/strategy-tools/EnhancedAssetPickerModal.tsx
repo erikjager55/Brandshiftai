@@ -288,7 +288,7 @@ export function EnhancedAssetPickerModal({
                           }`}
                           onClick={() => selectable && toggleItem(item.id)}
                         >
-                          <div className="p-5">
+                          <div className="p-6">
                             <div className="flex items-start gap-4">
                               {getItemIcon(item)}
                               
@@ -451,7 +451,7 @@ export function EnhancedAssetPickerModal({
         </CardContent>
 
         {/* Footer */}
-        <div className="p-5 border-t bg-muted/30 flex justify-between items-center">
+        <div className="p-6 border-t bg-muted/30 flex justify-between items-center">
           <div>
             <p className="font-medium">
               {tempSelected.length} {tempSelected.length === 1 ? 'item' : 'items'} selected

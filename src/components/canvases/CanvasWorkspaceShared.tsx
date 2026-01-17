@@ -46,7 +46,7 @@ export function CanvasWorkspaceShared({
                 : 'hover:shadow-md border-2'
             }`}
           >
-            <CardContent className="p-5">
+            <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2.5">
                   <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${

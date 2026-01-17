@@ -572,7 +572,7 @@ export function ResearchDashboard({
                      <CardTitle className="text-lg">Alignment Metrics</CardTitle>
                    </CardHeader>
                    <CardContent>
-                      <div className="space-y-5">
+                      <div className="space-y-6">
                         {result.metrics && Object.entries(result.metrics).map(([key, value]: [string, any]) => (
                           <div key={key}>
                             <div className="flex justify-between text-sm mb-2">

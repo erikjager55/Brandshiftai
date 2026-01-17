@@ -314,7 +314,7 @@ export function QuestionnaireManager({
       case 'responses-received':
         return <Badge variant="secondary" className="bg-green-100 text-green-700">Responses In</Badge>;
       case 'analyzed':
-        return <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">Completed</Badge>;
+        return <Badge variant="secondary" className="bg-green-100 text-green-700">Completed</Badge>;
       default:
         return <Badge variant="secondary">Unknown</Badge>;
     }

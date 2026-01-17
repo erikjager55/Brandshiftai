@@ -865,7 +865,7 @@ export function CampaignStrategyGeneratorDetail({
                     })()}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-6">
                   {/* Campaign Name */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -1276,7 +1276,7 @@ export function CampaignStrategyGeneratorDetail({
                     })()}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-6">
                   {/* Campaign Duration */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">

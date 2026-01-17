@@ -555,12 +555,12 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                       <div className="flex items-center justify-between">
                         <div>
                           <CardTitle className="flex items-center gap-2">
-                            <AlertCircle className="h-5 w-5 text-orange-600" />
+                            <AlertCircle className="h-5 w-5 text-amber-600" />
                             Validation Needed
                           </CardTitle>
                           <CardDescription>Review and approve completed research</CardDescription>
                         </div>
-                        <Badge variant="secondary" className="bg-orange-50 text-orange-700 border-orange-200">
+                        <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200">
                           {validationNeeded.length} ready
                         </Badge>
                       </div>
@@ -572,11 +572,11 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                         return (
                           <div 
                             key={idx} 
-                            className="flex items-center justify-between p-4 rounded-lg border-2 hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all cursor-pointer"
+                            className="flex items-center justify-between p-4 rounded-lg border-2 hover:border-orange-300 hover:bg-amber-50/50 dark:hover:bg-orange-950/20 transition-all cursor-pointer"
                           >
                             <div className="flex items-center gap-3 flex-1">
-                              <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
-                                <Icon className="h-5 w-5 text-orange-600" />
+                              <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                                <Icon className="h-5 w-5 text-amber-600" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium truncate">{item.name}</p>

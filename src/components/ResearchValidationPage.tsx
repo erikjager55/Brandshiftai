@@ -86,8 +86,8 @@ const assetTypeConfig = {
   brand: {
     icon: Shield,
     label: 'Brand',
-    color: 'text-orange-600 dark:text-orange-400',
-    bg: 'bg-orange-100 dark:bg-orange-900/30'
+    color: 'text-amber-600 dark:text-amber-400',
+    bg: 'bg-amber-100 dark:bg-orange-900/30'
   },
   persona: {
     icon: UserCheck,
@@ -298,7 +298,7 @@ export function ResearchValidationPage() {
                   className="group hover:shadow-md transition-all duration-200 border-2"
                 >
                   <CardContent className="p-6">
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                       {/* Header Row: Project Name + Method */}
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
