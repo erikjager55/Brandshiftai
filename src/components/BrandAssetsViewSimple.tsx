@@ -29,7 +29,7 @@ import { calculateDecisionStatus } from '../utils/decision-status-calculator';
 import { DecisionStatus } from '../types/decision-status';
 import { ResearchMethodType } from '../utils/research-method-helpers';
 import { UnlockableTool } from '../data/research-tools';
-import { EnhancedAssetCardUnified } from './brand-assets/EnhancedAssetCardUnified';
+import { EnhancedAssetCard } from './brand-assets/EnhancedAssetCard';
 import { BrandAssetOption } from '../types/brand-asset';
 import {
   SPACING,
@@ -288,7 +288,7 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
             );
 
             return (
-              <EnhancedAssetCardUnified
+              <EnhancedAssetCard
                 key={asset.id}
                 asset={asset}
                 onClick={() => onAssetClick?.(asset.id)}

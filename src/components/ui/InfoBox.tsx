@@ -20,7 +20,7 @@ import {
  * NO LOCAL OVERRIDES ALLOWED - All styling comes from design-system.ts
  * 
  * Used by:
- * - CanvasWorkshopManager_INTEGRATED (multiple instances)
+ * - CanvasWorkshopManager (multiple instances)
  * - ResearchDashboard (recommendations, warnings)
  * - TransformativeGoalsDashboard (next steps)
  * - SocialRelevancyDashboard (next steps)

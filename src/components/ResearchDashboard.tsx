@@ -71,7 +71,7 @@ import { BrandValuesCanvas } from './canvases/BrandValuesCanvas';
 import { WorkshopReport } from './canvases/WorkshopReport';
 import { InterviewsManager } from './canvases/InterviewsManager';
 import { QuestionnaireManager } from './canvases/QuestionnaireManager';
-import { CanvasWorkshopManager } from './canvases/CanvasWorkshopManager_INTEGRATED';
+import { CanvasWorkshopManager } from './canvases/CanvasWorkshopManager';
 import { GenericToolManager } from './canvases/GenericToolManager';
 import { SessionOutcomeHeader } from './SessionOutcomeHeader';
 import { SessionNavigator } from './SessionNavigator';

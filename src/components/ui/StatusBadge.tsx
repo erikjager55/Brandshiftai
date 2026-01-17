@@ -19,7 +19,7 @@ import { getStatusColors } from '@/constants/design-system';
  * - BrandArchetypeCanvas
  * - BrandValuesCanvas
  * - CanvasWorkshopInProgress
- * - CanvasWorkshopManager_INTEGRATED
+ * - CanvasWorkshopManager
  * - TransformativeGoalsDashboard
  * - SocialRelevancyDashboard
  * - +15 other components
