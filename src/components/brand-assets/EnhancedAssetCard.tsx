@@ -3,7 +3,7 @@
  * Brand assets displayed with same layout as personas
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { BrandAsset, ResearchMethod } from '../../types/brand-asset';
 import { EntityCard } from '../unified/EntityCard';
 import { brandAssetToEntityCard } from '../../utils/entity-card-adapters';
@@ -19,8 +19,9 @@ interface EnhancedAssetCardProps {
 
 /**
  * Enhanced Asset Card - Uses Unified EntityCard (same as personas)
+ * Wrapped with React.memo for performance optimization
  */
-export function EnhancedAssetCard({
+export const EnhancedAssetCard = memo(function EnhancedAssetCard({
   asset,
   onClick,
   onMethodClick,
@@ -33,4 +34,4 @@ export function EnhancedAssetCard({
   const entityData = brandAssetToEntityCard(asset, onClick, onMethodClick);
 
   return <EntityCard data={entityData} />;
-}
+});

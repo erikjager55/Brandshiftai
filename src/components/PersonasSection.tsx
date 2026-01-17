@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
-  Search, 
-  Filter, 
-  Grid, 
-  List,
   Target,
   CheckCircle,
   Edit,
@@ -14,23 +10,9 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from './ui/select';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
 import { PageHeader } from './ui/PageHeader';
+import { SearchBar, FilterSelect } from './ui/unified';
 import { usePersonas } from '../contexts';
 import { Persona, PersonaStatus, PersonaResearchMethod } from '../types/persona';
 import { PersonaDetailPage } from './personas/PersonaDetailPage';
@@ -267,39 +249,25 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
             </Card>
           </div>
 
-          {/* BLOCK 2: Search and Filters */}
+          {/* BLOCK 2: Search and Filters - Using Unified Components */}
           <div className="flex items-center gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search personas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <Filter className="h-4 w-4 mr-2" />
-                  {filterStatus === 'all' ? 'All' : statusConfig[filterStatus].label}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setFilterStatus('all')}>
-                  All Personas
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterStatus('draft')}>
-                  Draft
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterStatus('in-research')}>
-                  In Research
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilterStatus('validated')}>
-                  Validated
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search personas..."
+              className="max-w-md"
+            />
+            <FilterSelect
+              value={filterStatus}
+              onChange={(value) => setFilterStatus(value as PersonaStatus | 'all')}
+              options={[
+                { value: 'draft', label: 'Draft' },
+                { value: 'in-research', label: 'In Research' },
+                { value: 'validated', label: 'Validated' },
+                { value: 'archived', label: 'Archived' },
+              ]}
+              allLabel="All Personas"
+            />
           </div>
 
           {/* BLOCK 3: Personas List */}

@@ -170,11 +170,13 @@ export function Dashboard({ onStartResearch, onNavigateToRelationships, onNaviga
                     <p className="text-sm text-muted-foreground mb-4">{nextBestAction.description}</p>
                     <div className="flex items-center gap-3">
                       <Button 
+                        variant="cta"
+                        animated
                         onClick={() => handleNavigate(nextBestAction.targetSection)}
                         className="gap-2"
                       >
                         {nextBestAction.actionLabel}
-                        <ArrowRight className="h-4 w-4" />
+                        <ArrowRight className="h-4 w-4 arrow-icon" />
                       </Button>
                       {nextBestAction.estimatedTime && (
                         <span className="text-xs text-muted-foreground">
