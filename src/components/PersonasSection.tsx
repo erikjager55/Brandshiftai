@@ -214,21 +214,54 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
           
           {/* BLOCK 1: Overview Stats */}
           <div className="grid md:grid-cols-3 gap-6">
-            <Card>
+            <Card className={readyCount > 0 ? 'border-emerald-200 bg-emerald-50/30' : ''}>
               <CardContent className="p-6">
-                <div className="text-3xl font-bold text-emerald-600 mb-1">{readyCount}</div>
-                <div className="text-sm text-muted-foreground">Ready for strategic use</div>
+                <div className={`text-3xl font-bold mb-1 ${readyCount > 0 ? 'text-emerald-600' : 'text-gray-400'}`}>
+                  {readyCount}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {readyCount > 0 ? 'Ready for strategic use' : 'Ready for strategic use'}
+                </div>
+                {readyCount === 0 && personas.length > 0 && (
+                  <div className="mt-3 pt-3 border-t">
+                    <p className="text-xs text-muted-foreground">
+                      💡 Complete research methods to validate personas
+                    </p>
+                  </div>
+                )}
+                {personas.length === 0 && (
+                  <div className="mt-3 pt-3 border-t">
+                    <p className="text-xs text-muted-foreground">
+                      🚀 Create your first persona to get started
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
-            <Card>
+            <Card className={needsWorkCount > 0 ? 'border-amber-200 bg-amber-50/30' : ''}>
               <CardContent className="p-6">
-                <div className="text-3xl font-bold text-amber-600 mb-1">{needsWorkCount}</div>
+                <div className={`text-3xl font-bold mb-1 ${needsWorkCount > 0 ? 'text-amber-600' : 'text-gray-400'}`}>
+                  {needsWorkCount}
+                </div>
                 <div className="text-sm text-muted-foreground">Need more research</div>
+                {needsWorkCount > 0 && (
+                  <div className="mt-3">
+                    <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-amber-500 rounded-full transition-all duration-500"
+                        style={{ width: `${personas.length > 0 ? ((personas.length - needsWorkCount) / personas.length) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {Math.round(personas.length > 0 ? ((personas.length - needsWorkCount) / personas.length) * 100 : 0)}% validated
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6">
-                <div className="text-3xl font-bold mb-1">{personas.length}</div>
+                <div className="text-3xl font-bold text-foreground mb-1">{personas.length}</div>
                 <div className="text-sm text-muted-foreground">Total personas</div>
               </CardContent>
             </Card>
