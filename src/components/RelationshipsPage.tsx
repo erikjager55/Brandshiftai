@@ -255,7 +255,7 @@ export function RelationshipsPage({
   };
 
   const handleNavigateToEntity = (type: string, id: string) => {
-    console.log('Navigate to:', type, id);
+    // Navigate to entity
     if (onNavigate) {
       onNavigate(`/${type}/${id}`);
     }

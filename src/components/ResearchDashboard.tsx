@@ -681,7 +681,7 @@ export function ResearchDashboard({
                 isLocked={isReportLocked}
                 onLockToggle={() => setIsReportLocked(!isReportLocked)}
                 onRegenerate={() => {
-                  console.log('Regenerating report...');
+                  // Regenerating report
                 }}
               />
 

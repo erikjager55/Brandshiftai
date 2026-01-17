@@ -58,7 +58,7 @@ export function CampaignGeneratorWithDecisionCheck() {
   
   const proceedWithGeneration = () => {
     // Actual campaign generation logic here
-    console.log('Generating campaign...');
+    // Generating campaign...
     setPendingGeneration(false);
   };
   
@@ -107,7 +107,7 @@ export function AssetDetailPageWithDecisionPanel() {
   
   const handleStartResearch = () => {
     // Navigate to research hub or specific research method
-    console.log('Starting research for', asset.id);
+    // Starting research
   };
   
   return (
@@ -194,7 +194,7 @@ export function PersonaTargetingWithDecisionCheck() {
   };
   
   const proceedWithPersona = (persona: any) => {
-    console.log('Using persona for campaign:', persona.id);
+    // Using persona for campaign
   };
   
   const handleProceedAnyway = () => {

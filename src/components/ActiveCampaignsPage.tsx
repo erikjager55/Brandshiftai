@@ -537,10 +537,10 @@ export function ActiveCampaignsPage({ onNavigateToCampaign }: ActiveCampaignsPag
                           key={deliverable.id}
                           deliverable={deliverable}
                           onWorkClick={() => {
-                            console.log('Work on deliverable:', deliverable.name);
+                            // Work on deliverable
                           }}
                           onViewClick={() => {
-                            console.log('View deliverable:', deliverable.name);
+                            // View deliverable
                           }}
                         />
                       ))}

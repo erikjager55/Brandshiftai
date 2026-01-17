@@ -552,7 +552,7 @@ function StrategyToolDetail({ tool, onBack }: StrategyToolDetailProps) {
         tool={tool}
         onBack={() => setShowAIExploration(false)}
         onComplete={(results) => {
-          console.log('AI Exploration completed:', results);
+          // AI Exploration completed
           setShowAIExploration(false);
         }}
       />

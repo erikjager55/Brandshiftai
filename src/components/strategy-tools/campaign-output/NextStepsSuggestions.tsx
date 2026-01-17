@@ -158,7 +158,7 @@ export function NextStepsSuggestions({
 
   const handleGenerate = (suggestionId: string) => {
     // In werkelijke implementatie: trigger de generatie van deze output
-    console.log('Generating:', suggestionId);
+    // Generating suggestion
     // Voor nu: simuleer een download
     alert(`Generating ${suggestionId}... (Dit zou in de echte app de output genereren)`);
   };

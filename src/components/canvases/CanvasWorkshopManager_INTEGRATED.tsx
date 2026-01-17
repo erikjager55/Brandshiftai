@@ -1558,10 +1558,10 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
         <WorkshopReport 
           assetId="1"
           onRerender={() => {
-            console.log('Rerender requested');
+            // Rerender requested
           }}
           onEdit={(data) => {
-            console.log('Edit requested:', data);
+            // Edit requested
           }}
         />
       </div>

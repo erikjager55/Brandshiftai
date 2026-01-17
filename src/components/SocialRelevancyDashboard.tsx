@@ -172,8 +172,6 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
   const asset = brandAssets.find((a) => a.type === 'Social Relevancy');
   
   // 🔍 DEBUG: Log the entire asset to see what's in it
-  console.log('🔍 [SocialRelevancyDashboard] Full asset:', asset);
-  console.log('🔍 [SocialRelevancyDashboard] Research methods:', asset?.researchMethods);
   
   if (!asset) return null;
 

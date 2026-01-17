@@ -255,7 +255,7 @@ export function ResearchValidationPage() {
                 <Card
                   key={method.id}
                   className="group cursor-pointer hover:shadow-lg hover:border-primary/50 transition-all duration-200"
-                  onClick={() => console.log('Start:', method.id)}
+                  onClick={() => {}}
                 >
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -334,7 +334,7 @@ export function ResearchValidationPage() {
                           variant="outline"
                           size="sm"
                           className="flex-shrink-0"
-                          onClick={() => console.log('View details:', project.id)}
+                          onClick={() => {}}
                         >
                           View Details
                           <ChevronRight className="h-4 w-4 ml-1" />

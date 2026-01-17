@@ -350,7 +350,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
 
   const handleSave = () => {
     setIsEditing(false);
-    console.log('Saved changes:', editableData);
+    // Saved changes
   };
 
   const handleCancel = () => {

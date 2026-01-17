@@ -177,11 +177,11 @@ export function CampaignStrategyGeneratorDetail({
 
   // Mock navigation functions
   const navigateToBrandAssets = () => {
-    console.log('Navigate to Brand Assets');
+    // Navigate to Brand Assets
   };
 
   const navigateToPersonas = () => {
-    console.log('Navigate to Personas');
+    // Navigate to Personas
   };
 
   // Strategy Management Functions
@@ -313,7 +313,7 @@ export function CampaignStrategyGeneratorDetail({
     if (!strategy) return;
     
     // In real app: trigger export
-    console.log('Exporting strategy:', strategy);
+    // Exporting strategy
     alert(`Exporting "${strategy.name}"... (Dit zou in de echte app een PDF/Word export triggeren)`);
   };
 
@@ -674,7 +674,7 @@ export function CampaignStrategyGeneratorDetail({
                   failedItems={decisionGate.failedItems}
                   onFixItem={(itemId, itemType) => {
                     // Navigate to brand or personas section
-                    console.log('Fix item:', itemId, itemType);
+                    // Fix item
                     // In real app, this would navigate to the specific item's detail page
                     alert(`Navigeer naar ${itemType === 'asset' ? 'Brand Assets' : 'Personas'} sectie om ${itemId} te repareren`);
                   }}
@@ -691,7 +691,7 @@ export function CampaignStrategyGeneratorDetail({
                     }}
                     onDismiss={() => {
                       // User heeft gezien en kiest ervoor om later te bekijken
-                      console.log('Campaign impact notification dismissed');
+                      // Notification dismissed
                     }}
                   />
                 )}
