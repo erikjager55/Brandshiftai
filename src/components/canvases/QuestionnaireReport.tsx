@@ -61,7 +61,7 @@ export function QuestionnaireReport({ questionnaire, availableAssets, onBack }: 
       {/* Back Button */}
       <Button variant="outline" onClick={onBack}>
         <ArrowLeft className="h-4 w-4 mr-2" />
-        Back to Dashboard
+        Back to Asset
       </Button>
 
       {/* Report Header */}

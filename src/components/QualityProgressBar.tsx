@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge } from './ui/badge';
-import { TrendingUp, CheckCircle, Target } from 'lucide-react';
+import { TrendingUp, CheckCircle2, Target } from 'lucide-react';
 
 interface QualityProgressBarProps {
   currentLevel: 'none' | 'foundation' | 'standard' | 'strategic';
@@ -80,7 +80,7 @@ export function QualityProgressBar({
         <div className="flex items-center gap-2">
           <h3 className="font-medium">Research Quality</h3>
           {currentLevel === 'strategic' && (
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
           )}
         </div>
         <Badge
@@ -94,7 +94,7 @@ export function QualityProgressBar({
               : 'bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-900/30'
           } border`}
         >
-          {currentLevel === 'strategic' && <CheckCircle className="h-3 w-3 mr-1" />}
+          {currentLevel === 'strategic' && <CheckCircle2 className="h-3 w-3 mr-1" />}
           {currentLevel === 'foundation' && <TrendingUp className="h-3 w-3 mr-1" />}
           {getQualityLabel(currentLevel)}
         </Badge>
@@ -168,7 +168,7 @@ export function QualityProgressBar({
       {/* Strategic Level Achievement */}
       {currentLevel === 'strategic' && (
         <div className="flex items-start gap-2 p-3 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30 rounded-lg">
-          <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
           <div className="space-y-1">
             <p className="text-sm font-medium text-green-900 dark:text-green-400">
               Strategic Level Achieved

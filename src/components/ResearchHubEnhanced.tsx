@@ -16,6 +16,7 @@ import {
   ArrowRight,
   Clock,
   CheckCircle,
+  CheckCircle2,
   AlertCircle,
   Award,
   Activity,
@@ -37,14 +38,30 @@ import {
   ClipboardList,
   Bot,
   ShieldAlert,
-  XCircle
+  XCircle,
+  Microscope,
+  MoreVertical,
+  Edit,
+  Copy,
+  Archive,
+  Trash2,
+  ExternalLink,
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 import { mockBrandAssets } from '../data/mock-brand-assets';
 import { mockPersonas } from '../data/mock-personas';
 import { ResearchTargetCategory } from '../types/research-target';
 import { DecisionStatusBadge } from './decision-status/DecisionStatusBadge';
 import { calculateDecisionStatus } from '../utils/decision-status-calculator';
 import { getMethodLabel } from '../utils/decision-status-calculator';
+import { SimpleEmptyState } from './ui/SimpleEmptyState';
+import { cn } from '../lib/utils';
 
 interface ResearchHubEnhancedProps {
   onNavigate?: (section: string) => void;
@@ -126,7 +143,7 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
     }> = {
       workshop: { id: 'workshop', name: 'Workshop', icon: Briefcase, color: 'blue', activeCount: 0, completedCount: 0, unlockedCount: 0 },
       interviews: { id: 'interviews', name: '1-on-1 Interviews', icon: MessageSquare, color: 'purple', activeCount: 0, completedCount: 0, unlockedCount: 0 },
-      questionnaire: { id: 'questionnaire', name: 'Strategic Survey', icon: ClipboardList, color: 'green', activeCount: 0, completedCount: 0, unlockedCount: 0 },
+      questionnaire: { id: 'questionnaire', name: 'Questionnaire', icon: ClipboardList, color: 'green', activeCount: 0, completedCount: 0, unlockedCount: 0 },
       'ai-exploration': { id: 'ai-exploration', name: 'AI Exploration', icon: Bot, color: 'pink', activeCount: 0, completedCount: 0, unlockedCount: 0 },
     };
 
@@ -324,95 +341,110 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
 
   return (
     <div className="h-full overflow-auto bg-background">
-      {/* Sticky Header */}
+      {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-                <Target className="h-6 w-6 text-white" />
+              <div className="rounded-xl bg-primary/10 p-3">
+                <Microscope className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-semibold mb-1">Research Hub</h1>
-                <p className="text-muted-foreground">
-                  Orchestrate validation across all knowledge assets
+                <h1 className="text-3xl font-semibold">Research Hub</h1>
+                <p className="text-sm text-muted-foreground">
+                  Manage research plans and methods
                 </p>
               </div>
             </div>
-            <Button size="lg" onClick={onCreatePlan} className="gap-2">
-              <Plus className="h-5 w-5" />
-              Create Plan
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Research Plan
+                  <ChevronRight className="h-4 w-4 ml-2 rotate-90" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[280px] p-2">
+                <DropdownMenuItem
+                  className="flex flex-col gap-1 items-start px-3 py-3 rounded-lg cursor-pointer"
+                  onClick={() => onNavigate?.('custom-validation')}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <Target className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Custom Research</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground pl-6">
+                    Build your own validation
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="flex flex-col gap-1 items-start px-3 py-3 rounded-lg cursor-pointer"
+                  onClick={() => onNavigate?.('research-bundles')}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <Package className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Browse Bundles</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground pl-6">
+                    Pre-configured strategies
+                  </span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-8 py-8 space-y-8">
-        {/* Stats Dashboard - Enhanced */}
+        {/* STATS ROW (4 cards) */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-2 hover:border-green-300 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <TrendingUp className="w-4 h-4 text-green-600" />
+          <Card className="rounded-xl border p-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-lg bg-blue-100 dark:bg-blue-900/30 p-3">
+                <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <div className="space-y-1">
-                <p className="text-3xl font-bold">{stats.validated}</p>
-                <p className="text-sm text-muted-foreground">Validated Assets</p>
-                <p className="text-xs text-green-600">of {stats.total} total</p>
+              <div>
+                <div className="text-4xl font-semibold text-blue-600 dark:text-blue-400">{stats.active}</div>
+                <div className="text-sm text-muted-foreground">Active Studies</div>
               </div>
-            </CardContent>
+            </div>
           </Card>
 
-          <Card className="border-2 hover:border-blue-300 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 rounded-lg bg-blue-500/10">
-                  <Activity className="w-5 h-5 text-blue-600" />
-                </div>
-                <Badge className="text-xs bg-blue-500">{stats.active}</Badge>
+          <Card className="rounded-xl border p-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-lg bg-green-100 dark:bg-green-900/30 p-3">
+                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
-              <div className="space-y-1">
-                <p className="text-3xl font-bold">{stats.active}</p>
-                <p className="text-sm text-muted-foreground">Active Research</p>
-                <p className="text-xs text-blue-600">In progress now</p>
+              <div>
+                <div className="text-4xl font-semibold text-green-600 dark:text-green-400">{stats.completed}</div>
+                <div className="text-sm text-muted-foreground">Completed</div>
               </div>
-            </CardContent>
+            </div>
           </Card>
 
-          <Card className="border-2 hover:border-purple-300 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 rounded-lg bg-purple-500/10">
-                  <Award className="w-5 h-5 text-purple-600" />
-                </div>
-                <span className="text-sm font-semibold text-purple-600">{stats.progress}%</span>
+          <Card className="rounded-xl border p-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-lg bg-amber-100 dark:bg-amber-900/30 p-3">
+                <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
               </div>
-              <div className="space-y-1">
-                <p className="text-3xl font-bold">{stats.completed}</p>
-                <p className="text-sm text-muted-foreground">Completed</p>
-                <Progress value={stats.progress} className="h-2" />
+              <div>
+                <div className="text-4xl font-semibold text-amber-600 dark:text-amber-400">{validationNeeded.length}</div>
+                <div className="text-sm text-muted-foreground">Pending Review</div>
               </div>
-            </CardContent>
+            </div>
           </Card>
 
-          <Card className="border-2 hover:border-amber-300 transition-colors">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 rounded-lg bg-amber-500/10">
-                  <Zap className="w-5 h-5 text-amber-600" />
-                </div>
-                <BarChart3 className="w-4 h-4 text-amber-600" />
+          <Card className="rounded-xl border p-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-lg bg-purple-100 dark:bg-purple-900/30 p-3">
+                <Lightbulb className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <div className="space-y-1">
-                <p className="text-3xl font-bold">{stats.totalResearch}</p>
-                <p className="text-sm text-muted-foreground">Total Research</p>
-                <p className="text-xs text-amber-600">All time</p>
+              <div>
+                <div className="text-4xl font-semibold">{stats.totalResearch}</div>
+                <div className="text-sm text-muted-foreground">Total Insights</div>
               </div>
-            </CardContent>
+            </div>
           </Card>
         </div>
 
@@ -604,10 +636,10 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
             {/* Insights & Recommendations */}
             <div className="grid md:grid-cols-2 gap-6">
               {/* Quick Insights */}
-              <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-background">
+              <Card className="border-2">
                 <CardHeader>
                   <div className="flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-purple-600" />
+                    <Lightbulb className="w-5 h-5 text-primary" />
                     <CardTitle>Quick Insights</CardTitle>
                   </div>
                   <CardDescription>
@@ -646,10 +678,10 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
               </Card>
 
               {/* Recommended Actions */}
-              <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-background">
+              <Card className="border-2">
                 <CardHeader>
                   <div className="flex items-center gap-2">
-                    <Lightbulb className="w-5 h-5 text-amber-600" />
+                    <Lightbulb className="w-5 h-5 text-primary" />
                     <CardTitle>Recommended Actions</CardTitle>
                   </div>
                   <CardDescription>
@@ -748,6 +780,15 @@ export function ResearchHubEnhanced({ onNavigate, onCreatePlan }: ResearchHubEnh
                         {/* Progress Bar */}
                         {items.length > 0 && (
                           <Progress value={progress} className="h-2" />
+                        )}
+                        {items.length === 0 && key === 'products' && (
+                          <div className="text-sm text-muted-foreground border-t pt-3">
+                            <p className="font-medium text-xs mb-1">No products added yet</p>
+                            <p className="text-xs">Add products to track validation</p>
+                          </div>
+                        )}
+                        {items.length === 0 && key !== 'products' && (
+                          <Progress value={0} className="h-2" />
                         )}
                       </div>
                     </CardContent>

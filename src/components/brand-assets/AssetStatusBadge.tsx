@@ -2,7 +2,7 @@ import React from 'react';
 import { AssetStatus } from '../../types/brand-asset';
 import { getStatusInfo } from '../../utils/asset-status';
 import { Badge } from '../ui/badge';
-import { CheckCircle, Clock, Circle, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, Clock, Circle, AlertTriangle } from 'lucide-react';
 
 interface AssetStatusBadgeProps {
   status: AssetStatus;
@@ -22,7 +22,7 @@ export function AssetStatusBadge({
   const getIcon = () => {
     switch (statusInfo.icon) {
       case 'CheckCircle':
-        return CheckCircle;
+        return CheckCircle2;
       case 'Clock':
         return Clock;
       case 'AlertTriangle':
@@ -103,7 +103,7 @@ export function AssetStatusIndicator({
   const getIcon = () => {
     switch (statusInfo.icon) {
       case 'CheckCircle':
-        return CheckCircle;
+        return CheckCircle2;
       case 'Clock':
         return Clock;
       case 'AlertTriangle':

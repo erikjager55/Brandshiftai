@@ -5,42 +5,14 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { Progress } from './ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { SearchBar } from './ui/SearchBar';
 import {
-  Crown,
-  Target,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
   Package,
-  ArrowRight,
-  Clock,
-  CheckCircle,
-  Sparkles,
-  TrendingUp,
-  Star,
-  Filter,
-  X,
-  LayoutGrid,
-  Table2,
-  Users,
-  MessageSquare,
-  ClipboardList,
-  Bot,
-  Briefcase,
-  Heart,
-  Globe,
-  Palette,
-  BookOpen,
-  Search,
-  Layers,
-  Database,
-  Zap,
-  Award,
-  Play,
-  ChevronRight,
-  Lock,
-  Unlock,
-  TrendingDown,
-  Activity,
-  Lightbulb,
-  Rocket
+  Filter as FilterIcon,
+  ChevronRight
 } from 'lucide-react';
 import {
   getFoundationBundles,
@@ -170,15 +142,12 @@ export function ResearchBundlesSection({ onSelectBundle }: ResearchBundlesSectio
     <div className="space-y-6">
       {/* Header with Search and View Toggle */}
       <div className="flex items-center justify-between gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search bundles by name, description, or outcome..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search bundles by name, description, or outcome..."
+          className="flex-1"
+        />
         <div className="flex items-center gap-2">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'outline'}
@@ -206,7 +175,7 @@ export function ResearchBundlesSection({ onSelectBundle }: ResearchBundlesSectio
             {/* Filter Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-muted-foreground" />
+                <FilterIcon className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Filters</span>
                 {activeFiltersCount > 0 && (
                   <Badge variant="default" className="text-xs">
@@ -397,15 +366,15 @@ export function ResearchBundlesSection({ onSelectBundle }: ResearchBundlesSectio
               <h4 className="font-semibold mb-2">Why Choose Research Bundles?</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                   <span><strong>Unlock Strategy Tools:</strong> Each bundle unlocks specific strategy generation capabilities</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                   <span><strong>Better Value:</strong> Bundles save 15-25% compared to individual research methods</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                   <span><strong>Complete Research:</strong> Combines multiple research methods for comprehensive insights</span>
                 </li>
               </ul>

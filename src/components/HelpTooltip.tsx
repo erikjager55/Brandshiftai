@@ -32,9 +32,9 @@ const tooltipConfigs: Record<TooltipType, TooltipConfig> = {
   'warning': {
     type: 'warning',
     icon: AlertCircle,
-    color: 'text-orange-600 dark:text-orange-400',
-    bgColor: 'bg-orange-50 dark:bg-orange-900/20',
-    borderColor: 'border-orange-200 dark:border-orange-800'
+    color: 'text-amber-600 dark:text-amber-400',
+    bgColor: 'bg-amber-50 dark:bg-amber-900/20',
+    borderColor: 'border-amber-200 dark:border-amber-800'
   },
   'new-feature': {
     type: 'new-feature',

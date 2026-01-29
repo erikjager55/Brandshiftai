@@ -38,8 +38,8 @@ export function ImpactSummary({
     if (decisionImpact.impactLevel === 'high' && decisionImpact.newStatus === 'safe') {
       return {
         icon: CheckCircle2,
-        colorClass: 'text-emerald-600 bg-emerald-50',
-        borderClass: 'border-emerald-200',
+        colorClass: 'text-green-600 bg-green-50',
+        borderClass: 'border-green-200',
       };
     }
 

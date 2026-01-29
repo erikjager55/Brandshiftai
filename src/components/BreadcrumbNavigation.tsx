@@ -20,7 +20,7 @@ export function BreadcrumbNavigation({ items, onNavigate, showHome = true }: Bre
         <>
           <button
             onClick={() => onNavigate('dashboard')}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors duration-200"
           >
             <Home className="h-4 w-4" />
             <span className="hidden sm:inline">Dashboard</span>
@@ -49,7 +49,7 @@ export function BreadcrumbNavigation({ items, onNavigate, showHome = true }: Bre
             {item.route ? (
               <button
                 onClick={() => onNavigate(item.route!)}
-                className={`flex items-center gap-1.5 transition-colors ${
+                className={`flex items-center gap-1.5 transition-colors duration-200 ${
                   isLast 
                     ? 'text-foreground font-medium' 
                     : 'text-muted-foreground hover:text-foreground'

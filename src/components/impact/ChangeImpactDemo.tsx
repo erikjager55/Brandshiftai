@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Plus, RefreshCw, CheckCircle, Activity } from 'lucide-react';
+import { Plus, RefreshCw, CheckCircle2, Activity } from 'lucide-react';
 import { useBrandAssets } from '../../contexts';
 import { useChangeImpact } from '../../contexts';
 import { ImpactSummaryList } from './ImpactSummary';
@@ -120,7 +120,7 @@ export function ChangeImpactDemo() {
                 variant="outline"
                 size="sm"
               >
-                <CheckCircle className="w-3.5 h-3.5 mr-2" />
+                <CheckCircle2 className="w-3.5 h-3.5 mr-2" />
                 Valideren
               </Button>
             </div>

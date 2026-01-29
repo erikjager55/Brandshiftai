@@ -12,7 +12,7 @@ import {
   Users,
   Lightbulb,
   TrendingUp,
-  CheckCircle
+  CheckCircle2
 } from 'lucide-react';
 
 interface AIGeneratedReportProps {
@@ -180,7 +180,7 @@ export function AIGeneratedReport({
         <Card className="shadow-sm border-slate-200">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-[#1FD1B2]" />
+              <CheckCircle2 className="h-5 w-5 text-[#1FD1B2]" />
               Belangrijkste Bevindingen
             </CardTitle>
           </CardHeader>
@@ -191,7 +191,7 @@ export function AIGeneratedReport({
                 return (
                   <div
                     key={index}
-                    className={`p-5 rounded-xl border ${finding.bgColor} border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-shadow`}
+                    className={`p-6 rounded-xl border ${finding.bgColor} border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition-shadow`}
                   >
                     <div className="flex items-start gap-4">
                       <div className={`w-10 h-10 rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center flex-shrink-0 shadow-sm ${finding.color}`}>

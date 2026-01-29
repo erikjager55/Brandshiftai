@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResearchMethod, ResearchMethodType } from '../../types/brand-asset';
 import { getMethodInfo } from '../../utils/asset-status';
-import { CheckCircle, Clock, Circle, X } from 'lucide-react';
+import { CheckCircle2, Clock, Circle, X } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
 interface ResearchMethodBadgeProps {
@@ -37,7 +37,7 @@ export function ResearchMethodBadge({
   const getStatusIcon = () => {
     switch (method.status) {
       case 'completed':
-        return <CheckCircle className="h-3 w-3" />;
+        return <CheckCircle2 className="h-3 w-3" />;
       case 'in-progress':
         return <Clock className="h-3 w-3" />;
       case 'cancelled':

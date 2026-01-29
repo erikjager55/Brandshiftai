@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
-import { MessageSquare, Send, Smile, MoreVertical, Edit2, Trash2, Reply } from 'lucide-react';
+import { MessageSquare, Send, Smile, MoreVertical, Edit, Trash2, Reply } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import {
   DropdownMenu,
@@ -102,7 +102,7 @@ export function CommentsPanel({ resourceId, resourceType }: CommentsPanelProps) 
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleEdit(comment.id, comment.content)}>
-                            <Edit2 className="h-3 w-3 mr-2" />
+                            <Edit className="h-3 w-3 mr-2" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem 

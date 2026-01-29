@@ -40,9 +40,9 @@ export function DecisionAnalysisMain({ analysis, onGenerateBrief }: DecisionAnal
   const readinessConfig = {
     ready: {
       icon: CheckCircle2,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-200',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200',
       label: analysis.readinessLabel || 'Beslisklaar – Laag risico',
     },
     uncertain: {
@@ -80,7 +80,7 @@ export function DecisionAnalysisMain({ analysis, onGenerateBrief }: DecisionAnal
 
   // Metric status configuration
   const metricConfig = {
-    good: { color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
+    good: { color: 'text-green-600', bgColor: 'bg-green-50' },
     warning: { color: 'text-amber-600', bgColor: 'bg-amber-50' },
     critical: { color: 'text-red-600', bgColor: 'bg-red-50' },
   };

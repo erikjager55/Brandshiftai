@@ -1,11 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { Checkbox } from './ui/checkbox';
+import { Input } from './ui/input';
 import { Separator } from './ui/separator';
 import {
   CheckCircle,
   ArrowLeft,
+  ArrowRight,
   Target,
   Users,
   Clock,
@@ -30,8 +33,14 @@ import {
   Users2,
   Brain,
   X,
+  Plus,
+  Minus,
+  UserCheck,
+  Wand,
+  Bot,
+  CheckCircle2,
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { cn } from '../lib/utils';
 
 interface ValidationPlanLandingPageProps {
   onBack: () => void;
@@ -48,7 +57,7 @@ const availableAssets = [
     description: 'Core purpose and value proposition',
     details: 'Why you exist, how you do it, and what you offer',
     estimatedTime: '2-3 weeks',
-    recommendedMethods: ['interviews', 'workshop', 'questionnaire'],
+    recommended: true,
   },
   { 
     id: '2', 
@@ -58,7 +67,7 @@ const availableAssets = [
     description: 'Future aspirations and direction',
     details: 'Where you want to be in 5-10 years',
     estimatedTime: '1-2 weeks',
-    recommendedMethods: ['interviews', 'workshop'],
+    recommended: true,
   },
   { 
     id: '3', 
@@ -68,7 +77,7 @@ const availableAssets = [
     description: 'Current purpose and activities',
     details: 'What you do and who you serve today',
     estimatedTime: '1-2 weeks',
-    recommendedMethods: ['interviews', 'questionnaire'],
+    recommended: false,
   },
   { 
     id: '4', 
@@ -78,7 +87,7 @@ const availableAssets = [
     description: 'Personality framework and traits',
     details: 'Your brand personality and character',
     estimatedTime: '2-3 weeks',
-    recommendedMethods: ['questionnaire', 'workshop'],
+    recommended: false,
   },
   { 
     id: '5', 
@@ -88,7 +97,7 @@ const availableAssets = [
     description: 'Guiding principles and beliefs',
     details: 'What you stand for and believe in',
     estimatedTime: '2-3 weeks',
-    recommendedMethods: ['interviews', 'workshop'],
+    recommended: true,
   },
   { 
     id: '6', 
@@ -98,164 +107,118 @@ const availableAssets = [
     description: 'Origin, journey, and purpose',
     details: 'Your brand narrative and history',
     estimatedTime: '1-2 weeks',
-    recommendedMethods: ['interviews'],
-  },
-  { 
-    id: '7', 
-    name: 'Social Relevancy', 
-    category: 'Purpose', 
-    icon: Globe, 
-    description: 'Social impact and responsibility',
-    details: 'How you contribute to society',
-    estimatedTime: '2-3 weeks',
-    recommendedMethods: ['interviews', 'questionnaire'],
-  },
-  { 
-    id: '8', 
-    name: 'Brand Promise', 
-    category: 'Strategy', 
-    icon: MessageSquare, 
-    description: 'Customer commitment',
-    details: 'What you promise to deliver',
-    estimatedTime: '1-2 weeks',
-    recommendedMethods: ['interviews', 'questionnaire'],
+    recommended: false,
   },
 ];
 
-// Validation methods available
+// ✅ TAAK 1 & 2: Consistente namen en valuta (USD)
 const validationMethods = [
   {
-    id: 'interviews',
-    name: 'Stakeholder Interviews',
-    shortName: 'Interviews',
-    icon: Mic,
-    description: 'In-depth 1-on-1 conversations with key stakeholders',
-    details: 'Deep qualitative insights from internal and external stakeholders',
-    duration: '60-90 min per interview',
-    participants: '5-15 people',
-    pricePerAsset: 499,
-    type: 'Qualitative',
-    benefits: [
-      'Deep, nuanced understanding',
-      'Uncover hidden insights',
-      'Build stakeholder buy-in',
-    ],
-    whatsIncluded: [
-      'Interview guide development',
-      'Professional facilitation',
-      'Recording & transcription',
-      'Thematic analysis',
-      'Executive summary report',
-    ],
+    id: 'ai-exploration',
+    name: 'AI Exploration',
+    icon: Bot,
+    description: 'AI-powered analysis of your brand assets and market positioning',
+    confidence: 'Low Confidence',
+    confidenceBadgeClass: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', // ✅ TAAK 5: Amber voor Low
+    pricePerUnit: 0,
+    priceLabel: 'FREE',
+    unit: 'analysis',
+    minQuantity: 1,
+    maxQuantity: 5,
+    defaultQuantity: 1,
+    increment: 1,
   },
   {
     id: 'questionnaire',
-    name: 'Validation Questionnaire',
-    shortName: 'Questionnaire',
+    name: 'Questionnaire', // ✅ TAAK 1: Consistent met Brand Asset Detail
     icon: ClipboardList,
-    description: 'Structured surveys for quantitative validation',
-    details: 'Gather measurable data from larger stakeholder groups',
-    duration: '15-20 min per response',
-    participants: '20-100+ people',
-    pricePerAsset: 299,
-    type: 'Quantitative',
-    benefits: [
-      'Quantifiable metrics',
-      'Broader stakeholder reach',
-      'Statistical validation',
-    ],
-    whatsIncluded: [
-      'Custom questionnaire design',
-      'Online survey platform',
-      'Distribution & reminders',
-      'Statistical analysis',
-      'Data visualization dashboard',
-    ],
+    description: 'Quantitative validation through structured questionnaires',
+    confidence: 'Medium Confidence',
+    confidenceBadgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', // ✅ TAAK 5: Blue voor Medium
+    pricePerUnit: 10,
+    priceLabel: '$10/response', // ✅ TAAK 2: Consistent USD
+    unit: 'response',
+    minQuantity: 25,
+    maxQuantity: 500,
+    defaultQuantity: 50,
+    increment: 25,
+  },
+  {
+    id: 'interviews',
+    name: 'Interviews', // ✅ TAAK 1: Consistent met Brand Asset Detail
+    icon: Mic,
+    description: 'Deep qualitative insights from stakeholder conversations',
+    confidence: 'High Confidence',
+    confidenceBadgeClass: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', // ✅ TAAK 5: Green voor High
+    pricePerUnit: 80,
+    priceLabel: '$80/interview', // ✅ TAAK 2: Consistent USD
+    unit: 'interview',
+    minQuantity: 1,
+    maxQuantity: 50,
+    defaultQuantity: 10,
+    increment: 1,
   },
   {
     id: 'workshop',
-    name: 'Alignment Workshop',
-    shortName: 'Workshop',
+    name: 'Workshop', // ✅ TAAK 1: Consistent met Brand Asset Detail
     icon: Presentation,
-    description: 'Collaborative validation sessions',
-    details: 'Interactive group sessions to validate and align',
-    duration: '2-3 hours',
-    participants: '8-15 people',
-    pricePerAsset: 799,
-    type: 'Collaborative',
-    benefits: [
-      'Team alignment',
-      'Collaborative validation',
-      'Immediate feedback',
-    ],
-    whatsIncluded: [
-      'Workshop design & materials',
-      'Expert facilitation',
-      'Interactive exercises',
-      'Live documentation',
-      'Action plan & next steps',
-    ],
-  },
-  {
-    id: 'focus-group',
-    name: 'Focus Groups',
-    shortName: 'Focus Groups',
-    icon: Users2,
-    description: 'Moderated group discussions',
-    details: 'Gather diverse perspectives in a group setting',
-    duration: '90-120 min',
-    participants: '6-10 people per group',
-    pricePerAsset: 699,
-    type: 'Qualitative',
-    benefits: [
-      'Multiple perspectives',
-      'Group dynamics insights',
-      'Cost-effective reach',
-    ],
-    whatsIncluded: [
-      'Participant recruitment',
-      'Discussion guide',
-      'Professional moderation',
-      'Video recording',
-      'Insights report',
-    ],
-  },
-  {
-    id: 'expert-review',
-    name: 'Expert Review',
-    shortName: 'Expert Review',
-    icon: Brain,
-    description: 'Professional brand strategist assessment',
-    details: 'Expert analysis and recommendations',
-    duration: '3-5 days',
-    participants: '1-2 experts',
-    pricePerAsset: 899,
-    type: 'Professional',
-    benefits: [
-      'Professional validation',
-      'Industry best practices',
-      'Strategic recommendations',
-    ],
-    whatsIncluded: [
-      'Comprehensive brand audit',
-      'Competitive analysis',
-      'Expert consultation call',
-      'Strategic recommendations',
-      'Implementation roadmap',
-    ],
+    description: 'Interactive group sessions to validate and align stakeholders',
+    confidence: 'Medium-High Confidence',
+    confidenceBadgeClass: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', // ✅ TAAK 5: Teal voor Medium-High
+    pricePerUnit: 1200,
+    priceLabel: '$1,200/session', // ✅ TAAK 2: Consistent USD
+    unit: 'session',
+    minQuantity: 1,
+    maxQuantity: 5,
+    defaultQuantity: 1,
+    increment: 1,
   },
 ];
 
 export function ValidationPlanLandingPage({ onBack, onStartPlan }: ValidationPlanLandingPageProps) {
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
-  const [selectedMethods, setSelectedMethods] = useState<string[]>(['interviews', 'questionnaire']); // Default recommended
-  const [methodQuantities, setMethodQuantities] = useState<Record<string, number>>({
-    'interviews': 10,
-    'questionnaire': 50,
-    'workshop': 1,
-    'focus-group': 2,
-    'expert-review': 1,
-  });
+  const [methodQuantities, setMethodQuantities] = useState<Record<string, number>>({});
+
+  // ✅ TAAK 3: URL parameter parsing voor voorinvulling
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Parse asset parameter(s)
+    const assetParam = params.get('asset');
+    const assetsParam = params.get('assets');
+    
+    if (assetParam) {
+      setSelectedAssets([assetParam]);
+    } else if (assetsParam) {
+      setSelectedAssets(assetsParam.split(','));
+    }
+    
+    // Parse method parameter(s)
+    const methodParam = params.get('method');
+    const methodsParam = params.get('methods');
+    
+    const methodsToActivate: string[] = [];
+    if (methodParam) {
+      methodsToActivate.push(methodParam);
+    } else if (methodsParam) {
+      methodsToActivate.push(...methodsParam.split(','));
+    }
+    
+    // Set quantity to 1 for pre-selected methods (or use default quantity)
+    if (methodsToActivate.length > 0) {
+      const newQuantities: Record<string, number> = {};
+      methodsToActivate.forEach(methodId => {
+        const method = validationMethods.find(m => m.id === methodId);
+        if (method) {
+          newQuantities[methodId] = method.defaultQuantity;
+        }
+      });
+      setMethodQuantities(newQuantities);
+    } else {
+      // Default: AI Exploration always active
+      setMethodQuantities({ 'ai-exploration': 1 });
+    }
+  }, []);
 
   const toggleAsset = (assetId: string) => {
     setSelectedAssets(prev =>
@@ -265,27 +228,24 @@ export function ValidationPlanLandingPage({ onBack, onStartPlan }: ValidationPla
     );
   };
 
-  const toggleMethod = (methodId: string) => {
-    setSelectedMethods(prev =>
-      prev.includes(methodId)
-        ? prev.filter(id => id !== methodId)
-        : [...prev, methodId]
-    );
-  };
-
   const updateMethodQuantity = (methodId: string, delta: number) => {
     setMethodQuantities(prev => {
-      const currentValue = prev[methodId] || 1;
-      let newValue;
-      
-      // Questionnaire increments by 50
-      if (methodId === 'questionnaire') {
-        const minValue = 50;
-        newValue = Math.max(minValue, currentValue + (delta * 50));
-      } else {
-        newValue = Math.max(1, currentValue + delta);
+      const method = validationMethods.find(m => m.id === methodId);
+      if (!method) return prev;
+
+      const currentValue = prev[methodId] || 0;
+      const newValue = Math.max(
+        method.minQuantity,
+        Math.min(method.maxQuantity, currentValue + (delta * method.increment))
+      );
+
+      // If setting to 0 or below minimum, remove the method
+      if (newValue < method.minQuantity) {
+        const newQuantities = { ...prev };
+        delete newQuantities[methodId];
+        return newQuantities;
       }
-      
+
       return {
         ...prev,
         [methodId]: newValue
@@ -293,640 +253,388 @@ export function ValidationPlanLandingPage({ onBack, onStartPlan }: ValidationPla
     });
   };
 
-  const setMethodQuantity = (methodId: string, value: number) => {
-    setMethodQuantities(prev => ({
-      ...prev,
-      [methodId]: Math.max(1, value)
-    }));
+  const removeMethod = (methodId: string) => {
+    setMethodQuantities(prev => {
+      const newQuantities = { ...prev };
+      delete newQuantities[methodId];
+      return newQuantities;
+    });
   };
+
+  // Get selected methods (those with quantities > 0)
+  const selectedMethods = Object.keys(methodQuantities).filter(
+    methodId => methodQuantities[methodId] > 0
+  );
 
   // Calculate pricing
-  const totalPrice = useMemo(() => {
-    let total = 0;
+  const pricingBreakdown = useMemo(() => {
+    const items: { label: string; amount: number }[] = [];
+    let subtotal = 0;
+
     selectedMethods.forEach(methodId => {
       const method = validationMethods.find(m => m.id === methodId);
-      if (method) {
-        const quantity = methodQuantities[methodId] || 1;
-        total += method.pricePerAsset * selectedAssets.length * quantity;
+      if (method && method.pricePerUnit > 0) {
+        const quantity = methodQuantities[methodId];
+        const amount = method.pricePerUnit * quantity;
+        items.push({
+          label: `${method.name} (${quantity} ${method.unit}${quantity !== 1 ? 's' : ''})`, // ✅ TAAK 6: Improved label
+          amount
+        });
+        subtotal += amount;
       }
     });
-    return total;
-  }, [selectedAssets, selectedMethods, methodQuantities]);
 
-  // Calculate estimated duration
-  const estimatedDuration = useMemo(() => {
-    const maxWeeks = Math.max(...selectedAssets.map(assetId => {
-      const asset = availableAssets.find(a => a.id === assetId);
-      if (!asset) return 0;
-      const weeks = asset.estimatedTime.includes('2-3') ? 3 : 2;
-      return weeks;
-    }), 0);
-    
-    if (maxWeeks === 0) return '0 weeks';
-    if (selectedMethods.length > 2) return `${maxWeeks + 1}-${maxWeeks + 2} weeks`;
-    return `${maxWeeks}-${maxWeeks + 1} weeks`;
-  }, [selectedAssets, selectedMethods]);
+    return { items, subtotal, total: subtotal };
+  }, [selectedMethods, methodQuantities]);
 
-  const getAssetIcon = (assetId: string) => {
-    const asset = availableAssets.find(a => a.id === assetId);
-    return asset?.icon || Target;
+  const removeAsset = (assetId: string) => {
+    setSelectedAssets(prev => prev.filter(id => id !== assetId));
   };
 
-  const getAssetName = (assetId: string) => {
-    const asset = availableAssets.find(a => a.id === assetId);
-    return asset?.name || '';
-  };
-
-  const getMethodName = (methodId: string) => {
-    const method = validationMethods.find(m => m.id === methodId);
-    return method?.shortName || '';
-  };
+  const canStartPlan = selectedAssets.length > 0 && selectedMethods.length > 0;
 
   return (
     <div className="h-full overflow-auto bg-background">
-      {/* Sticky Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="max-w-7xl mx-auto px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={onBack}>
+      {/* Content - Split Screen Layout */}
+      <div className="flex h-full">
+        {/* LEFT PANEL - BUILDER (65%) */}
+        <div className="w-[65%] h-full overflow-auto border-r border-border">
+          <div className="max-w-4xl mx-auto px-8 py-8 space-y-8">
+            {/* HEADER */}
+            <div>
+              <Button variant="ghost" size="sm" onClick={onBack} className="mb-4">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-white" />
+
+              <div className="flex items-start gap-4 mb-6">
+                <div className="rounded-xl bg-primary/10 p-3">
+                  <Wand className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-semibold">Custom Validation</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Build your own research plan to validate strategic decisions
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-semibold mb-1">Custom Validation</h1>
-                <p className="text-muted-foreground">
-                  Build your own research plan to validate strategic decisions
-                </p>
+
+              {/* VALUE PROPS ROW */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <UserCheck className="h-4 w-4 text-primary" />
+                  <span className="text-sm">Expert-Led</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                  <span className="text-sm">Data-Driven</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4 text-primary" />
+                  <span className="text-sm">Actionable</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Badge variant="outline" className="px-3 py-1">
-                {selectedAssets.length} Asset{selectedAssets.length !== 1 ? 's' : ''}
-              </Badge>
-              <Badge variant="outline" className="px-3 py-1">
-                {selectedMethods.length} Method{selectedMethods.length !== 1 ? 's' : ''}
-              </Badge>
+
+            {/* STEP 1 - SELECT ASSETS */}
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-xl font-semibold">1. Select Brand Assets to Validate</h2>
+                <p className="text-sm text-muted-foreground">Choose which assets need research validation</p>
+              </div>
+
+              {/* Asset cards grid (2 columns) */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {availableAssets.map((asset) => {
+                  const isSelected = selectedAssets.includes(asset.id);
+                  const AssetIcon = asset.icon;
+
+                  return (
+                    <Card
+                      key={asset.id}
+                      className={cn(
+                        "rounded-xl border p-4 cursor-pointer transition-all duration-200",
+                        isSelected 
+                          ? "border-primary bg-primary/5" 
+                          : "hover:border-primary/30 hover:shadow-sm"
+                      )}
+                      onClick={() => toggleAsset(asset.id)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={() => toggleAsset(asset.id)}
+                          className="mt-1 rounded border-2"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <h3 className="text-lg font-semibold">{asset.name}</h3>
+                            <AssetIcon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                          </div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge className="bg-muted text-foreground rounded-full px-2 text-xs">
+                              {asset.category}
+                            </Badge>
+                            {asset.recommended && (
+                              <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full px-2 text-xs">
+                                Recommended
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Clock className="h-4 w-4" />
+                            <span>{asset.estimatedTime}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* STEP 2 - SELECT METHODS */}
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-xl font-semibold">2. Choose Validation Methods</h2>
+                <p className="text-sm text-muted-foreground">Select research methods for each asset</p>
+              </div>
+
+              {/* Method cards (vertical list) */}
+              <div className="space-y-4">
+                {validationMethods.map((method) => {
+                  const MethodIcon = method.icon;
+                  const quantity = methodQuantities[method.id] || 0;
+                  const isActive = quantity > 0;
+
+                  return (
+                    <Card
+                      key={method.id}
+                      className={cn(
+                        "rounded-xl border p-4",
+                        isActive && "border-primary/30"
+                      )}
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Icon */}
+                        <div className="rounded-lg bg-primary/10 p-3">
+                          <MethodIcon className="h-5 w-5 text-primary" />
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 space-y-3">
+                          <div>
+                            <div className="flex items-start justify-between gap-4 mb-2">
+                              <h3 className="text-lg font-semibold">{method.name}</h3>
+                              <Badge className={cn("rounded-full px-2 py-0.5 text-xs font-medium", method.confidenceBadgeClass)}>
+                                {method.confidence}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{method.description}</p>
+                          </div>
+
+                          {/* Quantity selector */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 w-8 p-0 rounded-xl"
+                                onClick={() => updateMethodQuantity(method.id, -1)}
+                                disabled={quantity <= 0}
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="w-16 text-center">
+                                <span className="text-lg font-semibold tabular-nums">{quantity}</span>
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 w-8 p-0 rounded-xl"
+                                onClick={() => updateMethodQuantity(method.id, 1)}
+                                disabled={quantity >= method.maxQuantity}
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+
+                            <div className="text-right">
+                              <div className="text-lg font-semibold text-primary">
+                                {method.pricePerUnit === 0 ? (
+                                  <span className="text-green-600 dark:text-green-400">FREE</span>
+                                ) : (
+                                  method.priceLabel
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hero Card - Custom Validation */}
-            <Card className="border-2 border-primary/20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
-              <CardHeader>
-                <div className="flex items-start space-x-4">
-                  <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
-                    <Shield className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-2xl mb-2">Validate Your Brand with Confidence</CardTitle>
-                    <CardDescription className="text-base">
-                      Select which brand assets to validate and choose your research methods. 
-                      Get professional insights to ensure your brand decisions are backed by data.
-                    </CardDescription>
+        {/* RIGHT PANEL - SUMMARY (35%, sticky) */}
+        <div className="w-[35%] h-full overflow-auto bg-muted/30">
+          <div className="sticky top-0 p-6">
+            <Card className="rounded-xl border p-6 bg-background">
+              {/* Header */}
+              <h2 className="text-xl font-semibold mb-6">Your Validation Plan</h2>
+
+              {/* Assets section - ✅ TAAK 6: Count badge in header */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold">Assets to Validate</span>
+                    {selectedAssets.length > 0 && (
+                      <Badge className="ml-2 bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full text-xs font-medium">
+                        {selectedAssets.length}
+                      </Badge>
+                    )}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border">
-                    <Award className="h-6 w-6 text-primary mb-2" />
-                    <p className="text-sm font-medium">Expert-Led</p>
-                    <p className="text-xs text-muted-foreground">Professional facilitation</p>
-                  </div>
-                  <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border">
-                    <BarChart3 className="h-6 w-6 text-primary mb-2" />
-                    <p className="text-sm font-medium">Data-Driven</p>
-                    <p className="text-xs text-muted-foreground">Quantified insights</p>
-                  </div>
-                  <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border">
-                    <Rocket className="h-6 w-6 text-primary mb-2" />
-                    <p className="text-sm font-medium">Actionable</p>
-                    <p className="text-xs text-muted-foreground">Clear next steps</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Asset Selection Card */}
-            <Card className="border-primary">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg flex items-center">
-                      <Target className="h-4 w-4 mr-2 text-primary" />
-                      Select Brand Assets to Validate
-                    </CardTitle>
-                    <CardDescription>
-                      Choose which brand assets need professional validation
-                    </CardDescription>
-                  </div>
-                  {selectedAssets.length > 0 && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => setSelectedAssets([])}
-                    >
-                      Clear All
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {availableAssets.map((asset) => {
-                    const isSelected = selectedAssets.includes(asset.id);
-                    const Icon = asset.icon;
-                    const hasRecommendedMethods = asset.recommendedMethods.some(m => selectedMethods.includes(m));
+                {selectedAssets.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">Select assets from the left to start</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedAssets.map((assetId) => {
+                      const asset = availableAssets.find(a => a.id === assetId);
+                      if (!asset) return null;
+                      const AssetIcon = asset.icon;
 
-                    return (
-                      <motion.div
-                        key={asset.id}
-                        className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                          isSelected
-                            ? 'border-primary bg-blue-50 dark:bg-blue-950/20 ring-2 ring-primary'
-                            : 'border-border hover:border-primary hover:bg-muted'
-                        }`}
-                        onClick={() => toggleAsset(asset.id)}
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                      >
-                        <div className="flex items-start space-x-3">
-                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                            isSelected ? 'bg-primary text-white' : 'bg-muted'
-                          }`}>
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-1">
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-2">
-                                  <p className="font-medium">{asset.name}</p>
-                                  {isSelected && (
-                                    <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                                  )}
-                                </div>
-                                <Badge variant="outline" className="text-xs mt-1">
-                                  {asset.category}
-                                </Badge>
-                              </div>
-                            </div>
-                            <p className="text-xs text-muted-foreground mb-2">
-                              {asset.description}
-                            </p>
-                            <p className="text-xs text-muted-foreground italic">
-                              {asset.details}
-                            </p>
-                            <div className="flex items-center justify-between mt-2">
-                              <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                                <Clock className="h-3 w-3" />
-                                <span>{asset.estimatedTime}</span>
-                              </div>
-                              {hasRecommendedMethods && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <Sparkles className="h-3 w-3 mr-1" />
-                                  Recommended
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Validation Methods Card */}
-            <Card className="border-primary">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg flex items-center">
-                      <BarChart3 className="h-4 w-4 mr-2 text-primary" />
-                      Choose Validation Methods
-                    </CardTitle>
-                    <CardDescription>
-                      Select research methods and set quantities for each
-                    </CardDescription>
-                  </div>
-                  {selectedMethods.length > 0 && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => setSelectedMethods([])}
-                    >
-                      Clear All
-                    </Button>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-3">
-                  {validationMethods.map((method) => {
-                    const isSelected = selectedMethods.includes(method.id);
-                    const Icon = method.icon;
-                    const quantity = methodQuantities[method.id] || 1;
-
-                    return (
-                      <div
-                        key={method.id}
-                        className={`border rounded-lg p-4 transition-all ${
-                          isSelected
-                            ? 'border-primary bg-blue-50 dark:bg-blue-950/20 ring-2 ring-primary'
-                            : 'border-border'
-                        }`}
-                      >
-                        <div className="flex items-start space-x-4">
-                          {/* Icon */}
-                          <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                            isSelected ? 'bg-primary text-white' : 'bg-muted'
-                          }`}>
-                            <Icon className="h-6 w-6" />
-                          </div>
-
-                          {/* Content */}
-                          <div className="flex-1">
-                            {/* Header with checkbox */}
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-2 mb-1">
-                                  {/* Checkbox */}
-                                  <button
-                                    onClick={() => toggleMethod(method.id)}
-                                    className={`h-5 w-5 rounded border-2 flex items-center justify-center transition-colors ${
-                                      isSelected
-                                        ? 'bg-primary border-primary'
-                                        : 'border-gray-300 dark:border-gray-600 hover:border-primary'
-                                    }`}
-                                  >
-                                    {isSelected && <Check className="h-3 w-3 text-white" />}
-                                  </button>
-                                  <p className="font-medium">{method.name}</p>
-                                  <Badge variant="outline" className="text-xs">
-                                    {method.type}
-                                  </Badge>
-                                </div>
-                                <p className="text-sm text-muted-foreground ml-7">
-                                  {method.description}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Details grid */}
-                            <div className="grid grid-cols-2 gap-2 mb-3 ml-7">
-                              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                                <Clock className="h-3.5 w-3.5" />
-                                <span>{method.duration}</span>
-                              </div>
-                              <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                                <Users className="h-3.5 w-3.5" />
-                                <span>{method.participants}</span>
-                              </div>
-                            </div>
-
-                            {/* What's Included */}
-                            <div className="ml-7 mb-3">
-                              <p className="text-xs font-medium text-muted-foreground mb-2">What's Included</p>
-                              <div className="space-y-1">
-                                {method.whatsIncluded.map((item, idx) => (
-                                  <div key={idx} className="flex items-start space-x-1.5 text-xs text-muted-foreground">
-                                    <CheckCircle className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
-                                    <span>{item}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Benefits */}
-                            <div className="flex flex-wrap gap-1.5 ml-7 mb-3">
-                              {method.benefits.map((benefit, idx) => (
-                                <Badge key={idx} variant="secondary" className="text-xs">
-                                  <Check className="h-3 w-3 mr-1" />
-                                  {benefit}
-                                </Badge>
-                              ))}
-                            </div>
-
-                            {/* Quantity Selector (only visible when selected) */}
-                            {isSelected && (
-                              <div className="ml-7 pt-3 border-t">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm font-medium mb-1">Quantity</p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {method.id === 'interviews' && 'Number of interviews to conduct'}
-                                      {method.id === 'questionnaire' && 'Target number of responses (increments of 50)'}
-                                      {method.id === 'workshop' && 'Number of workshop sessions'}
-                                      {method.id === 'focus-group' && 'Number of focus group sessions'}
-                                      {method.id === 'expert-review' && 'Number of expert reviewers'}
-                                    </p>
-                                  </div>
-                                  <div className="flex items-center space-x-3">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-8 w-8 p-0"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        updateMethodQuantity(method.id, -1);
-                                      }}
-                                      disabled={method.id === 'questionnaire' ? quantity <= 50 : quantity <= 1}
-                                    >
-                                      -
-                                    </Button>
-                                    <span className="text-lg font-medium w-12 text-center">{quantity}</span>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-8 w-8 p-0"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        updateMethodQuantity(method.id, 1);
-                                      }}
-                                    >
-                                      +
-                                    </Button>
-                                  </div>
-                                </div>
-
-                                {/* Total calculation for this method */}
-                                {selectedAssets.length > 0 && (
-                                  <div className="mt-2 p-2 bg-muted rounded text-xs">
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-muted-foreground">
-                                        {quantity} × {selectedAssets.length} asset{selectedAssets.length !== 1 ? 's' : ''} × ${method.pricePerAsset}
-                                      </span>
-                                      <span className="font-medium">
-                                        ${(quantity * selectedAssets.length * method.pricePerAsset).toLocaleString()}
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Process Timeline */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Validation Process</CardTitle>
-                <CardDescription>How your validation plan unfolds</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    {
-                      step: 1,
-                      title: 'Kickoff & Planning',
-                      description: 'Define scope, timeline, and stakeholder groups',
-                      duration: '1 week',
-                    },
-                    {
-                      step: 2,
-                      title: 'Research Phase',
-                      description: 'Execute selected validation methods',
-                      duration: estimatedDuration,
-                    },
-                    {
-                      step: 3,
-                      title: 'Analysis & Synthesis',
-                      description: 'Process data and identify insights',
-                      duration: '1-2 weeks',
-                    },
-                    {
-                      step: 4,
-                      title: 'Results & Recommendations',
-                      description: 'Present findings and action plan',
-                      duration: '1 week',
-                    },
-                  ].map((phase, idx) => (
-                    <div key={idx} className="flex items-start space-x-4">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <span className="text-sm font-bold text-primary">{phase.step}</span>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium">{phase.title}</p>
-                          <Badge variant="outline" className="text-xs">
-                            {phase.duration}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {phase.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column - Summary Sidebar */}
-          <div className="space-y-6">
-            {/* Summary Card */}
-            <Card className="sticky top-6 border-2">
-              <CardHeader className="bg-muted/50">
-                <CardTitle className="text-lg">Your Validation Plan</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                {/* Selected Assets */}
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Assets to Validate ({selectedAssets.length})
-                  </p>
-                  {selectedAssets.length > 0 ? (
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {selectedAssets.map((assetId) => {
-                        const Icon = getAssetIcon(assetId);
-                        return (
-                          <div
-                            key={assetId}
-                            className="flex items-center justify-between p-2 rounded bg-muted/50 group"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <Icon className="h-4 w-4 text-primary flex-shrink-0" />
-                              <span className="text-sm">{getAssetName(assetId)}</span>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                              onClick={() => toggleAsset(assetId)}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground italic">
-                      No assets selected yet
-                    </p>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Selected Methods */}
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Validation Methods ({selectedMethods.length})
-                  </p>
-                  {selectedMethods.length > 0 ? (
-                    <div className="space-y-2">
-                      {selectedMethods.map((methodId) => {
-                        const method = validationMethods.find(m => m.id === methodId);
-                        if (!method) return null;
-                        const Icon = method.icon;
-                        return (
-                          <div
-                            key={methodId}
-                            className="flex items-center justify-between p-2 rounded bg-muted/50 group"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <Icon className="h-4 w-4 text-primary flex-shrink-0" />
-                              <span className="text-sm">{method.shortName}</span>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                              onClick={() => toggleMethod(methodId)}
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground italic">
-                      No methods selected yet
-                    </p>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Pricing */}
-                <div>
-                  <div className="space-y-2 mb-3">
-                    {selectedMethods.map(methodId => {
-                      const method = validationMethods.find(m => m.id === methodId);
-                      if (!method) return null;
-                      const quantity = methodQuantities[methodId] || 1;
-                      const subtotal = method.pricePerAsset * selectedAssets.length * quantity;
                       return (
-                        <div key={methodId} className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            {method.shortName} ({quantity}) × {selectedAssets.length}
-                          </span>
-                          <span className="font-medium">${subtotal.toLocaleString()}</span>
+                        <div
+                          key={assetId}
+                          className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/50"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <AssetIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <span className="text-sm truncate">{asset.name}</span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            onClick={() => removeAsset(assetId)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
                         </div>
                       );
                     })}
                   </div>
+                )}
+              </div>
 
-                  <Separator className="my-3" />
+              <Separator className="my-6" />
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Total Investment</span>
-                    <span className="text-2xl font-bold">${totalPrice.toLocaleString()}</span>
+              {/* Methods section - ✅ TAAK 6: Count badge in header */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold">Validation Methods</span>
+                    {selectedMethods.length > 0 && (
+                      <Badge className="ml-2 bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full text-xs font-medium">
+                        {selectedMethods.length}
+                      </Badge>
+                    )}
                   </div>
-
-                  {selectedAssets.length > 0 && selectedMethods.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Estimated duration: {estimatedDuration}
-                    </p>
-                  )}
                 </div>
 
-                <Separator />
+                {selectedMethods.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">Choose validation methods below</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedMethods.map((methodId) => {
+                      const method = validationMethods.find(m => m.id === methodId);
+                      if (!method) return null;
+                      const quantity = methodQuantities[methodId];
 
-                {/* CTA Button */}
-                <Button
-                  size="lg"
-                  className="w-full"
-                  disabled={selectedAssets.length === 0 || selectedMethods.length === 0}
-                  onClick={() => onStartPlan(selectedAssets, selectedMethods)}
-                >
-                  <Rocket className="h-4 w-4 mr-2" />
-                  Start Validation Plan
-                </Button>
-
-                {(selectedAssets.length === 0 || selectedMethods.length === 0) && (
-                  <p className="text-xs text-center text-muted-foreground">
-                    {selectedAssets.length === 0 && 'Select at least one asset'}
-                    {selectedAssets.length > 0 && selectedMethods.length === 0 && 'Select at least one method'}
-                  </p>
+                      return (
+                        <div
+                          key={methodId}
+                          className="flex items-center justify-between gap-2 p-2 rounded-lg bg-muted/50"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{method.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {quantity} {method.unit}{quantity !== 1 ? 's' : ''}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            onClick={() => removeMethod(methodId)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
+              </div>
 
-                {/* Guarantee */}
-                <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-start space-x-2">
-                    <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs font-medium text-blue-900 dark:text-blue-100">
-                        100% Satisfaction Guarantee
-                      </p>
-                      <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                        If you're not satisfied with the insights, we'll work with you until you are.
+              {/* ✅ TAAK 6: Border before total */}
+              <div className="border-t border-border pt-4 mt-4">
+                {/* Pricing breakdown */}
+                <div className="space-y-3">
+                  {pricingBreakdown.items.length > 0 ? (
+                    <>
+                      {pricingBreakdown.items.map((item, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">{item.label}</span>
+                          <span className="font-medium tabular-nums">${item.amount.toLocaleString()}</span>
+                        </div>
+                      ))}
+                      
+                      <Separator className="my-3" />
+                      
+                      {/* ✅ TAAK 6: Improved total styling */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-base font-semibold">Total Investment</span>
+                        <span className="text-xl font-semibold text-primary tabular-nums">
+                          ${pricingBreakdown.total.toLocaleString()}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-muted-foreground">
+                        Select methods to see pricing
                       </p>
                     </div>
-                  </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Why Validate Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center">
-                  <Lightbulb className="h-4 w-4 mr-2 text-primary" />
-                  Why Validate?
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex items-start space-x-2">
-                  <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-muted-foreground">
-                    87% of brand failures stem from poor alignment and validation
-                  </p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <TrendingUp className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-muted-foreground">
-                    Validated brands see 3x higher stakeholder buy-in
-                  </p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <Sparkles className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-muted-foreground">
-                    Research-backed decisions lead to 65% faster implementation
-                  </p>
-                </div>
-              </CardContent>
+              {/* ✅ TAAK 4: CTA Button */}
+              <Button
+                className="w-full mt-6 py-3 rounded-xl"
+                disabled={!canStartPlan}
+                onClick={() => canStartPlan && onStartPlan(selectedAssets, selectedMethods)}
+              >
+                {pricingBreakdown.total === 0 ? 'Start Validation' : 'Purchase Plan'}
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+
+              {/* ✅ TAAK 4: Info text onder button */}
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                Free methods start immediately. Paid methods require payment.
+              </p>
+
+              {/* Trust badge */}
+              <div className="flex items-center justify-center gap-2 mt-4">
+                <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <span className="text-xs text-muted-foreground">100% Satisfaction Guarantee</span>
+              </div>
             </Card>
           </div>
         </div>

@@ -9,6 +9,7 @@ import { useBrandAssets } from '../contexts';
 import { calculateDecisionStatus } from '../utils/decision-status-calculator';
 import { ResearchFlowModal } from './ResearchFlowModal';
 import { ValidationMethodButton } from './validation/ValidationMethodButton';
+import { RegenerateAssetWizard } from './wizard/RegenerateAssetWizard';
 import { toast } from 'sonner';
 import {
   ArrowLeft,
@@ -33,7 +34,7 @@ import {
   Heart,
   ChevronDown,
   RefreshCw,
-  Edit3,
+  Edit,
   Save,
   X,
   Globe,
@@ -145,8 +146,11 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
   const [isFlowModalOpen, setIsFlowModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [showRegenerateWizard, setShowRegenerateWizard] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [lockedBy, setLockedBy] = useState<string | null>(null);
+
+  console.log('SocialRelevancyDashboard render - showRegenerateWizard:', showRegenerateWizard);
   
   // Editable ESG dimensions state
   const [editableDimensions, setEditableDimensions] = useState({
@@ -352,7 +356,7 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
                             className={`text-xs ${
                               example.impact === 'high' 
                                 ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800'
-                                : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
+                                : 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
                             }`}
                           >
                             {example.impact} impact
@@ -440,12 +444,12 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={handleRegenerate}
+                        onClick={() => setShowRegenerateWizard(true)}
                         disabled={isRegenerating}
                         className="gap-2"
                       >
                         <RefreshCw className={`h-4 w-4 ${isRegenerating ? 'animate-spin' : ''}`} />
-                        {isRegenerating ? 'Regenerating...' : 'Regenerate'}
+                        {isRegenerating ? 'Regenerating...' : 'Regenerate with AI'}
                       </Button>
                       <Button
                         variant="outline"
@@ -453,8 +457,8 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
                         onClick={() => setIsEditing(true)}
                         className="gap-2"
                       >
-                        <Edit3 className="h-4 w-4" />
-                        Edit
+                        <Edit className="h-4 w-4" />
+                        Edit Content
                       </Button>
                     </>
                   )}
@@ -555,7 +559,7 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
                           <Badge variant="outline" className="text-xs font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700">
                             Governance
                           </Badge>
-                          <Badge variant="outline" className="text-xs bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800">
+                          <Badge variant="outline" className="text-xs bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800">
                             Medium Impact
                           </Badge>
                         </div>
@@ -719,6 +723,30 @@ export function SocialRelevancyDashboard({ onBack, onStartResearch }: SocialRele
           onComplete={handleResearchComplete}
         />
       )}
+
+      {/* Regenerate Asset Wizard */}
+      <RegenerateAssetWizard
+        open={showRegenerateWizard}
+        onClose={() => setShowRegenerateWizard(false)}
+        assetName="Social Relevancy"
+        assetType="Brand Foundation"
+        currentContent={JSON.stringify(editableDimensions, null, 2)}
+        onSave={(newContent, researchSources) => {
+          console.log('Saved new content based on', researchSources.length, 'research sources');
+          // Parse the new content and update the dimensions
+          try {
+            const parsed = JSON.parse(newContent);
+            setEditableDimensions(parsed);
+            toast.success('Social Relevancy updated!', {
+              description: `Updated based on ${researchSources.length} research source${researchSources.length > 1 ? 's' : ''}.`,
+            });
+          } catch (e) {
+            // If not JSON, just show success
+            toast.success('Social Relevancy updated!');
+          }
+          setShowRegenerateWizard(false);
+        }}
+      />
     </div>
   );
 }

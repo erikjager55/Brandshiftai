@@ -1,45 +1,57 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  ArrowLeft, 
-  Lock, 
-  Sparkles, 
-  TrendingUp,
-  Users,
-  Target,
-  Zap,
-  BarChart3,
-  Download,
-  Share2,
+import React, { useState, useMemo, useEffect } from 'react';
+import { Card, CardContent } from './ui/card';
+import { Button } from './ui/button';
+import { SearchBar } from './ui/SearchBar';
+import { SimpleEmptyState } from './ui/SimpleEmptyState';
+import {
   Plus,
-  Layers,
+  Lock,
+  ArrowLeft,
   Search,
+  TrendingUp,
   ArrowRight,
   Package,
-  AlertCircle
+  AlertCircle,
+  Layers,
+  Hexagon,
+  CheckCircle2,
+  Loader
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Badge } from './ui/badge';
 import { useBrandAssets } from '../contexts';
-import { StatusCard } from './unified/StatusCard';
-import { PurchaseModal } from './PurchaseModal';
-import { UnlockService } from '../services/UnlockService';
 import { calculateDecisionStatus } from '../utils/decision-status-calculator';
 import { DecisionStatus } from '../types/decision-status';
-import { ResearchMethodType } from '../utils/research-method-helpers';
-import { UnlockableTool } from '../data/research-tools';
+import { UnlockService } from '../services/UnlockService';
 import { EnhancedAssetCardUnified } from './brand-assets/EnhancedAssetCardUnified';
-import { BrandAssetOption } from '../types/brand-asset';
+import { PurchaseModal } from './payment/PurchaseModal';
+import { AddBrandAssetModal } from './modals/AddBrandAssetModal';
 import {
-  SPACING,
-  TYPOGRAPHY,
-  ICON_SIZES,
-  ICON_CONTAINERS,
-  LAYOUT_PATTERNS,
-  COLORS,
-  cn
-} from '../constants/design-system';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { cn } from '../lib/utils';
+
+// Types
+interface UnlockableTool {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  icon: any;
+  supportsMultiAsset: boolean;
+  relatedAssets: string[];
+}
+
+interface BrandAssetOption {
+  id: string;
+  name: string;
+  type: string;
+  icon: any;
+}
+
+type ResearchMethodType = string;
 
 interface BrandAssetsViewSimpleProps {
   onAssetClick?: (assetId: string) => void;
@@ -86,6 +98,7 @@ const toolsMap: Record<string, UnlockableTool[]> = {
 
 export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod, onNavigate }: BrandAssetsViewSimpleProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
   const [selectedItemForUnlock, setSelectedItemForUnlock] = useState<{
     type: 'tool';
@@ -94,6 +107,7 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
     name: string;
   } | null>(null);
   const [unlockingToolId, setUnlockingToolId] = useState<string | null>(null);
+  const [addBrandAssetModalOpen, setAddBrandAssetModalOpen] = useState(false);
   
   // Use context to get brand assets (synchronized with detail page)
   const { brandAssets } = useBrandAssets();
@@ -218,6 +232,31 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
     }));
   }, [brandAssets]);
 
+  // Get existing asset IDs (for "Already created" indicators)
+  const existingAssetIds = useMemo(() => {
+    // Map asset types to their IDs - this will be used to show "Already created" badges
+    const typeMap: Record<string, string> = {
+      'Golden Circle': 'golden-circle',
+      'Vision Statement': 'vision-statement',
+      'Mission Statement': 'mission-statement',
+      'Brand Archetype': 'brand-archetype',
+      'Core Values': 'core-values',
+      'Social Relevancy': 'social-relevancy',
+      'Brand Tone & Voice': 'brand-tone-voice',
+      'Brand Promise': 'brand-promise',
+      'Brand Story': 'brand-story',
+    };
+    
+    return brandAssets
+      .map(asset => typeMap[asset.type])
+      .filter(Boolean);
+  }, [brandAssets]);
+
+  const handleAddBrandAsset = (assetTypeSlug: string) => {
+    // Navigate to brand asset creation page
+    onNavigate?.(`/brand-foundation/new/${assetTypeSlug}`);
+  };
+
   return (
     <div className="h-full overflow-auto bg-background">
       {/* Header */}
@@ -225,16 +264,20 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center">
-                <Layers className="h-6 w-6 text-white" />
+              <div className="rounded-xl bg-primary/10 p-3">
+                <Hexagon className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-semibold mb-1">Brand Foundation</h1>
-                <p className="text-muted-foreground">
+                <h1 className="text-3xl font-semibold">Your Brand</h1>
+                <p className="text-sm text-muted-foreground">
                   Build your strategic foundation with premium brand tools
                 </p>
               </div>
             </div>
+            <Button onClick={() => setAddBrandAssetModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Brand Asset
+            </Button>
           </div>
         </div>
       </div>
@@ -244,35 +287,46 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
         
         {/* BLOCK 1: Overview Stats */}
         <div className="grid md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-3xl font-bold text-emerald-600 mb-1">{readyCount}</div>
-              <div className="text-sm text-muted-foreground">Ready to use</div>
-            </CardContent>
+          <Card className="rounded-xl border p-6">
+            <div className="text-4xl font-semibold text-green-600 dark:text-green-400 mb-2">
+              {readyCount}
+            </div>
+            <div className="text-sm text-muted-foreground">Ready to use</div>
           </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-3xl font-bold text-amber-600 mb-1">{needsWorkCount}</div>
-              <div className="text-sm text-muted-foreground">Need more research</div>
-            </CardContent>
+          <Card className="rounded-xl border p-6">
+            <div className="text-4xl font-semibold text-amber-600 dark:text-amber-400 mb-2">
+              {needsWorkCount}
+            </div>
+            <div className="text-sm text-muted-foreground">Need validation</div>
           </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-3xl font-bold mb-1">{filteredAssets.length}</div>
-              <div className="text-sm text-muted-foreground">Total assets</div>
-            </CardContent>
+          <Card className="rounded-xl border p-6">
+            <div className="text-4xl font-semibold mb-2">
+              {filteredAssets.length}
+            </div>
+            <div className="text-sm text-muted-foreground">Total assets</div>
           </Card>
         </div>
 
-        {/* BLOCK 2: Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search brand assets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
+        {/* BLOCK 2: Search & Filter */}
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search brand assets..."
+            />
+          </div>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="foundation">Foundation</SelectItem>
+              <SelectItem value="identity">Identity</SelectItem>
+              <SelectItem value="expression">Expression</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* BLOCK 3: Assets List */}
@@ -302,22 +356,31 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
         </div>
 
         {/* Empty State */}
-        {filteredAssets.length === 0 && (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <Target className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h3 className="font-semibold mb-2">No assets found</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Try adjusting your search
-              </p>
-              <Button 
-                variant="outline" 
-                onClick={() => setSearchQuery('')}
-              >
-                Clear search
-              </Button>
-            </CardContent>
-          </Card>
+        {filteredAssets.length === 0 && searchQuery.trim() === '' && brandAssets.length === 0 && (
+          <SimpleEmptyState
+            icon={Hexagon}
+            title="No brand assets yet"
+            description="Start building your brand foundation by adding your first brand asset."
+            action={{
+              label: 'Add Brand Asset',
+              onClick: () => setAddBrandAssetModalOpen(true),
+              variant: 'default'
+            }}
+          />
+        )}
+        
+        {/* Search Empty State */}
+        {filteredAssets.length === 0 && (searchQuery.trim() !== '' || brandAssets.length > 0) && (
+          <SimpleEmptyState
+            icon={Search}
+            title="No results found"
+            description="Try adjusting your search to find brand assets."
+            action={{
+              label: 'Clear search',
+              onClick: () => setSearchQuery(''),
+              variant: 'outline'
+            }}
+          />
         )}
       </div>
 
@@ -338,6 +401,14 @@ export function BrandAssetsViewSimple({ onAssetClick, onNavigateToResearchMethod
           availableAssets={availableAssetsForModal}
         />
       )}
+
+      {/* Add Brand Asset Modal */}
+      <AddBrandAssetModal
+        isOpen={addBrandAssetModalOpen}
+        onClose={() => setAddBrandAssetModalOpen(false)}
+        onAddBrandAsset={handleAddBrandAsset}
+        existingAssetIds={existingAssetIds}
+      />
     </div>
   );
 }

@@ -241,6 +241,40 @@ export const COLORS = {
     basic: 'border-gray-300 text-gray-700 bg-white',
     premium: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white',
   },
+  
+  // StatusBadge system (6 varianten - rounded-full pills)
+  statusBadge: {
+    success: {
+      bg: 'bg-green-100 dark:bg-green-900/30',
+      text: 'text-green-700 dark:text-green-300',
+      border: 'border-green-200 dark:border-green-800',
+    },
+    warning: {
+      bg: 'bg-amber-100 dark:bg-amber-900/30',
+      text: 'text-amber-700 dark:text-amber-300',
+      border: 'border-amber-200 dark:border-amber-800',
+    },
+    error: {
+      bg: 'bg-red-100 dark:bg-red-900/30',
+      text: 'text-red-700 dark:text-red-300',
+      border: 'border-red-200 dark:border-red-800',
+    },
+    info: {
+      bg: 'bg-blue-100 dark:bg-blue-900/30',
+      text: 'text-blue-700 dark:text-blue-300',
+      border: 'border-blue-200 dark:border-blue-800',
+    },
+    neutral: {
+      bg: 'bg-gray-100 dark:bg-gray-800',
+      text: 'text-gray-700 dark:text-gray-300',
+      border: 'border-gray-200 dark:border-gray-700',
+    },
+    locked: {
+      bg: 'bg-amber-100 dark:bg-amber-900/30',
+      text: 'text-amber-700 dark:text-amber-300',
+      border: 'border-amber-300 dark:border-amber-700',
+    },
+  },
 } as const;
 
 // ============================================================================
@@ -588,6 +622,13 @@ export function getStatusColors(status: 'success' | 'warning' | 'error' | 'info'
  */
 export function getQualityColors(quality: 'safe' | 'atRisk' | 'blocked') {
   return COLORS.quality[quality];
+}
+
+/**
+ * Get StatusBadge color classes (6 varianten systeem)
+ */
+export function getStatusBadgeColors(variant: 'success' | 'warning' | 'error' | 'info' | 'neutral' | 'locked') {
+  return COLORS.statusBadge[variant];
 }
 
 /**

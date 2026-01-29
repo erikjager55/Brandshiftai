@@ -383,7 +383,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
       case 'medium-high':
         return <Badge className="bg-green-500">Medium-High Confidence</Badge>;
       case 'medium':
-        return <Badge className="bg-yellow-600">Medium Confidence</Badge>;
+        return <Badge className="bg-amber-600">Medium Confidence</Badge>;
       case 'low':
         return <Badge className="bg-orange-600">Low Confidence</Badge>;
       default:
@@ -1056,7 +1056,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
 
           {/* Tool Context Bar */}
           <Card className="mb-8 border-2 border-primary/20 bg-primary/5">
-            <CardContent className="p-5">
+            <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 {ToolIcon && (
                   <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -1116,7 +1116,7 @@ export function StrategicResearchPlanner({ onPlanCreated, onCancel, preSelectedP
                   }`}
                   onClick={() => toggleAsset(item.id)}
                 >
-                  <CardContent className="p-5">
+                  <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className={`flex items-center justify-center h-6 w-6 rounded border-2 shrink-0 transition-all ${
                         isSelected 

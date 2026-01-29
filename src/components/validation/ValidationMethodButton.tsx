@@ -390,11 +390,29 @@ export function ValidationMethodButton({
       {/* Status Badge */}
       <div className="flex items-center justify-between">
         <ValidationStatusBadge status={status} isCompact={isCompact} />
-        {onPrimaryClick && (
-          <div className="flex-shrink-0">
-            <Plus className={`${isCompact ? 'h-4 w-4' : 'h-5 w-5'} text-muted-foreground group-hover:text-primary transition-colors`} />
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {/* ✅ VISUAL UPDATE: FREE badge voor AI Exploration */}
+          {type === 'ai-exploration' && (
+            <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full text-xs font-medium">
+              FREE
+            </span>
+          )}
+          {/* ✅ VISUAL UPDATE: Prijs indicator voor betaalde methods */}
+          {type === 'workshop' && (
+            <span className="text-sm font-semibold text-primary">From $1,200</span>
+          )}
+          {type === 'interviews' && (
+            <span className="text-sm font-semibold text-primary">From $800</span>
+          )}
+          {type === 'questionnaire' && (
+            <span className="text-sm font-semibold text-primary">From $500</span>
+          )}
+          {onPrimaryClick && (
+            <div className="flex-shrink-0">
+              <Plus className={`${isCompact ? 'h-4 w-4' : 'h-5 w-5'} text-muted-foreground group-hover:text-primary transition-colors`} />
+            </div>
+          )}
+        </div>
       </div>
       
       {/* Content */}

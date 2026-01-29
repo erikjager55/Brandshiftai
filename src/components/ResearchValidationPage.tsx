@@ -298,7 +298,7 @@ export function ResearchValidationPage() {
                   className="group hover:shadow-md transition-all duration-200 border-2"
                 >
                   <CardContent className="p-6">
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                       {/* Header Row: Project Name + Method */}
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">

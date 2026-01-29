@@ -172,9 +172,9 @@ export function AssetUnlockDetailView({ assetId, onBack, onStartResearch }: Asse
       case 'decision-at-risk':
         return {
           icon: AlertTriangle,
-          color: 'text-orange-600',
-          bg: 'bg-orange-50 dark:bg-orange-900/20',
-          border: 'border-orange-200 dark:border-orange-800',
+          color: 'text-amber-600',
+          bg: 'bg-amber-50 dark:bg-amber-900/20',
+          border: 'border-amber-200 dark:border-amber-800',
           label: 'Meer onderzoek aanbevolen',
           message: 'Voer extra onderzoek uit om besluitvorming te versterken',
         };
@@ -273,9 +273,9 @@ export function AssetUnlockDetailView({ assetId, onBack, onStartResearch }: Asse
             {/* Progress Bar */}
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
-                <span className={TYPOGRAPHY.label}>Onderzoeksvoortgang</span>
+                <span className={TYPOGRAPHY.label}>Research Progress</span>
                 <span className={TYPOGRAPHY.bodySmall + " " + TYPOGRAPHY.muted}>
-                  {completedMethods.length} van {totalMethods} voltooid
+                  {completedMethods.length} of {totalMethods} completed
                 </span>
               </div>
               <Progress value={unlockProgress} className="h-2" />
@@ -510,7 +510,7 @@ export function AssetUnlockDetailView({ assetId, onBack, onStartResearch }: Asse
                 `}
                 onClick={() => !isCompleted && !isInProgress && handleStartResearch(method.id)}
               >
-                <CardContent className="p-5">
+                <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className={`
                       h-10 w-10 rounded-lg flex items-center justify-center

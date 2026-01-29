@@ -4,7 +4,7 @@ import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { Button } from '../ui/button';
 import { DecisionStatusInfo, DECISION_STATUS_CONFIG } from '../../types/decision-status';
-import { CheckCircle, AlertTriangle, XCircle, ArrowRight, Lightbulb } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, ArrowRight, Lightbulb } from 'lucide-react';
 import { getMethodLabel } from '../../utils/decision-status-calculator';
 
 interface DecisionStatusPanelProps {
@@ -34,7 +34,7 @@ export function DecisionStatusPanel({
   const config = DECISION_STATUS_CONFIG[statusInfo.status];
   
   const Icon = statusInfo.status === 'safe-to-decide' 
-    ? CheckCircle 
+    ? CheckCircle2 
     : statusInfo.status === 'decision-at-risk' 
     ? AlertTriangle 
     : XCircle;
@@ -119,7 +119,7 @@ export function DecisionStatusPanel({
             <div className="flex flex-wrap gap-2">
               {statusInfo.completedMethods.map((method) => (
                 <Badge key={method} variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                  <CheckCircle className="w-3 h-3 mr-1" />
+                  <CheckCircle2 className="w-3 h-3 mr-1" />
                   {getMethodLabel(method)}
                 </Badge>
               ))}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { CheckCircle, Clock, ArrowRight, Users, Timer } from 'lucide-react';
+import { CheckCircle2, Clock, ArrowRight, Users, Timer } from 'lucide-react';
 
 interface ResearchMethodCardProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -38,7 +38,7 @@ export function ResearchMethodCard({
       case 'completed':
         return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 border-green-200 dark:border-green-900/30';
       case 'in-progress':
-        return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 border-yellow-200 dark:border-yellow-900/30';
+        return 'bg-amber-100 dark:bg-amber-900/20 text-amber-800 dark:text-amber-400 border-amber-200 dark:border-amber-900/30';
       default:
         return 'bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-900/30';
     }
@@ -47,7 +47,7 @@ export function ResearchMethodCard({
   const getStatusIcon = () => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="h-3 w-3" />;
+        return <CheckCircle2 className="h-3 w-3" />;
       case 'in-progress':
         return <Clock className="h-3 w-3" />;
       default:
@@ -79,13 +79,13 @@ export function ResearchMethodCard({
 
   return (
     <Card
-      className={`group hover:shadow-lg transition-all ${
+      className={`group hover:shadow-lg transition-all duration-200 ${
         recommended ? 'border-primary border-2 bg-primary/5' : ''
       } ${status === 'completed' ? 'bg-green-50/50 dark:bg-green-900/5' : ''}`}
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3 mb-2">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-200 flex-shrink-0">
             <Icon className="h-5 w-5 text-primary" />
           </div>
           <div className="flex flex-col items-end gap-1.5">

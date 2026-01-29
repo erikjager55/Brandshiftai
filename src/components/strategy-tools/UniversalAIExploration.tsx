@@ -15,7 +15,7 @@ import {
   CheckCircle,
   ArrowRight,
   ArrowLeft,
-  Edit3,
+  Edit,
   BarChart3,
   Users,
   Zap,
@@ -893,7 +893,7 @@ export function UniversalAIExploration({ tool, onBack, onComplete }: UniversalAI
     { id: 'context', label: 'Context', icon: FileText },
     { id: 'processing', label: 'AI Analysis', icon: Brain },
     { id: 'insights', label: 'Insights', icon: Lightbulb },
-    { id: 'review', label: 'Review', icon: Edit3 },
+    { id: 'review', label: 'Review', icon: Edit },
     { id: 'summary', label: 'Complete', icon: Award }
   ];
 
@@ -1322,7 +1322,7 @@ export function UniversalAIExploration({ tool, onBack, onComplete }: UniversalAI
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="flex items-center gap-2">
-                        <Edit3 className="h-5 w-5" />
+                        <Edit className="h-4 w-4" />
                         Review & Refine
                       </CardTitle>
                       <CardDescription>
@@ -1352,7 +1352,7 @@ export function UniversalAIExploration({ tool, onBack, onComplete }: UniversalAI
                           </>
                         ) : (
                           <>
-                            <Edit3 className="h-4 w-4" />
+                            <Edit className="h-4 w-4" />
                             Edit
                           </>
                         )}

@@ -4,7 +4,7 @@ import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Textarea } from '../ui/textarea';
-import { Edit, RefreshCw, Save, X, Heart, Star, Target, Users, CheckCircle } from 'lucide-react';
+import { Edit, RefreshCw, Save, X, Heart, Star, Target, Users, CheckCircle2 } from 'lucide-react';
 
 interface BrandValuesCanvasProps {
   onRerender: () => void;
@@ -120,7 +120,7 @@ export function BrandValuesCanvas({ onRerender, onEdit, assetData, sessionData, 
                 {value.behaviors && value.behaviors.length > 0 && (
                   <div>
                     <h5 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center">
-                      <CheckCircle className="h-4 w-4 mr-2" />
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
                       Behaviors & Actions
                     </h5>
                     <ul className="space-y-2">

@@ -34,6 +34,7 @@ import {
   Lightbulb
 } from 'lucide-react';
 import { Persona, PersonaStatus } from '../types/persona';
+import { PersonaImageGenerator } from './PersonaImageGenerator';
 
 interface CreatePersonaProps {
   onBack: () => void;
@@ -131,37 +132,29 @@ export function CreatePersona({ onBack, onCreate }: CreatePersonaProps) {
           </Button>
 
           <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-4 flex-1">
-              <div className="h-20 w-20 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center ring-4 ring-purple-100 dark:ring-purple-900/30">
-                <Users className="h-10 w-10 text-purple-600 dark:text-purple-400" />
+            <div className="flex items-center gap-4 flex-1">
+              <div className="h-12 w-12 rounded-xl bg-purple-600 flex items-center justify-center">
+                <Users className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
-                <div className="space-y-2 mb-2">
-                  <Input
-                    value={newPersona.name || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      name: e.target.value
-                    })}
-                    placeholder="Enter persona name"
-                    className="text-3xl font-bold h-12"
-                  />
-                  <Input
-                    value={newPersona.tagline || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      tagline: e.target.value
-                    })}
-                    placeholder="Enter persona tagline"
-                    className="text-lg"
-                  />
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline">
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    Draft
-                  </Badge>
-                </div>
+                <Input
+                  value={newPersona.name || ''}
+                  onChange={(e) => setNewPersona({
+                    ...newPersona,
+                    name: e.target.value
+                  })}
+                  placeholder="Enter persona name"
+                  className="text-3xl font-semibold h-12 border-none px-0 mb-1"
+                />
+                <Input
+                  value={newPersona.tagline || ''}
+                  onChange={(e) => setNewPersona({
+                    ...newPersona,
+                    tagline: e.target.value
+                  })}
+                  placeholder="Enter persona tagline"
+                  className="text-muted-foreground border-none px-0"
+                />
               </div>
             </div>
 
@@ -170,8 +163,8 @@ export function CreatePersona({ onBack, onCreate }: CreatePersonaProps) {
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
-              <Button onClick={handleSave}>
-                <Save className="h-4 w-4 mr-2" />
+              <Button onClick={handleSave} className="gap-2">
+                <Plus className="h-4 w-4" />
                 Create Persona
               </Button>
             </div>
@@ -187,129 +180,147 @@ export function CreatePersona({ onBack, onCreate }: CreatePersonaProps) {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Demographics */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Demographics
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    Age
-                  </Label>
-                  <Input
-                    value={newPersona.demographics?.age || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      demographics: { ...newPersona.demographics, age: e.target.value }
-                    })}
-                    placeholder="e.g., 32"
-                  />
-                </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Left Column - Demographics (2 cols) */}
+              <div className="md:col-span-2 space-y-6">
+                {/* Demographics */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      Demographics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        Age
+                      </Label>
+                      <Input
+                        value={newPersona.demographics?.age || ''}
+                        onChange={(e) => setNewPersona({
+                          ...newPersona,
+                          demographics: { ...newPersona.demographics, age: e.target.value }
+                        })}
+                        placeholder="e.g., 32"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    Gender
-                  </Label>
-                  <Input
-                    value={newPersona.demographics?.gender || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      demographics: { ...newPersona.demographics, gender: e.target.value }
-                    })}
-                    placeholder="e.g., Female"
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        Gender
+                      </Label>
+                      <Input
+                        value={newPersona.demographics?.gender || ''}
+                        onChange={(e) => setNewPersona({
+                          ...newPersona,
+                          demographics: { ...newPersona.demographics, gender: e.target.value }
+                        })}
+                        placeholder="e.g., Female"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    Location
-                  </Label>
-                  <Input
-                    value={newPersona.demographics?.location || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      demographics: { ...newPersona.demographics, location: e.target.value }
-                    })}
-                    placeholder="e.g., Amsterdam, Netherlands"
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-muted-foreground">
+                        <MapPin className="h-4 w-4" />
+                        Location
+                      </Label>
+                      <Input
+                        value={newPersona.demographics?.location || ''}
+                        onChange={(e) => setNewPersona({
+                          ...newPersona,
+                          demographics: { ...newPersona.demographics, location: e.target.value }
+                        })}
+                        placeholder="e.g., Amsterdam, Netherlands"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Briefcase className="h-4 w-4" />
-                    Occupation
-                  </Label>
-                  <Input
-                    value={newPersona.demographics?.occupation || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      demographics: { ...newPersona.demographics, occupation: e.target.value }
-                    })}
-                    placeholder="e.g., Product Manager"
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-muted-foreground">
+                        <Briefcase className="h-4 w-4" />
+                        Occupation
+                      </Label>
+                      <Input
+                        value={newPersona.demographics?.occupation || ''}
+                        onChange={(e) => setNewPersona({
+                          ...newPersona,
+                          demographics: { ...newPersona.demographics, occupation: e.target.value }
+                        })}
+                        placeholder="e.g., Product Manager"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <GraduationCap className="h-4 w-4" />
-                    Education
-                  </Label>
-                  <Input
-                    value={newPersona.demographics?.education || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      demographics: { ...newPersona.demographics, education: e.target.value }
-                    })}
-                    placeholder="e.g., Bachelor's Degree"
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-muted-foreground">
+                        <GraduationCap className="h-4 w-4" />
+                        Education
+                      </Label>
+                      <Input
+                        value={newPersona.demographics?.education || ''}
+                        onChange={(e) => setNewPersona({
+                          ...newPersona,
+                          demographics: { ...newPersona.demographics, education: e.target.value }
+                        })}
+                        placeholder="e.g., Bachelor's Degree"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <DollarSign className="h-4 w-4" />
-                    Income
-                  </Label>
-                  <Input
-                    value={newPersona.demographics?.income || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      demographics: { ...newPersona.demographics, income: e.target.value }
-                    })}
-                    placeholder="e.g., €60,000 - €80,000"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2 text-muted-foreground">
+                        <DollarSign className="h-4 w-4" />
+                        Income
+                      </Label>
+                      <Input
+                        value={newPersona.demographics?.income || ''}
+                        onChange={(e) => setNewPersona({
+                          ...newPersona,
+                          demographics: { ...newPersona.demographics, income: e.target.value }
+                        })}
+                        placeholder="e.g., €60,000 - €80,000"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-            {/* Avatar */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Avatar
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <Label>Avatar URL</Label>
-                  <Input
-                    value={newPersona.avatar || ''}
-                    onChange={(e) => setNewPersona({
-                      ...newPersona,
-                      avatar: e.target.value
-                    })}
-                    placeholder="Enter image URL for persona avatar"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+              {/* Right Column - Avatar */}
+              <div className="md:col-span-1 space-y-6">
+                {/* Persona Image Generator */}
+                <PersonaImageGenerator
+                  persona={newPersona}
+                  onImageGenerated={(imageUrl) => setNewPersona({
+                    ...newPersona,
+                    avatar: imageUrl
+                  })}
+                  currentImage={newPersona.avatar}
+                />
+                
+                {/* Manual Avatar URL (fallback) */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-sm">
+                      Manual URL
+                    </CardTitle>
+                    <CardDescription className="text-xs">
+                      Or enter a custom image URL
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Input
+                      value={newPersona.avatar || ''}
+                      onChange={(e) => setNewPersona({
+                        ...newPersona,
+                        avatar: e.target.value
+                      })}
+                      placeholder="https://..."
+                      className="text-sm"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Psychographics Tab */}

@@ -70,7 +70,7 @@ export function BulkActionBar({
                 variant="ghost"
                 size="sm"
                 onClick={onClearSelection}
-                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
               >
                 <X className="h-4 w-4 mr-1" />
                 Clear
@@ -85,7 +85,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('change-status')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Change Status"
                 >
                   <RefreshCw className="h-4 w-4 mr-1" />
@@ -97,7 +97,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('change-priority')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Change Priority"
                 >
                   <Star className="h-4 w-4 mr-1" />
@@ -109,7 +109,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('assign-tags')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Assign Tags"
                 >
                   <Tag className="h-4 w-4 mr-1" />
@@ -121,7 +121,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('change-category')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Change Category"
                 >
                   <FolderInput className="h-4 w-4 mr-1" />
@@ -135,7 +135,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('archive')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Archive"
                 >
                   <Archive className="h-4 w-4 mr-1" />
@@ -147,7 +147,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('export')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Export"
                 >
                   <Download className="h-4 w-4 mr-1" />
@@ -159,7 +159,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('duplicate')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Duplicate"
                 >
                   <Copy className="h-4 w-4 mr-1" />
@@ -173,7 +173,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={() => onBulkAction('delete')}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-red-400 hover:bg-red-500/20"
+                  className="text-primary-foreground hover:text-red-400 hover:bg-red-500/20 transition-colors duration-200"
                   title="Delete"
                 >
                   <Trash2 className="h-4 w-4 mr-1" />
@@ -190,7 +190,7 @@ export function BulkActionBar({
                   size="sm"
                   onClick={onUndo}
                   disabled={isProcessing}
-                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                  className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                   title="Undo Last Action"
                 >
                   <Undo2 className="h-4 w-4 mr-1" />
@@ -202,10 +202,10 @@ export function BulkActionBar({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20"
+                className="text-primary-foreground hover:text-primary-foreground hover:bg-primary-foreground/20 transition-colors duration-200"
                 title={isExpanded ? 'Collapse' : 'Expand'}
               >
-                <ChevronUp className={`h-4 w-4 transition-transform ${!isExpanded ? 'rotate-180' : ''}`} />
+                <ChevronUp className={`h-4 w-4 transition-transform duration-200 ${!isExpanded ? 'rotate-180' : ''}`} />
               </Button>
             </div>
           </div>

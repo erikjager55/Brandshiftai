@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Separator } from '../ui/separator';
 import { 
   Sparkles,
-  CheckCircle,
+  CheckCircle2,
   Circle,
   ChevronDown,
   Play,
@@ -110,7 +110,7 @@ export function GenericToolManager({
   const getStatusColor = () => {
     switch (viewStatus) {
       case 'to-buy':
-        return 'text-orange-600';
+        return 'text-amber-600';
       case 'in-progress':
         return 'text-blue-600';
       case 'approved':
@@ -133,7 +133,7 @@ export function GenericToolManager({
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   {includedItems.map((item, index) => (
                     <li key={index} className="flex items-start space-x-2">
-                      <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -307,7 +307,7 @@ export function GenericToolManager({
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-3">
                         <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                          <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
                           <h4 className="font-medium">{session.name}</h4>
@@ -336,7 +336,7 @@ export function GenericToolManager({
                       <ul className="space-y-1">
                         {session.keyOutcomes.map((outcome, index) => (
                           <li key={index} className="text-sm flex items-start space-x-2">
-                            <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                             <span>{outcome}</span>
                           </li>
                         ))}
@@ -396,7 +396,7 @@ export function GenericToolManager({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[220px]">
                 <DropdownMenuItem onClick={() => setViewStatus('to-buy')} className="cursor-pointer py-3">
-                  <ShoppingCart className="h-4 w-4 mr-2 text-orange-600" />
+                  <ShoppingCart className="h-4 w-4 mr-2 text-amber-600" />
                   <span>To Buy</span>
                   {viewStatus === 'to-buy' && <Check className="h-4 w-4 ml-auto" />}
                 </DropdownMenuItem>

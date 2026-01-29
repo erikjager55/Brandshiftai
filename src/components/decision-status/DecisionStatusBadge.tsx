@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '../ui/badge';
 import { DecisionStatus, DECISION_STATUS_CONFIG } from '../../types/decision-status';
-import { CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 
 interface DecisionStatusBadgeProps {
   status: DecisionStatus;
@@ -30,7 +30,7 @@ export function DecisionStatusBadge({
   const config = DECISION_STATUS_CONFIG[status];
   
   const Icon = status === 'safe-to-decide' 
-    ? CheckCircle 
+    ? CheckCircle2 
     : status === 'decision-at-risk' 
     ? AlertTriangle 
     : XCircle;

@@ -19,7 +19,7 @@ import {
   Circle,
   Clock,
   Eye,
-  Pencil,
+  Edit,
   ChevronRight,
 } from 'lucide-react';
 
@@ -102,7 +102,7 @@ const statusConfig = {
     button: {
       label: 'Continue',
       variant: 'default' as const,
-      icon: Pencil,
+      icon: Edit,
     },
   },
   'not-started': {
@@ -114,7 +114,7 @@ const statusConfig = {
     button: {
       label: 'Start',
       variant: 'default' as const,
-      icon: Pencil,
+      icon: Edit,
     },
   },
 };

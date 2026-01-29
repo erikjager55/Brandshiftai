@@ -18,6 +18,7 @@ import { ChangeImpactProvider } from './ChangeImpactContext';
 import { ChangeImpactConnector } from '../components/impact/ChangeImpactConnector';
 import { ProductTierProvider } from './ProductTierContext';
 import { ProductsProvider } from './ProductsContext';
+import { DemoModeProvider } from './DemoModeContext';
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -26,28 +27,30 @@ interface AppProvidersProps {
 export function AppProviders({ children }: AppProvidersProps) {
   return (
     <ProductTierProvider>
-      <BrandAssetsProvider>
-        <ChangeImpactProvider>
-          <ChangeImpactConnector />
-          <PersonasProvider>
-            <ProductsProvider>
-              <ResearchPlanProvider>
-                <ResearchBundleProvider>
-                  <CollaborationProvider>
-                    <WhiteLabelProvider>
-                      <TemplateProvider>
-                        <UIStateProvider>
-                          {children}
-                        </UIStateProvider>
-                      </TemplateProvider>
-                    </WhiteLabelProvider>
-                  </CollaborationProvider>
-                </ResearchBundleProvider>
-              </ResearchPlanProvider>
-            </ProductsProvider>
-          </PersonasProvider>
-        </ChangeImpactProvider>
-      </BrandAssetsProvider>
+      <DemoModeProvider>
+        <BrandAssetsProvider>
+          <ChangeImpactProvider>
+            <ChangeImpactConnector />
+            <PersonasProvider>
+              <ProductsProvider>
+                <ResearchPlanProvider>
+                  <ResearchBundleProvider>
+                    <CollaborationProvider>
+                      <WhiteLabelProvider>
+                        <TemplateProvider>
+                          <UIStateProvider>
+                            {children}
+                          </UIStateProvider>
+                        </TemplateProvider>
+                      </WhiteLabelProvider>
+                    </CollaborationProvider>
+                  </ResearchBundleProvider>
+                </ResearchPlanProvider>
+              </ProductsProvider>
+            </PersonasProvider>
+          </ChangeImpactProvider>
+        </BrandAssetsProvider>
+      </DemoModeProvider>
     </ProductTierProvider>
   );
 }
@@ -64,3 +67,4 @@ export { useTemplates } from './TemplateContext';
 export { useChangeImpact } from './ChangeImpactContext';
 export { useProductTier } from './ProductTierContext';
 export { useProducts } from './ProductsContext';
+export { useDemoMode } from './DemoModeContext';

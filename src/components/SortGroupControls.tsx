@@ -82,7 +82,7 @@ export function SortGroupControls({
         <select
           value={currentSort?.field || ''}
           onChange={(e) => handleSortFieldChange(e.target.value)}
-          className="h-9 px-3 text-sm border border-border rounded-md bg-background"
+          className="h-9 px-3 text-sm border border-border rounded-lg bg-background transition-colors duration-200 focus:border-primary focus:ring-1 focus:ring-primary"
         >
           <option value="">Sort by...</option>
           {availableSortFields.map(field => (
@@ -97,7 +97,7 @@ export function SortGroupControls({
             variant="outline"
             size="sm"
             onClick={handleSortDirectionToggle}
-            className="h-9 w-9 p-0"
+            className="h-9 w-9 p-0 transition-colors duration-200"
             title={`Sort ${currentSort.direction === 'asc' ? 'ascending' : 'descending'}`}
           >
             <SortIcon className="h-4 w-4" />
@@ -114,7 +114,7 @@ export function SortGroupControls({
         <select
           value={group?.field || ''}
           onChange={(e) => handleGroupFieldChange(e.target.value)}
-          className="h-9 px-3 text-sm border border-border rounded-md bg-background"
+          className="h-9 px-3 text-sm border border-border rounded-lg bg-background transition-colors duration-200 focus:border-primary focus:ring-1 focus:ring-primary"
         >
           <option value="">No grouping</option>
           {availableGroupFields.map(field => (
@@ -130,7 +130,7 @@ export function SortGroupControls({
               variant="outline"
               size="sm"
               onClick={handleGroupDirectionToggle}
-              className="h-9 w-9 p-0"
+              className="h-9 w-9 p-0 transition-colors duration-200"
               title={`Group ${group.direction === 'asc' ? 'A-Z' : 'Z-A'}`}
             >
               {group.direction === 'asc' ? (
@@ -143,7 +143,7 @@ export function SortGroupControls({
               variant="ghost"
               size="sm"
               onClick={() => onGroupChange(undefined)}
-              className="h-9 w-9 p-0"
+              className="h-9 w-9 p-0 transition-colors duration-200"
               title="Clear grouping"
             >
               <X className="h-4 w-4" />

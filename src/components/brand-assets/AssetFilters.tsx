@@ -3,7 +3,7 @@ import { AssetStatus, ResearchMethodType } from '../../types/brand-asset';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { CheckCircle, Clock, Circle, AlertTriangle, LayoutGrid, Filter } from 'lucide-react';
+import { CheckCircle2, Clock, Circle, AlertTriangle, LayoutGrid, Filter } from 'lucide-react';
 import { getMethodInfo, getStatusInfo } from '../../utils/asset-status';
 
 interface AssetFiltersProps {
@@ -32,7 +32,7 @@ export function AssetFilters({
     const info = getStatusInfo(status);
     switch (info.icon) {
       case 'CheckCircle':
-        return CheckCircle;
+        return CheckCircle2;
       case 'Clock':
         return Clock;
       case 'AlertTriangle':
@@ -122,7 +122,7 @@ export function AssetFilters({
               >
                 <span className="mr-2">{info.icon}</span>
                 {info.label}
-                {isSelected && <CheckCircle className="h-4 w-4 ml-auto" />}
+                {isSelected && <CheckCircle2 className="h-4 w-4 ml-auto" />}
               </Button>
             );
           })}
@@ -164,7 +164,7 @@ export function CompactAssetFilters({
     const info = getStatusInfo(status);
     switch (info.icon) {
       case 'CheckCircle':
-        return CheckCircle;
+        return CheckCircle2;
       case 'Clock':
         return Clock;
       case 'AlertTriangle':

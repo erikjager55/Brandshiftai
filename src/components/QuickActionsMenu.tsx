@@ -85,7 +85,7 @@ export function QuickActionsMenu({ x, y, actions, onClose }: QuickActionsMenuPro
               <button
                 onClick={() => handleAction(action)}
                 disabled={action.disabled}
-                className={`w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
+                className={`w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200 ${
                   action.disabled
                     ? 'opacity-50 cursor-not-allowed'
                     : action.danger

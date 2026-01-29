@@ -217,7 +217,7 @@ export function FilterPanel({
                         ...filters,
                         logic: e.target.value as 'AND' | 'OR'
                       })}
-                      className="h-9 px-2 text-xs border border-border rounded-md bg-background"
+                      className="h-9 px-2 text-xs border border-border rounded-lg bg-background"
                     >
                       <option value="AND">AND</option>
                       <option value="OR">OR</option>
@@ -235,7 +235,7 @@ export function FilterPanel({
                         operator: getOperatorsForField(newField?.type || 'text')[0]
                       });
                     }}
-                    className="flex-1 h-9 px-3 text-sm border border-border rounded-md bg-background"
+                    className="flex-1 h-9 px-3 text-sm border border-border rounded-lg bg-background"
                   >
                     {availableFields.map(field => (
                       <option key={field.id} value={field.id}>
@@ -250,7 +250,7 @@ export function FilterPanel({
                     onChange={(e) => updateCondition(condition.id, {
                       operator: e.target.value as FilterOperator
                     })}
-                    className="flex-1 h-9 px-3 text-sm border border-border rounded-md bg-background"
+                    className="flex-1 h-9 px-3 text-sm border border-border rounded-lg bg-background"
                   >
                     {operators.map(op => (
                       <option key={op} value={op}>
@@ -266,7 +266,7 @@ export function FilterPanel({
                         <select
                           value={condition.value}
                           onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
-                          className="flex-1 h-9 px-3 text-sm border border-border rounded-md bg-background"
+                          className="flex-1 h-9 px-3 text-sm border border-border rounded-lg bg-background"
                         >
                           <option value="">Select...</option>
                           {field.options?.map(opt => (
@@ -281,7 +281,7 @@ export function FilterPanel({
                           value={condition.value}
                           onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
                           placeholder={field?.placeholder || 'Value...'}
-                          className="flex-1 h-9 px-3 text-sm border border-border rounded-md bg-background"
+                          className="flex-1 h-9 px-3 text-sm border border-border rounded-lg bg-background"
                         />
                       )}
                     </>
@@ -322,7 +322,7 @@ export function FilterPanel({
                     value={presetName}
                     onChange={(e) => setPresetName(e.target.value)}
                     placeholder="Preset name..."
-                    className="flex-1 h-9 px-3 text-sm border border-border rounded-md bg-background"
+                    className="flex-1 h-9 px-3 text-sm border border-border rounded-lg bg-background"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleSavePreset();
                       if (e.key === 'Escape') setShowPresetDialog(false);

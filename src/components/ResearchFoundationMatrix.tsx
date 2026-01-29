@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 import { UnlockMethodDialog } from './UnlockMethodDialog';
 import { 
-  CheckCircle, 
+  CheckCircle2, 
   Circle, 
   ChevronDown,
   ChevronRight,
@@ -27,7 +27,7 @@ import {
   Clock,
   PlayCircle,
   ShoppingCart,
-  AlertCircle,
+  AlertTriangle,
   Info
 } from 'lucide-react';
 
@@ -522,7 +522,7 @@ export function ResearchFoundationMatrix({
       case 'completed':
         return (
           <Badge className="bg-green-50 text-green-700 border-green-200">
-            <CheckCircle className="w-3 h-3 mr-1" />
+            <CheckCircle2 className="w-3 h-3 mr-1" />
             Completed
           </Badge>
         );
@@ -561,7 +561,7 @@ export function ResearchFoundationMatrix({
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 border-2 border-green-500 text-green-700">
             <MethodIcon className="w-4 h-4" />
             <span className="text-sm font-medium">{method.name}</span>
-            <CheckCircle className="w-4 h-4 ml-auto fill-current" />
+            <CheckCircle2 className="w-4 h-4 ml-auto fill-current" />
           </div>
         );
       case 'in-progress':
@@ -648,7 +648,7 @@ export function ResearchFoundationMatrix({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-4 h-4 text-green-600" />
+              <CheckCircle2 className="w-4 h-4 text-green-600" />
               <span className="text-sm text-muted-foreground">Completed</span>
             </div>
             <p className="text-2xl font-bold text-green-600">{stats.completedAssets}</p>
@@ -694,7 +694,7 @@ export function ResearchFoundationMatrix({
               <h4 className="font-semibold mb-3">Status Guide</h4>
               <div className="grid md:grid-cols-2 gap-3 text-sm">
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <strong className="text-green-700">Completed:</strong>
                     <span className="text-muted-foreground ml-1">Research method finished and validated</span>
@@ -835,7 +835,7 @@ export function ResearchFoundationMatrix({
                                       <h4 className="font-semibold">{asset.name}</h4>
                                       {asset.isCritical && (
                                         <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
-                                          <AlertCircle className="w-3 h-3 mr-1" />
+                                          <AlertTriangle className="w-3 h-3 mr-1" />
                                           Critical
                                         </Badge>
                                       )}

@@ -7,7 +7,7 @@ import { Textarea } from '../ui/textarea';
 import {
   Check,
   Circle,
-  CheckCircle,
+  CheckCircle2,
   Lock,
   Unlock,
   Save,
@@ -353,7 +353,7 @@ export function InterviewWorkflowStep({
                         <div className="flex items-center gap-1">
                           <Icon className="h-3 w-3 text-primary" />
                           <span className="text-xs truncate flex-1">{asset.name}</span>
-                          {isSelected && <CheckCircle className="h-3 w-3 text-primary flex-shrink-0" />}
+                          {isSelected && <CheckCircle2 className="h-3 w-3 text-primary flex-shrink-0" />}
                         </div>
                       </div>
                       
@@ -512,7 +512,7 @@ export function InterviewWorkflowStep({
                 )}
 
                 {relevantQuestions.length === 0 && (
-                  <div className="text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded p-2">
+                  <div className="text-xs text-muted-foreground bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded p-2">
                     <p className="flex items-center gap-1">
                       <HelpCircle className="h-3 w-3" />
                       No brand assets selected. Select assets in Step 2 to see relevant questions.
@@ -558,7 +558,7 @@ export function InterviewWorkflowStep({
               }}
               disabled={interview.status === 'interview-held' || interview.status === 'results-added' || interview.lockStatus === 'locked'}
             >
-              <CheckCircle className="h-3 w-3 mr-1" />
+              <CheckCircle2 className="h-3 w-3 mr-1" />
               Mark Interview as Completed
             </Button>
           </div>

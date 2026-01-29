@@ -34,7 +34,7 @@ import {
   Heart,
   ChevronDown,
   RefreshCw,
-  Edit3,
+  Edit,
   Save,
   X,
 } from 'lucide-react';
@@ -442,7 +442,7 @@ export function TransformativeGoalsDashboard({ onBack, onStartResearch }: Transf
                         onClick={() => setIsEditing(true)}
                         className="gap-2"
                       >
-                        <Edit3 className="h-4 w-4" />
+                        <Edit className="h-4 w-4" />
                         Edit
                       </Button>
                     </>
@@ -544,7 +544,7 @@ export function TransformativeGoalsDashboard({ onBack, onStartResearch }: Transf
                           <Badge variant="outline" className="text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700">
                             Act
                           </Badge>
-                          <Badge variant="outline" className="text-xs bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800">
+                          <Badge variant="outline" className="text-xs bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800">
                             Medium Impact
                           </Badge>
                         </div>

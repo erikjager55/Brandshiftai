@@ -6,7 +6,7 @@ import { Separator } from './ui/separator';
 import {
   Clock,
   Package,
-  CheckCircle,
+  CheckCircle2,
   TrendingUp,
   ArrowRight,
   Sparkles,
@@ -150,7 +150,7 @@ export function UnifiedResearchCard({
         {strategyTools && strategyTools.length > 0 && (
           <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-4 h-4 text-primary" />
+              <CheckCircle2 className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium">
                 Unlocks {strategyTools.length} Strategy Tool{strategyTools.length > 1 ? 's' : ''}
               </span>

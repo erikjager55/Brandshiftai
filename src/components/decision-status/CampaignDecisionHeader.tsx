@@ -16,7 +16,7 @@ import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { AlertTriangle, CheckCircle, ShieldAlert, ArrowRight, AlertCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ShieldAlert, ArrowRight, AlertCircle } from 'lucide-react';
 
 interface CampaignDecisionHeaderProps {
   /** Overall decision status voor de campagne */
@@ -45,7 +45,7 @@ export function CampaignDecisionHeader({
   // Status configuratie - rustiger, minder "error" gevoel
   const statusConfig = {
     'safe-to-decide': {
-      icon: CheckCircle,
+      icon: CheckCircle2,
       label: 'Safe to Decide',
       bgColor: 'bg-green-50/70 dark:bg-green-950/10',
       borderColor: 'border-l-green-600',

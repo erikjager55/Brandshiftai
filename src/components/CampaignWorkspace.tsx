@@ -1,840 +1,676 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Separator } from './ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Progress } from './ui/progress';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 import {
-  Lock,
-  X,
-  Plus,
+  ArrowLeft,
+  Share2,
+  Zap,
+  Info,
+  CheckCircle2,
+  Sparkles,
+  Edit,
   ChevronDown,
   ChevronUp,
-  Sparkles,
-  Package,
-  Users,
-  TrendingUp,
+  Plus,
+  FileText,
+  Image,
+  Video,
+  Mail,
+  Globe,
   Target,
-  Pencil,
-  Search,
-  Calendar,
-  Palette,
-  Presentation,
-  Share2,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  Activity,
-  Zap,
-  ArrowLeft
 } from 'lucide-react';
-import { Slider } from './ui/slider';
-import { Checkbox } from './ui/checkbox';
-import { AssetSelectionModal } from './AssetSelectionModal';
-import { CampaignDeliverableButton, CampaignDeliverable } from './campaign-strategy/CampaignDeliverableButton';
-import { mockCampaigns } from '../data/mock-campaigns';
-import { DeliverableCard } from './campaign-strategy/DeliverableCard';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
+import { cn } from '../lib/utils';
+
+interface Deliverable {
+  id: string;
+  name: string;
+  description?: string;
+  type: 'document' | 'image' | 'video' | 'email' | 'website' | 'social';
+  status: 'completed' | 'in-progress' | 'not-started';
+  progress?: number;
+  assignee?: string;
+}
 
 interface Asset {
   id: string;
   name: string;
   type: 'brand' | 'product' | 'persona' | 'trend' | 'research';
-  trustLevel: 'high' | 'medium' | 'low';
-  trustLabel: string;
-  locked?: boolean;
+  validationStatus?: 'validated' | 'unvalidated';
 }
 
-interface NavSection {
+interface Campaign {
   id: string;
-  label: string;
-  ref: React.RefObject<HTMLDivElement>;
+  name: string;
+  type: 'strategic' | 'quick';
+  status: 'active' | 'draft' | 'completed';
+  deliverables: Deliverable[];
+  assets?: Asset[];
+  confidence?: number;
+  contentType?: string;
+  qualityScore?: number;
+  quickSettings?: {
+    targetPersona: string;
+    tone: string;
+    createdAt: string;
+  };
+  team?: { name: string; avatar: string }[];
 }
 
 interface CampaignWorkspaceProps {
-  campaignId?: string | null;
+  campaignId: string;
   initialTab?: 'configure' | 'result';
   onBack?: () => void;
+  onNavigateToDeliverable?: (deliverableId: string) => void;
 }
 
-// Mock campaign data
-const mockCampaigns: Record<string, any> = {
-  '1': {
-    id: '1',
-    name: 'Summer Launch 2025',
-    type: 'campaign-strategy',
-    status: 'ready',
-    objective: 'Brand Awareness',
-    budgetRange: [50, 100],
-    channels: { social: true, email: true, ooh: false },
-    assets: [
-      { id: 'brand-1', name: 'TechNova Brand Identity', type: 'brand', trustLevel: 'high', trustLabel: 'Human Validated', locked: true },
-      { id: 'persona-1', name: 'Gen-Z Early Adopter', type: 'persona', trustLevel: 'medium', trustLabel: 'Research Validated' },
-      { id: 'persona-2', name: 'Tech Enthusiast', type: 'persona', trustLevel: 'medium', trustLabel: 'Research Validated' },
-      { id: 'product-1', name: 'Smart Home Hub', type: 'product', trustLevel: 'high', trustLabel: 'Manual Add' }
-    ],
+// Mock campaigns data
+const mockCampaigns: Record<string, Campaign> = {
+  'camp-1': {
+    id: 'camp-1',
+    name: 'Q1 Product Launch Campaign',
+    type: 'strategic',
+    status: 'active',
+    confidence: 87,
     deliverables: [
-      { id: 'd1', name: 'Campaign Brief', description: 'Core strategy document outlining campaign objectives and approach', type: 'document', status: 'completed', dueDate: 'Jan 15', assignee: 'Mark' },
-      { id: 'd2', name: 'Social Media Assets', description: '15+ graphics for Instagram and TikTok', type: 'image', status: 'completed', dueDate: 'Jan 18', assignee: 'Sarah' },
-      { id: 'd3', name: 'Landing Page', description: 'Responsive campaign landing page with conversion tracking', type: 'website', status: 'in-progress', progress: 65, dueDate: 'Jan 22', assignee: 'Alex' },
-      { id: 'd4', name: 'Email Campaign', description: '5-email drip campaign for existing customers', type: 'email', status: 'completed', dueDate: 'Jan 20', assignee: 'Jenny' },
-      { id: 'd5', name: 'Video Ad', description: '30-second promotional video for social media', type: 'video', status: 'in-progress', progress: 40, dueDate: 'Jan 25', assignee: 'Mike' },
-      { id: 'd6', name: 'Content Calendar', description: '90-day content scheduling and planning document', type: 'document', status: 'not-started', dueDate: 'Jan 28', assignee: 'Lisa' }
-    ]
+      { id: 'd1', name: 'Landing Page', type: 'website', status: 'completed', progress: 100, assignee: 'Sarah' },
+      { id: 'd2', name: 'Email Series', type: 'email', status: 'completed', progress: 100, assignee: 'Mike' },
+      { id: 'd3', name: 'Social Media Assets', type: 'social', status: 'in-progress', progress: 60, assignee: 'Lisa' },
+      { id: 'd4', name: 'Product Video', type: 'video', status: 'in-progress', progress: 40, assignee: 'John' },
+      { id: 'd5', name: 'Blog Post Series', type: 'document', status: 'not-started', progress: 0, assignee: 'Emma' },
+      { id: 'd6', name: 'Ad Creatives', type: 'image', status: 'not-started', progress: 0, assignee: 'David' },
+    ],
+    assets: [
+      { id: 'a1', name: 'Brand Positioning', type: 'brand', validationStatus: 'validated' },
+      { id: 'a2', name: 'Tech Enthusiast Persona', type: 'persona', validationStatus: 'validated' },
+      { id: 'a3', name: 'Product Features', type: 'product', validationStatus: 'validated' },
+      { id: 'a4', name: 'Market Trends 2024', type: 'trend', validationStatus: 'validated' },
+    ],
+    team: [
+      { name: 'Sarah', avatar: 'S' },
+      { name: 'Mike', avatar: 'M' },
+      { name: 'Lisa', avatar: 'L' },
+    ],
   },
-  '2': {
-    id: '2',
-    name: 'Q4 Rebranding Concept',
-    type: 'brand-refresh',
-    status: 'draft',
-    objective: 'Brand Awareness',
-    budgetRange: [30, 70],
-    channels: { social: true, email: false, ooh: true },
-    assets: [
-      { id: 'brand-2', name: 'Legacy Corp Brand', type: 'brand', trustLevel: 'high', trustLabel: 'Human Validated', locked: true }
-    ],
+  'quick-1': {
+    id: 'quick-1',
+    name: 'Blog Post - Jan 20',
+    type: 'quick',
+    status: 'completed',
+    contentType: 'Blog Post',
+    qualityScore: 8.5,
+    confidence: 78,
     deliverables: [
-      { id: 'd7', name: 'Brand Guidelines', type: 'document', status: 'in-progress', progress: 30, dueDate: 'Feb 10', assignee: 'Tom' },
-      { id: 'd8', name: 'Logo Variations', type: 'image', status: 'not-started', dueDate: 'Feb 15', assignee: 'Sarah' },
-      { id: 'd9', name: 'Brand Website', type: 'website', status: 'not-started', dueDate: 'Mar 1', assignee: 'Alex' }
-    ]
+      { id: 'd10', name: 'Blog Post: "5 Ways to Improve Your Brand"', type: 'document', status: 'completed', progress: 100 },
+    ],
+    assets: [
+      { id: 'a10', name: 'Brand Voice Guidelines', type: 'brand', validationStatus: 'validated' },
+      { id: 'a11', name: 'Content Strategy', type: 'research', validationStatus: 'validated' },
+    ],
+    quickSettings: {
+      targetPersona: 'Small Business Owner',
+      tone: 'Professional & Empowering',
+      createdAt: '2024-01-20',
+    },
   },
-  '3': {
-    id: '3',
-    name: 'Go-to-Market: New Service',
-    type: 'campaign-strategy',
-    status: 'generating',
-    objective: 'Lead Generation',
-    budgetRange: [70, 120],
-    channels: { social: true, email: true, ooh: false },
-    assets: [
-      { id: 'brand-3', name: 'ServicePro Brand', type: 'brand', trustLevel: 'high', trustLabel: 'Human Validated', locked: true },
-      { id: 'persona-3', name: 'Enterprise Decision Maker', type: 'persona', trustLevel: 'high', trustLabel: 'Research Validated' }
-    ],
+  'quick-2': {
+    id: 'quick-2',
+    name: 'LinkedIn Post Series',
+    type: 'quick',
+    status: 'active',
+    contentType: 'Social Media',
+    confidence: 82,
     deliverables: [
-      { id: 'd10', name: 'GTM Strategy Doc', type: 'document', status: 'not-started', dueDate: 'Feb 5', assignee: 'Mark' },
-      { id: 'd11', name: 'Sales Deck', type: 'document', status: 'not-started', dueDate: 'Feb 12', assignee: 'Jenny' }
-    ]
-  }
+      { id: 'd11', name: 'LinkedIn Posts (Week 1)', type: 'social', status: 'in-progress', progress: 50 },
+    ],
+    assets: [
+      { id: 'a12', name: 'Brand Positioning', type: 'brand', validationStatus: 'validated' },
+      { id: 'a13', name: 'Professional Persona', type: 'persona', validationStatus: 'validated' },
+    ],
+    quickSettings: {
+      targetPersona: 'Marketing Manager',
+      tone: 'Insightful & Data-driven',
+      createdAt: '2024-01-19',
+    },
+  },
 };
 
-export function CampaignWorkspace({ campaignId, initialTab, onBack }: CampaignWorkspaceProps) {
-  // Load campaign data if campaignId provided
-  const campaignData = campaignId ? mockCampaigns[campaignId] : null;
-  
-  const [parametersExpanded, setParametersExpanded] = useState(true);
-  const [budgetRange, setBudgetRange] = useState(campaignData?.budgetRange || [50, 100]);
-  const [campaignTitle, setCampaignTitle] = useState(campaignData?.name || 'New Campaign');
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [activeSection, setActiveSection] = useState('concept');
-  const [showAssetModal, setShowAssetModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<'configure' | 'result'>(initialTab || 'configure');
-  
-  // Refs for scroll tracking
-  const conceptRef = useRef<HTMLDivElement>(null);
-  const channelMixRef = useRef<HTMLDivElement>(null);
-  const audienceRef = useRef<HTMLDivElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  const contentAreaRef = useRef<HTMLDivElement>(null);
+const deliverableIcons = {
+  document: FileText,
+  image: Image,
+  video: Video,
+  email: Mail,
+  website: Globe,
+  social: Target,
+};
 
-  const navSections: NavSection[] = [
-    { id: 'concept', label: 'Core Concept', ref: conceptRef },
-    { id: 'channelMix', label: 'Channel Mix', ref: channelMixRef },
-    { id: 'audience', label: 'Target Audience', ref: audienceRef },
-    { id: 'actions', label: 'Deliverables', ref: actionsRef }
-  ];
+export function CampaignWorkspace({
+  campaignId,
+  initialTab = 'result',
+  onBack,
+  onNavigateToDeliverable,
+}: CampaignWorkspaceProps) {
+  const campaign = mockCampaigns[campaignId];
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [showConvertModal, setShowConvertModal] = useState(false);
+  const [convertedName, setConvertedName] = useState('');
+  const [showQuickSettings, setShowQuickSettings] = useState(false);
 
-  // Asset states with trust levels - load from campaign data or use defaults
-  const [brandCore] = useState<Asset>(
-    campaignData?.assets?.[0] || {
-      id: 'brand-1',
-      name: 'Brand Core',
-      type: 'brand',
-      trustLevel: 'high',
-      trustLabel: 'Human Validated',
-      locked: true
-    }
-  );
+  if (!campaign) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Campaign not found</h2>
+          <Button onClick={onBack}>Back to Campaigns</Button>
+        </div>
+      </div>
+    );
+  }
 
-  const [assets, setAssets] = useState<Asset[]>(
-    campaignData?.assets?.slice(1) || [
-      {
-        id: 'product-1',
-        name: 'Sneakers',
-        type: 'product',
-        trustLevel: 'medium',
-        trustLabel: 'Manual Add'
-      },
-      {
-        id: 'persona-1',
-        name: 'Gen-Z',
-        type: 'persona',
-        trustLevel: 'low',
-        trustLabel: 'AI Draft'
-      }
-    ]
-  );
+  const isQuickCampaign = campaign.type === 'quick';
+  const completedDeliverables = campaign.deliverables.filter(d => d.status === 'completed').length;
+  const totalDeliverables = campaign.deliverables.length;
+  const progress = (completedDeliverables / totalDeliverables) * 100;
 
-  const [objective, setObjective] = useState(campaignData?.objective || 'Brand Awareness');
-  const [channels, setChannels] = useState(campaignData?.channels || {
-    social: true,
-    email: true,
-    ooh: false
-  });
-
-  // Calculate confidence score based on assets
-  const calculateConfidenceScore = () => {
-    const allAssets = [brandCore, ...assets];
-    const trustScores = {
-      high: 100,
-      medium: 70,
-      low: 40
-    };
-    
-    const totalScore = allAssets.reduce((sum, asset) => sum + trustScores[asset.trustLevel], 0);
-    const maxScore = allAssets.length * 100;
-    return Math.round((totalScore / maxScore) * 100);
+  const handleConvertToFull = () => {
+    setConvertedName(campaign.name);
+    setShowConvertModal(true);
   };
 
-  const confidenceScore = calculateConfidenceScore();
-  const scoreLevel = confidenceScore >= 80 ? 'High' : confidenceScore >= 60 ? 'Medium' : 'Low';
-
-  const removeAsset = (id: string) => {
-    setAssets(assets.filter(a => a.id !== id));
+  const handleConfirmConvert = () => {
+    console.log('Converting to full campaign:', convertedName);
+    // In real app: update campaign type, redirect to configure tab
+    setShowConvertModal(false);
   };
 
-  const handleSelectAsset = (selectedAsset: any) => {
-    const newAsset: Asset = {
-      id: selectedAsset.id,
-      name: selectedAsset.name,
-      type: selectedAsset.type === 'audience' ? 'persona' : selectedAsset.type,
-      trustLevel: selectedAsset.trustLevel,
-      trustLabel: selectedAsset.trustLabel
-    };
-    
-    setAssets([...assets, newAsset]);
-  };
-
-  const handleSelectMultipleAssets = (selectedAssets: any[]) => {
-    const newAssets: Asset[] = selectedAssets.map(selectedAsset => ({
-      id: selectedAsset.id,
-      name: selectedAsset.name,
-      type: selectedAsset.type === 'audience' ? 'persona' : selectedAsset.type,
-      trustLevel: selectedAsset.trustLevel,
-      trustLabel: selectedAsset.trustLabel
-    }));
-    
-    setAssets([...assets, ...newAssets]);
-  };
-
-  const scrollToSection = (sectionId: string) => {
-    const section = navSections.find(s => s.id === sectionId);
-    if (section?.ref.current && contentAreaRef.current) {
-      const container = contentAreaRef.current;
-      const element = section.ref.current;
-      const offsetTop = element.offsetTop - container.offsetTop - 20;
-      container.scrollTo({ top: offsetTop, behavior: 'smooth' });
-      setActiveSection(sectionId);
-    }
-  };
-
-  // Track scroll position
-  useEffect(() => {
-    if (!contentAreaRef.current) return;
-
-    const handleScroll = () => {
-      const container = contentAreaRef.current;
-      if (!container) return;
-
-      const scrollPosition = container.scrollTop + 100;
-
-      for (let i = navSections.length - 1; i >= 0; i--) {
-        const section = navSections[i];
-        if (section.ref.current) {
-          const offsetTop = section.ref.current.offsetTop - container.offsetTop;
-          if (scrollPosition >= offsetTop) {
-            setActiveSection(section.id);
-            break;
-          }
-        }
-      }
-    };
-
-    const container = contentAreaRef.current;
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [activeTab]);
-
-  const trustBadgeStyles = {
-    high: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-300 dark:border-green-700',
-    medium: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-300 dark:border-blue-700',
-    low: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-300 dark:border-orange-700'
-  };
-
-  const assetIconBg = {
-    high: 'bg-green-100 dark:bg-green-900/30',
-    medium: 'bg-blue-100 dark:bg-blue-900/30',
-    low: 'bg-orange-100 dark:bg-orange-900/30'
-  };
-
-  const assetIconColor = {
-    high: 'text-green-600 dark:text-green-400',
-    medium: 'text-blue-600 dark:text-blue-400',
-    low: 'text-orange-600 dark:text-orange-400'
-  };
-
-  const allAssets = [brandCore, ...assets];
-
-  return (
-    <div className="h-screen flex flex-col bg-background">
-      {/* GLOBAL WORKSPACE HEADER */}
-      <div className="border-b border-border bg-background">
-        <div className="px-8 py-4">
-          <div className="flex items-center justify-between">
-            {/* Left - Back Button + Editable Title */}
-            <div className="flex items-center gap-4 flex-1">
-              {onBack && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onBack}
-                  className="flex-shrink-0"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
-                </Button>
-              )}
-              {isEditingTitle ? (
-                <input
-                  type="text"
-                  value={campaignTitle}
-                  onChange={(e) => setCampaignTitle(e.target.value)}
-                  onBlur={() => setIsEditingTitle(false)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') setIsEditingTitle(false);
-                  }}
-                  className="text-xl font-semibold bg-transparent border-b-2 border-primary focus:outline-none flex-1"
-                  autoFocus
-                />
-              ) : (
-                <div className="flex items-center gap-2 group flex-1">
-                  <h2 className="text-xl font-semibold">{campaignTitle}</h2>
-                  <button
-                    onClick={() => setIsEditingTitle(true)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                  </button>
-                </div>
-              )}
+  // Quick Campaign View
+  if (isQuickCampaign) {
+    return (
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
+          <div className="max-w-5xl mx-auto px-8 py-6">
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={onBack}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Campaigns
+              </button>
+              <Button variant="outline" onClick={handleConvertToFull} className="gap-2">
+                <Sparkles className="h-4 w-4" />
+                Convert to Full Campaign
+              </Button>
             </div>
 
-            {/* Right - Actions */}
-            <div className="flex items-center gap-3">
-              {/* Team Avatars */}
-              <div className="flex -space-x-2">
-                <div className="h-8 w-8 rounded-full bg-purple-500 border-2 border-background flex items-center justify-center text-white text-xs font-medium">
-                  MS
-                </div>
-                <div className="h-8 w-8 rounded-full bg-blue-500 border-2 border-background flex items-center justify-center text-white text-xs font-medium">
-                  JD
-                </div>
-                <div className="h-8 w-8 rounded-full bg-green-500 border-2 border-background flex items-center justify-center text-white text-xs font-medium">
-                  AK
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-semibold mb-2">{campaign.name}</h1>
+                <div className="flex items-center gap-2">
+                  <Badge className="rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 flex items-center gap-1">
+                    <Zap className="h-3 w-3" />
+                    Quick Content
+                  </Badge>
+                  <Badge className={cn(
+                    'rounded-full text-xs',
+                    campaign.status === 'active' && 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+                    campaign.status === 'completed' && 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+                  )}>
+                    {campaign.status === 'active' ? 'Active' : 'Completed'}
+                  </Badge>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-              <Button variant="outline" size="sm">
-                <Share2 className="h-3.5 w-3.5 mr-2" />
+        {/* Content */}
+        <div className="max-w-5xl mx-auto px-8 py-8 space-y-6">
+          {/* Upgrade Banner */}
+          <Card className="rounded-xl border p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+            <div className="flex items-start gap-3">
+              <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm mb-1">
+                  This is a Quick Campaign with auto-selected settings
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Convert to full campaign for more control and strategy generation
+                </p>
+                <button
+                  onClick={handleConvertToFull}
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  Convert Now →
+                </button>
+              </div>
+            </div>
+          </Card>
+
+          {/* Research Foundation Card */}
+          <Card className="rounded-xl border p-4 bg-primary/5">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-1">Research Foundation</h3>
+                <p className="text-sm text-muted-foreground">
+                  Auto-selected validated assets
+                </p>
+              </div>
+
+              {/* Asset List */}
+              <div className="space-y-2">
+                {campaign.assets?.map(asset => (
+                  <div
+                    key={asset.id}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-background"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{asset.name}</p>
+                    </div>
+                    {asset.validationStatus === 'validated' && (
+                      <Badge className="rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+                        Validated
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between pt-2 border-t border-border">
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  <span className="font-semibold">{campaign.confidence}% Coverage</span>
+                </div>
+                <button
+                  onClick={handleConvertToFull}
+                  className="text-sm text-primary hover:underline"
+                >
+                  Edit Assets
+                </button>
+              </div>
+            </div>
+          </Card>
+
+          {/* Content Card (Deliverable) */}
+          <Card className="rounded-xl border p-6">
+            <div className="space-y-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    {(() => {
+                      const deliverable = campaign.deliverables[0];
+                      const Icon = deliverable ? deliverableIcons[deliverable.type] : FileText;
+                      return (
+                        <div className="rounded-lg bg-primary/10 p-2">
+                          <Icon className="h-5 w-5 text-primary" />
+                        </div>
+                      );
+                    })()}
+                    <div>
+                      <h3 className="text-xl font-semibold">
+                        {campaign.deliverables[0]?.name || 'Untitled'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">{campaign.contentType}</p>
+                    </div>
+                  </div>
+
+                  {campaign.deliverables[0]?.status === 'completed' && campaign.qualityScore && (
+                    <div className="flex items-center gap-2 mt-4">
+                      <Sparkles className="h-4 w-4 text-amber-500" />
+                      <span className="text-sm font-semibold">
+                        Quality Score: {campaign.qualityScore}/10
+                      </span>
+                    </div>
+                  )}
+
+                  {campaign.deliverables[0]?.status === 'in-progress' && campaign.deliverables[0]?.progress && (
+                    <div className="mt-4 space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-semibold">{campaign.deliverables[0].progress}%</span>
+                      </div>
+                      <Progress value={campaign.deliverables[0].progress} className="h-2" />
+                    </div>
+                  )}
+                </div>
+
+                <Badge className={cn(
+                  'rounded-full text-xs',
+                  campaign.deliverables[0]?.status === 'completed' && 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+                  campaign.deliverables[0]?.status === 'in-progress' && 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+                )}>
+                  {campaign.deliverables[0]?.status === 'completed' ? 'Completed' : 'In Progress'}
+                </Badge>
+              </div>
+
+              <Button
+                size="lg"
+                className="w-full gap-2"
+                onClick={() => onNavigateToDeliverable?.(campaign.deliverables[0]?.id)}
+              >
+                <Edit className="h-4 w-4" />
+                Open in Studio
+              </Button>
+            </div>
+          </Card>
+
+          {/* Quick Settings (Collapsible) */}
+          <Card className="rounded-xl border">
+            <button
+              onClick={() => setShowQuickSettings(!showQuickSettings)}
+              className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors rounded-xl"
+            >
+              <h3 className="text-lg font-semibold">Quick Settings</h3>
+              {showQuickSettings ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
+
+            {showQuickSettings && campaign.quickSettings && (
+              <div className="px-4 pb-4 space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Target Persona</Label>
+                    <p className="text-sm font-semibold mt-1">{campaign.quickSettings.targetPersona}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Tone</Label>
+                    <p className="text-sm font-semibold mt-1">{campaign.quickSettings.tone}</p>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Created</Label>
+                  <p className="text-sm font-semibold mt-1">
+                    {new Date(campaign.quickSettings.createdAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </p>
+                </div>
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* Convert Modal */}
+        <Dialog open={showConvertModal} onOpenChange={setShowConvertModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Upgrade to Strategic Campaign</DialogTitle>
+              <DialogDescription>
+                This will allow you to:
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 py-4">
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm">Add more deliverables</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm">Generate full strategy</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm">Customize knowledge assets</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm">Add team collaboration</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Campaign Name</Label>
+              <Input
+                value={convertedName}
+                onChange={e => setConvertedName(e.target.value)}
+                placeholder="Enter campaign name"
+              />
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowConvertModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleConfirmConvert}>
+                Convert to Campaign
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // Strategic Campaign View
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Campaigns
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center -space-x-2">
+                {campaign.team?.map((member, i) => (
+                  <div
+                    key={i}
+                    className="h-8 w-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs font-semibold text-primary"
+                  >
+                    {member.avatar}
+                  </div>
+                ))}
+              </div>
+              <Button variant="outline" className="gap-2">
+                <Share2 className="h-4 w-4" />
                 Share
               </Button>
             </div>
           </div>
-        </div>
 
-        {/* TAB NAVIGATION */}
-        <div className="px-8">
-          <div className="flex gap-6 border-b border-border">
-            <button
-              onClick={() => setActiveTab('configure')}
-              className={`pb-3 relative ${
-                activeTab === 'configure'
-                  ? 'font-semibold text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Configure Inputs
-              {activeTab === 'configure' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab('result')}
-              className={`pb-3 relative ${
-                activeTab === 'result'
-                  ? 'font-semibold text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Strategy Result
-              {activeTab === 'result' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-              )}
-            </button>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold mb-2">{campaign.name}</h1>
+              <Badge className="rounded-full bg-primary/10 text-primary">
+                Strategic Campaign
+              </Badge>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* CONTENT */}
-        <div className="flex-1 flex flex-col">{/* Changed to flex-col without relative/overflow-hidden */}
-          {activeTab === 'configure' ? (
-            <div className="flex-1 overflow-y-auto">
-              <div className="max-w-4xl mx-auto p-8">{/* Configure content */}
-                <div className="space-y-8">
-                  {/* Knowledge Assets */}
-                  <div>
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold mb-2">Knowledge Assets</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Source quality affects strategic confidence score
-                      </p>
+      {/* Tabs */}
+      <div className="max-w-7xl mx-auto px-8 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="configure">Configure Inputs</TabsTrigger>
+            <TabsTrigger value="result">Strategy Result</TabsTrigger>
+          </TabsList>
+
+          {/* Configure Tab */}
+          <TabsContent value="configure" className="space-y-6 mt-6">
+            <Card className="rounded-xl border p-6">
+              <h2 className="text-xl font-semibold mb-4">Knowledge Assets</h2>
+              <div className="space-y-3">
+                {campaign.assets?.map(asset => (
+                  <div
+                    key={asset.id}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{asset.name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{asset.type}</p>
                     </div>
+                    <Badge className="rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+                      Validated
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+              <Button variant="outline" className="w-full mt-4 gap-2">
+                <Plus className="h-4 w-4" />
+                Add Assets
+              </Button>
+            </Card>
 
-                    <div className="space-y-3">
-                      {/* Brand Core */}
-                      <Card className="border-2">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3 flex-1">
-                              <div className={`h-10 w-10 rounded-lg ${assetIconBg.high} flex items-center justify-center flex-shrink-0`}>
-                                <Lock className={`h-5 w-5 ${assetIconColor.high}`} />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="font-medium text-sm">{brandCore.name}</p>
-                                <Badge
-                                  variant="outline"
-                                  className={`mt-1.5 ${trustBadgeStyles.high} border text-xs`}
-                                >
-                                  <CheckCircle2 className="h-3 w-3 mr-1" />
-                                  {brandCore.trustLabel}
-                                </Badge>
-                              </div>
-                            </div>
+            <Card className="rounded-xl border p-6">
+              <h2 className="text-xl font-semibold mb-4">Campaign Parameters</h2>
+              <p className="text-sm text-muted-foreground">
+                Configure campaign objectives, budget, and channels
+              </p>
+            </Card>
+          </TabsContent>
+
+          {/* Strategy Result Tab */}
+          <TabsContent value="result" className="space-y-6 mt-6">
+            <Tabs defaultValue="deliverables">
+              <TabsList>
+                <TabsTrigger value="concept">Core Concept</TabsTrigger>
+                <TabsTrigger value="channels">Channel Mix</TabsTrigger>
+                <TabsTrigger value="audience">Target Audience</TabsTrigger>
+                <TabsTrigger value="deliverables">Deliverables</TabsTrigger>
+              </TabsList>
+
+              {/* Deliverables Sub-Tab */}
+              <TabsContent value="deliverables" className="space-y-6 mt-6">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold">Deliverables</h2>
+                    <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+                      <span>{completedDeliverables}/{totalDeliverables} complete</span>
+                      <span>•</span>
+                      <span>{Math.round(progress)}% progress</span>
+                    </div>
+                  </div>
+                  <Button className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add Deliverable
+                  </Button>
+                </div>
+
+                {/* Progress Bar */}
+                <Progress value={progress} className="h-2" />
+
+                {/* Deliverables List */}
+                <div className="space-y-4">
+                  {campaign.deliverables.map(deliverable => {
+                    const Icon = deliverableIcons[deliverable.type];
+                    return (
+                      <Card key={deliverable.id} className="rounded-xl border p-4">
+                        <div className="flex items-start gap-4">
+                          <div className="rounded-lg bg-primary/10 p-2">
+                            <Icon className="h-5 w-5 text-primary" />
                           </div>
-                        </CardContent>
-                      </Card>
 
-                      {/* Other Assets */}
-                      {assets.map((asset) => (
-                        <Card key={asset.id} className="border-2">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className={`h-10 w-10 rounded-lg ${assetIconBg[asset.trustLevel]} flex items-center justify-center flex-shrink-0`}>
-                                  {asset.type === 'persona' ? (
-                                    <Users className={`h-5 w-5 ${assetIconColor[asset.trustLevel]}`} />
-                                  ) : (
-                                    <Package className={`h-5 w-5 ${assetIconColor[asset.trustLevel]}`} />
-                                  )}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <p className="font-medium text-sm truncate">{asset.name}</p>
-                                  <Badge
-                                    variant="outline"
-                                    className={`mt-1.5 ${trustBadgeStyles[asset.trustLevel]} border text-xs`}
-                                  >
-                                    {asset.trustLevel === 'low' && <AlertTriangle className="h-3 w-3 mr-1" />}
-                                    {asset.trustLevel === 'medium' && <Info className="h-3 w-3 mr-1" />}
-                                    {asset.trustLabel}
-                                  </Badge>
-                                </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="text-lg font-semibold">{deliverable.name}</h3>
+                                {deliverable.description && (
+                                  <p className="text-sm text-muted-foreground mt-1">
+                                    {deliverable.description}
+                                  </p>
+                                )}
+                              </div>
+                              <Badge className={cn(
+                                'rounded-full text-xs',
+                                deliverable.status === 'completed' && 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+                                deliverable.status === 'in-progress' && 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+                                deliverable.status === 'not-started' && 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
+                              )}>
+                                {deliverable.status === 'completed' && 'Completed'}
+                                {deliverable.status === 'in-progress' && 'In Progress'}
+                                {deliverable.status === 'not-started' && 'Not Started'}
+                              </Badge>
+                            </div>
+
+                            {deliverable.status === 'in-progress' && deliverable.progress !== undefined && (
+                              <div className="mb-3">
+                                <Progress value={deliverable.progress} className="h-1.5" />
+                              </div>
+                            )}
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                {deliverable.assignee && (
+                                  <span>Assigned to {deliverable.assignee}</span>
+                                )}
                               </div>
                               <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
-                                className="h-8 w-8 p-0 flex-shrink-0"
-                                onClick={() => removeAsset(asset.id)}
+                                onClick={() => onNavigateToDeliverable?.(deliverable.id)}
                               >
-                                <X className="h-4 w-4" />
+                                Open in Studio
                               </Button>
                             </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-
-                      <Button variant="outline" size="sm" className="w-full" onClick={() => setShowAssetModal(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Asset
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Parameters */}
-                  <div>
-                    <button
-                      onClick={() => setParametersExpanded(!parametersExpanded)}
-                      className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <h3 className="text-lg font-semibold">Campaign Parameters</h3>
-                      {parametersExpanded ? (
-                        <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                      )}
-                    </button>
-
-                    {parametersExpanded && (
-                      <div className="mt-6 space-y-6">
-                        {/* Objective */}
-                        <div>
-                          <label className="text-sm font-medium mb-3 block">Campaign Objective</label>
-                          <select
-                            value={objective}
-                            onChange={(e) => setObjective(e.target.value)}
-                            className="w-full p-3 text-sm border border-border rounded-lg bg-background"
-                          >
-                            <option>Brand Awareness</option>
-                            <option>Lead Generation</option>
-                            <option>Sales Conversion</option>
-                            <option>Product Launch</option>
-                          </select>
-                        </div>
-
-                        {/* Budget Range */}
-                        <div>
-                          <label className="text-sm font-medium mb-3 block">
-                            Budget Range: €{budgetRange[0]}k - €{budgetRange[1]}k
-                          </label>
-                          <Slider
-                            value={budgetRange}
-                            onValueChange={setBudgetRange}
-                            min={10}
-                            max={500}
-                            step={10}
-                            className="mt-4"
-                          />
-                        </div>
-
-                        {/* Channels */}
-                        <div>
-                          <label className="text-sm font-medium mb-3 block">Distribution Channels</label>
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Checkbox
-                                id="social"
-                                checked={channels.social}
-                                onCheckedChange={(checked) =>
-                                  setChannels({ ...channels, social: checked as boolean })
-                                }
-                              />
-                              <label htmlFor="social" className="text-sm cursor-pointer">
-                                Social Media
-                              </label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Checkbox
-                                id="email"
-                                checked={channels.email}
-                                onCheckedChange={(checked) =>
-                                  setChannels({ ...channels, email: checked as boolean })
-                                }
-                              />
-                              <label htmlFor="email" className="text-sm cursor-pointer">
-                                Email Marketing
-                              </label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Checkbox
-                                id="ooh"
-                                checked={channels.ooh}
-                                onCheckedChange={(checked) =>
-                                  setChannels({ ...channels, ooh: checked as boolean })
-                                }
-                              />
-                              <label htmlFor="ooh" className="text-sm cursor-pointer">
-                                Out of Home (OOH)
-                              </label>
-                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Generate Button */}
-                  <div className="pt-6 border-t border-border">
-                    <Button
-                      className="w-full h-12"
-                      onClick={() => setActiveTab('result')}
-                    >
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Generate Strategy
-                    </Button>
-                  </div>
+                      </Card>
+                    );
+                  })}
                 </div>
-              </div>
-            </div>
-          ) : (
-            // STRATEGY RESULT TAB
-            <div className="h-full flex flex-col relative">
-              {/* Scrollable content with sticky nav inside */}
-              <div className="flex-1 overflow-y-auto" ref={contentAreaRef}>
-                {/* TOP NAVIGATION - STICKY */}
-                <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
-                  <div className="max-w-7xl mx-auto px-8 py-4">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {navSections.map((section) => (
-                        <button
-                          key={section.id}
-                          onClick={() => scrollToSection(section.id)}
-                          className={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-2 ${
-                            activeSection === section.id
-                              ? 'bg-primary text-primary-foreground shadow-sm'
-                              : section.id === 'actions'
-                              ? 'text-primary bg-primary/10 hover:bg-primary/20 font-semibold'
-                              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                          }`}
-                        >
-                          {section.label}
-                          {section.id === 'actions' && (
-                            <Badge 
-                              variant="secondary" 
-                              className="ml-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0 h-4"
-                            >
-                              {campaignData?.deliverables?.filter((d: any) => d.status === 'completed').length || 0}/{campaignData?.deliverables?.length || 0}
-                            </Badge>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              </TabsContent>
 
-                {/* Content area */}
-                <div className="max-w-[900px] mx-auto px-8 py-12 pb-40">
-                  {/* Intelligence Bar */}
-                  <div className="mb-10 pb-8 border-b border-border">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Badge
-                        variant="outline"
-                        className={`${
-                          confidenceScore >= 80
-                            ? 'bg-[#1FD1B2]/10 text-[#1FD1B2] border-[#1FD1B2]/30'
-                            : confidenceScore >= 60
-                            ? 'bg-[#F9FD48]/10 text-[#64748B] border-[#F9FD48]/30'
-                            : 'bg-[#FF6B48]/10 text-[#FF6B48] border-[#FF6B48]/30'
-                        } text-xs font-semibold px-3 py-1.5`}
-                      >
-                        <Activity className="h-3.5 w-3.5 mr-1.5" />
-                        {confidenceScore}% Confidence
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs font-medium">
-                        {scoreLevel} Quality
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Based on {allAssets.length} knowledge assets: {allAssets.map(a => a.name).join(', ')}
-                    </p>
-                  </div>
+              {/* Other Sub-Tabs */}
+              <TabsContent value="concept" className="mt-6">
+                <Card className="rounded-xl border p-6">
+                  <h3 className="text-lg font-semibold mb-4">Core Campaign Concept</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Strategy concept content will be displayed here
+                  </p>
+                </Card>
+              </TabsContent>
 
-                  {/* Document Title */}
-                  <div className="mb-12">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Badge variant="outline" className="bg-[#5252E3]/10 text-[#5252E3] border-[#5252E3]/30">
-                        <Sparkles className="h-3 w-3 mr-1.5" />
-                        AI Generated
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs">
-                        Version 1.0
-                      </Badge>
-                    </div>
-                    <h1 className="text-4xl font-bold tracking-tight mb-2">Strategic Campaign Approach</h1>
-                    <p className="text-lg text-muted-foreground">
-                      Comprehensive strategy for {campaignTitle}
-                    </p>
-                  </div>
+              <TabsContent value="channels" className="mt-6">
+                <Card className="rounded-xl border p-6">
+                  <h3 className="text-lg font-semibold mb-4">Channel Mix Strategy</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Channel strategy content will be displayed here
+                  </p>
+                </Card>
+              </TabsContent>
 
-                  {/* Core Concept Section */}
-                  <div ref={conceptRef} className="mb-20">
-                    <div className="flex items-baseline gap-4 mb-6">
-                      <h2 className="text-2xl font-bold">Core Concept</h2>
-                      <div className="h-px flex-1 bg-border"></div>
-                    </div>
-                    <div className="space-y-6">
-                      <p className="text-base text-foreground/90 leading-relaxed">
-                        The "Summer Launch 2025" campaign positions our sneaker line as essential elements 
-                        of an active, confident summer lifestyle. By emphasizing the synergy between performance 
-                        and style, we create a compelling narrative that resonates with Gen-Z consumers who value 
-                        authenticity and self-expression.
-                      </p>
-                      <p className="text-base text-foreground/90 leading-relaxed">
-                        The core insight: modern consumers don't separate "workout" from "lifestyle"—they demand 
-                        products that seamlessly transition between contexts. Our campaign celebrates this fluidity 
-                        by showcasing real moments of summer motion, from morning runs to evening social gatherings.
-                      </p>
-                      <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/10">
-                        <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
-                          <Target className="h-4 w-4 text-primary" />
-                          Strategic Positioning
-                        </h3>
-                        <p className="text-sm text-foreground/80 leading-relaxed">
-                          We position the brand at the intersection of performance innovation and cultural relevance, 
-                          creating an emotional connection through authentic storytelling that speaks to the values 
-                          of our target audience: freedom, individuality, and preparedness for any moment.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Channel Mix Section */}
-                  <div ref={channelMixRef} className="mb-20">
-                    <div className="flex items-baseline gap-4 mb-6">
-                      <h2 className="text-2xl font-bold">Channel Mix</h2>
-                      <div className="h-px flex-1 bg-border"></div>
-                    </div>
-                    <div className="space-y-6">
-                      <p className="text-base text-foreground/90 leading-relaxed">
-                        Our multi-channel approach prioritizes digital-first platforms where our Gen-Z audience 
-                        spends most of their time, while maintaining strategic presence in high-impact physical 
-                        environments.
-                      </p>
-                      
-                      <div className="grid gap-4">
-                        <div className="bg-card rounded-xl p-6 border border-border hover:border-primary/30 transition-colors">
-                          <div className="flex items-start justify-between mb-3">
-                            <h3 className="font-semibold text-base">Social Media</h3>
-                            <Badge variant="secondary" className="text-xs font-semibold">60% Budget</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            TikTok and Instagram serve as primary channels, leveraging short-form video content, 
-                            influencer partnerships, and user-generated content campaigns. Focus on authentic, 
-                            behind-the-scenes content that humanizes the brand.
-                          </p>
-                        </div>
-
-                        <div className="bg-card rounded-xl p-6 border border-border hover:border-primary/30 transition-colors">
-                          <div className="flex items-start justify-between mb-3">
-                            <h3 className="font-semibold text-base">Email Marketing</h3>
-                            <Badge variant="secondary" className="text-xs font-semibold">25% Budget</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            Personalized email journeys targeting existing customers and newsletter subscribers, 
-                            featuring exclusive early access, product education, and community stories.
-                          </p>
-                        </div>
-
-                        <div className="bg-card rounded-xl p-6 border border-border hover:border-primary/30 transition-colors">
-                          <div className="flex items-start justify-between mb-3">
-                            <h3 className="font-semibold text-base">Strategic Partnerships</h3>
-                            <Badge variant="secondary" className="text-xs font-semibold">15% Budget</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            Collaborations with fitness studios, music festivals, and cultural events where our 
-                            audience naturally congregates, creating memorable brand experiences.
-                          </p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground leading-relaxed pt-2">
-                        All channels work in concert, with content repurposed and optimized for each platform 
-                        while maintaining a consistent brand voice and visual identity. Cross-channel attribution 
-                        tracking ensures we can measure impact and optimize in real-time.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Target Audience Section */}
-                  <div ref={audienceRef} className="mb-20">
-                    <div className="flex items-baseline gap-4 mb-6">
-                      <h2 className="text-2xl font-bold">Target Audience</h2>
-                      <div className="h-px flex-1 bg-border"></div>
-                    </div>
-                    <div className="space-y-6">
-                      <p className="text-base text-foreground/90 leading-relaxed">
-                        Our primary audience consists of Gen-Z individuals aged 18-26 who prioritize experiences 
-                        over possessions and seek brands that align with their values of authenticity, sustainability, 
-                        and self-expression. They are digital natives who consume content primarily through mobile 
-                        devices and value peer recommendations over traditional advertising.
-                      </p>
-
-                      <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl p-8 border border-border">
-                        <h3 className="font-semibold text-base mb-6 flex items-center gap-2">
-                          <Users className="h-4 w-4 text-primary" />
-                          Key Behavioral Characteristics
-                        </h3>
-                        <ul className="grid gap-4">
-                          <li className="flex gap-3 items-start">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                            <span className="text-sm text-foreground/80 leading-relaxed">Active on TikTok and Instagram, consuming 3-5 hours of short-form video content daily</span>
-                          </li>
-                          <li className="flex gap-3 items-start">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                            <span className="text-sm text-foreground/80 leading-relaxed">Value peer recommendations and influencer endorsements over traditional brand messaging</span>
-                          </li>
-                          <li className="flex gap-3 items-start">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                            <span className="text-sm text-foreground/80 leading-relaxed">Seek products that offer both functional performance and aesthetic value</span>
-                          </li>
-                          <li className="flex gap-3 items-start">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                            <span className="text-sm text-foreground/80 leading-relaxed">Willing to pay premium for sustainable and ethically produced products</span>
-                          </li>
-                          <li className="flex gap-3 items-start">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></div>
-                            <span className="text-sm text-foreground/80 leading-relaxed">Expect brands to take authentic stands on social and environmental issues</span>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        Secondary audiences include millennial fitness enthusiasts and early Gen-Z professionals 
-                        who share similar values but may have higher purchasing power and brand loyalty potential.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Campaign Deliverables Section */}
-                  <div ref={actionsRef} className="mb-20">
-                    <div className="flex items-baseline gap-4 mb-6">
-                      <div className="flex items-center gap-3">
-                        <h2 className="text-2xl font-bold">Campaign Deliverables</h2>
-                        <Badge variant="secondary" className="text-xs">
-                          {campaignData?.deliverables?.filter((d: any) => d.status === 'completed').length || 0} / {campaignData?.deliverables?.length || 0} Complete
-                        </Badge>
-                      </div>
-                      <div className="h-px flex-1 bg-border"></div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {campaignData?.deliverables?.map((deliverable: any) => (
-                        <DeliverableCard
-                          key={deliverable.id}
-                          deliverable={deliverable}
-                          onWorkClick={() => {
-                            console.log('Work on deliverable:', deliverable.name);
-                          }}
-                          onViewClick={() => {
-                            console.log('View deliverable:', deliverable.name);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+              <TabsContent value="audience" className="mt-6">
+                <Card className="rounded-xl border p-6">
+                  <h3 className="text-lg font-semibold mb-4">Target Audience</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Audience insights will be displayed here
+                  </p>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* Asset Selection Modal */}
-      {showAssetModal && (
-        <AssetSelectionModal
-          onClose={() => setShowAssetModal(false)}
-          onSelect={handleSelectAsset}
-          onSelectMultiple={handleSelectMultipleAssets}
-        />
-      )}
     </div>
   );
 }

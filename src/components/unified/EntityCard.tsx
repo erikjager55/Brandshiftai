@@ -19,6 +19,7 @@ import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { MessageCircle, ChevronDown, ChevronUp, Sparkles, LucideIcon } from 'lucide-react';
 import { QualityBadge } from '../quality/QualityBadge';
+import { ValidationBadge } from '../validation/ValidationBadge';
 import { calculateQualityScore } from '../../constants/quality-system';
 import { cn } from '../../lib/utils';
 import { ValidationMethodButton, ValidationMethodStatus } from '../validation/ValidationMethodButton';
@@ -74,7 +75,7 @@ export interface EntityCardData {
   
   // Actions
   onClick?: () => void;
-  onChatClick?: () => void; // For persona chat
+  onAction?: (action: 'chat', id: string) => void; // For persona chat
 }
 
 // ============================================================================
@@ -93,7 +94,7 @@ export function EntityCard({ data }: { data: EntityCardData }) {
     validationMethods,
     lastUpdated,
     onClick,
-    onChatClick,
+    onAction,
   } = data;
 
   const [isValidationExpanded, setIsValidationExpanded] = useState(false);
@@ -107,8 +108,9 @@ export function EntityCard({ data }: { data: EntityCardData }) {
   return (
     <Card 
       className={cn(
-        "group overflow-hidden transition-all duration-200 hover:shadow-lg border-2",
-        onClick && "cursor-pointer"
+        "group overflow-hidden rounded-xl border transition-all duration-200",
+        "hover:shadow-md hover:border-primary/30",
+        onClick && "cursor-pointer active:scale-[0.99]"
       )}
       onClick={() => onClick?.()}
     >
@@ -184,18 +186,17 @@ export function EntityCard({ data }: { data: EntityCardData }) {
         )}
 
         {/* Chat Button (Personas Only) */}
-        {onChatClick && entityType === 'persona' && (
+        {onAction && entityType === 'persona' && (
           <Button
-            variant="outline"
             size="sm"
-            className="w-full gap-2 border-primary/20 hover:bg-primary/5 hover:border-primary/40"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChatClick();
+            variant="outline"
+            className="gap-2"
+            onClick={() => {
+              onAction?.('chat', id);
             }}
           >
             <MessageCircle className="h-4 w-4" />
-            Chat met {title}
+            Chat with {title}
           </Button>
         )}
 
@@ -294,9 +295,9 @@ export function EntityCard({ data }: { data: EntityCardData }) {
         {lastUpdated && (
           <div className="pt-3 border-t text-xs text-muted-foreground">
             <div>
-              Last updated: {new Date(lastUpdated).toLocaleDateString('nl-NL', { 
-                day: 'numeric',
-                month: 'short', 
+              Last updated: {new Date(lastUpdated).toLocaleDateString('en-US', { 
+                month: 'short',
+                day: 'numeric', 
                 year: 'numeric'
               })}
             </div>

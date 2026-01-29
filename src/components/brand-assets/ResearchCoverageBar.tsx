@@ -76,7 +76,7 @@ export function ResearchCoverageIndicator({
   const getColor = () => {
     if (percentage === 100) return 'text-green-600 dark:text-green-400';
     if (percentage >= 75) return 'text-blue-600 dark:text-blue-400';
-    if (percentage >= 50) return 'text-yellow-600 dark:text-yellow-400';
+    if (percentage >= 50) return 'text-amber-600 dark:text-amber-400';
     if (percentage > 0) return 'text-orange-600 dark:text-orange-400';
     return 'text-gray-600 dark:text-gray-400';
   };
@@ -84,7 +84,7 @@ export function ResearchCoverageIndicator({
   const getBgColor = () => {
     if (percentage === 100) return 'bg-green-100 dark:bg-green-900/20';
     if (percentage >= 75) return 'bg-blue-100 dark:bg-blue-900/20';
-    if (percentage >= 50) return 'bg-yellow-100 dark:bg-yellow-900/20';
+    if (percentage >= 50) return 'bg-amber-100 dark:bg-amber-900/20';
     if (percentage > 0) return 'bg-orange-100 dark:bg-orange-900/20';
     return 'bg-gray-100 dark:bg-gray-900/20';
   };

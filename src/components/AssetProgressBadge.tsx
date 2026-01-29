@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge } from './ui/badge';
-import { CheckCircle, Clock, Circle } from 'lucide-react';
+import { CheckCircle2, Clock, Circle } from 'lucide-react';
 
 interface AssetProgressBadgeProps {
   progress: 'not-started' | 'in-research' | 'approved';
@@ -16,7 +16,7 @@ export function AssetProgressBadge({ progress, variant = 'default' }: AssetProgr
       case 'approved':
         return {
           variant: 'default' as const,
-          icon: CheckCircle,
+          icon: CheckCircle2,
           text: 'Approved',
           className: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200'
         };

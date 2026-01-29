@@ -3,8 +3,8 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { 
-  CheckCircle, 
-  Circle, 
+  CheckCircle2, 
+  Package, 
   Lock,
   ArrowRight,
   Clock,
@@ -145,7 +145,7 @@ export function BundleMatrixView({ bundles, onSelectBundle }: BundleMatrixViewPr
                         {/* Strategy Tools */}
                         <td className="p-3">
                           <div className="flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3 text-primary" />
+                            <CheckCircle2 className="w-3 h-3 text-primary" />
                             <span className="text-sm font-medium">
                               {strategyToolsUnlocked.length} tool{strategyToolsUnlocked.length !== 1 ? 's' : ''}
                             </span>
@@ -199,7 +199,7 @@ export function BundleMatrixView({ bundles, onSelectBundle }: BundleMatrixViewPr
         <Card>
           <CardContent className="p-12 text-center">
             <div className="text-muted-foreground">
-              <Circle className="w-12 h-12 mx-auto mb-4 opacity-20" />
+              <Package className="w-12 h-12 mx-auto mb-4 opacity-20" />
               <p className="text-lg font-medium mb-2">No bundles found</p>
               <p className="text-sm">Try adjusting your filters to see more results</p>
             </div>

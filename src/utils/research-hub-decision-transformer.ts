@@ -288,12 +288,12 @@ export function generatePrioritizedActions(): PrioritizedActionData[] {
     const item = blocked[0];
     actions.push({
       id: `action-blocked-${item.item.id}`,
-      title: `Valideer ${item.item.type}`,
-      reason: `Dit ${item.item.itemType} blokkeert strategische beslissingen (<50% coverage)`,
-      unlocksDecision: `${item.item.type} wordt bruikbaar in campagnes`,
-      riskReduction: 'Elimineert kritiek risico op misleidende beslissingen',
+      title: `Validate ${item.item.type}`,
+      reason: `This ${item.item.itemType} is blocking strategic decisions (<50% coverage)`,
+      unlocksDecision: `${item.item.type} becomes usable in campaigns`,
+      riskReduction: 'Eliminates critical risk of misleading decisions',
       impact: 'critical',
-      estimatedTime: item.status.missingTopMethods.includes('Workshop') ? '2-4 uur' : '1-2 uur',
+      estimatedTime: item.status.missingTopMethods.includes('Workshop') ? '2-4 hours' : '1-2 hours',
       targetType: item.item.itemType
     });
   }
@@ -304,12 +304,12 @@ export function generatePrioritizedActions(): PrioritizedActionData[] {
     const item = atRisk[0];
     actions.push({
       id: `action-risk-${item.item.id}`,
-      title: `Verbeter ${item.item.type}`,
-      reason: `Dit ${item.item.itemType} heeft beperkte validatie (50-79% coverage)`,
-      unlocksDecision: `${item.item.type} bereikt optimale betrouwbaarheid`,
-      riskReduction: 'Verkleint risico op sub-optimale ROI met 40-60%',
+      title: `Improve ${item.item.type}`,
+      reason: `This ${item.item.itemType} has limited validation (50-79% coverage)`,
+      unlocksDecision: `${item.item.type} reaches optimal reliability`,
+      riskReduction: 'Reduces risk of sub-optimal ROI by 40-60%',
       impact: 'high',
-      estimatedTime: '1-2 uur',
+      estimatedTime: '1-2 hours',
       targetType: item.item.itemType
     });
   }

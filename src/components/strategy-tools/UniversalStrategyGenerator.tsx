@@ -803,9 +803,9 @@ export function UniversalStrategyGenerator({
               <TabsContent value="output" className="space-y-6 mt-6">
                 {hasGenerated && (
                   <div className="space-y-6">
-                    <Alert className="border-emerald-200 bg-emerald-50 dark:bg-emerald-950/20">
-                      <CheckCircle className="h-4 w-4 text-emerald-600" />
-                      <AlertDescription className="text-emerald-900 dark:text-emerald-100">
+                    <Alert className="border-green-200 bg-green-50 dark:bg-green-950/20">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <AlertDescription className="text-green-900 dark:text-green-100">
                         Your {config.title.toLowerCase()} has been generated successfully!
                       </AlertDescription>
                     </Alert>

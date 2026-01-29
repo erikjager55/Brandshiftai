@@ -14,7 +14,7 @@ import {
 import { 
   Users,
   ChevronDown,
-  CheckCircle,
+  CheckCircle2,
   Calendar,
   Download,
   Clock,
@@ -25,7 +25,7 @@ import {
   Globe,
   TrendingUp,
   Mail,
-  Edit3,
+  Edit,
   Save,
   X,
   Package,
@@ -43,7 +43,13 @@ import {
   ClipboardList,
   Link2,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Lock,
+  Unlock,
+  BarChart3,
+  HelpCircle,
+  Inbox,
+  XCircle
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -59,27 +65,22 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
-import { QuestionnaireWorkflowStep } from './QuestionnaireWorkflowStep';
+import { toast } from 'sonner@2.0.3';
+import { QuestionnaireAnalyzeResults } from './QuestionnaireAnalyzeResults';
+import { QuestionnaireStep1Design } from './QuestionnaireStep1Design';
+import { QuestionnaireStep2Distribution } from './QuestionnaireStep2Distribution';
+import { QuestionnaireStep3Recipients } from './QuestionnaireStep3Recipients';
+import { QuestionnaireStep4Collect } from './QuestionnaireStep4Collect';
 
-interface Questionnaire {
+interface Recipient {
   id: string;
   name: string;
-  recipient: string;
   email: string;
   group: string;
   role: string;
-  date: string;
-  selectedAssets: string[];
-  questions?: Question[];
-  linkGenerated: boolean;
   linkSent: boolean;
-  linkUrl?: string;
   responsesReceived: boolean;
-  responseData?: string;
-  questionAnswers?: Record<string, string>;
-  status: 'setup' | 'link-generated' | 'link-sent' | 'responses-received' | 'analyzed';
-  lastEditedBy?: string;
-  lastEditedAt?: Date;
+  responseDate?: string;
 }
 
 interface Question {
@@ -89,7 +90,20 @@ interface Question {
   linkedAssetId?: string;
   options?: string[];
   required: boolean;
-  answer?: string;
+}
+
+interface Questionnaire {
+  id: string;
+  name: string;
+  description: string;
+  status: 'draft' | 'collecting' | 'closed' | 'analyzed';
+  questions: Question[];
+  recipients: Recipient[];
+  selectedAssets: string[];
+  createdDate: string;
+  linkUrl?: string;
+  step: number;
+  lockStatus?: 'locked';
 }
 
 interface QuestionnaireManagerProps {
@@ -100,7 +114,6 @@ interface QuestionnaireManagerProps {
     numberOfQuestionnaires: number;
     selectedAssets: string[];
   };
-  // Session Navigation props
   researchPlanConfig?: {
     entryMode?: 'asset' | 'bundle' | 'questionnaire';
     unlockedAssets?: string[];
@@ -118,10 +131,12 @@ export function QuestionnaireManager({
   onNavigateToAsset,
   onReturnToHub
 }: QuestionnaireManagerProps) {
-  const [viewStatus, setViewStatus] = useState<'in-progress' | 'approved'>('in-progress');
+  const [viewStatus, setViewStatus] = useState<'draft' | 'in-progress' | 'completed'>('in-progress');
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState<string | null>(null);
-  const [editMode, setEditMode] = useState<string | null>(null);
-  const [addAssetDialogOpen, setAddAssetDialogOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [newQuestionnaireName, setNewQuestionnaireName] = useState('');
+  const [newQuestionnaireDescription, setNewQuestionnaireDescription] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('blank');
   
   // Available brand assets
   const availableAssets = [
@@ -137,469 +152,634 @@ export function QuestionnaireManager({
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([
     {
       id: 'q1',
-      name: 'Questionnaire #1',
-      recipient: 'Sarah Johnson',
-      email: 'sarah.johnson@company.com',
-      group: 'Internal Team',
-      role: 'Marketing Director',
-      date: '2025-12-01',
-      selectedAssets: ['vision-mission', 'core-values'],
-      linkGenerated: true,
-      linkSent: true,
+      name: 'Brand Perception Survey',
+      description: 'Quarterly survey to assess brand perception among stakeholders',
+      status: 'collecting',
+      createdDate: '2025-12-01',
       linkUrl: 'https://survey.brand.io/q/abc123',
-      responsesReceived: true,
-      responseData: 'Comprehensive responses received covering all selected assets.',
-      questionAnswers: {},
-      status: 'responses-received',
-      lastEditedBy: 'System',
-      lastEditedAt: new Date()
+      selectedAssets: ['vision-mission', 'core-values', 'brand-positioning'],
+      questions: [
+        {
+          id: 'q1-1',
+          text: 'How well does our brand align with your values?',
+          type: 'rating',
+          linkedAssetId: 'core-values',
+          required: true
+        },
+        {
+          id: 'q1-2',
+          text: 'What comes to mind when you think of our brand?',
+          type: 'text',
+          linkedAssetId: 'brand-positioning',
+          required: true
+        },
+        {
+          id: 'q1-3',
+          text: 'Which aspect of our brand resonates most with you?',
+          type: 'multiple-choice',
+          linkedAssetId: 'vision-mission',
+          options: ['Innovation', 'Reliability', 'Sustainability', 'Community'],
+          required: false
+        }
+      ],
+      recipients: [
+        {
+          id: 'r1',
+          name: 'Sarah Johnson',
+          email: 'sarah.johnson@company.com',
+          group: 'Internal Team',
+          role: 'Marketing Director',
+          linkSent: true,
+          responsesReceived: true,
+          responseDate: '2025-12-05'
+        },
+        {
+          id: 'r2',
+          name: 'Michael Chen',
+          email: 'michael.chen@company.com',
+          group: 'External Stakeholders',
+          role: 'Key Customer',
+          linkSent: true,
+          responsesReceived: true,
+          responseDate: '2025-12-06'
+        },
+        {
+          id: 'r3',
+          name: 'Emily Rodriguez',
+          email: 'emily.rodriguez@partner.com',
+          group: 'Partners',
+          role: 'Strategic Partner',
+          linkSent: true,
+          responsesReceived: false
+        },
+        {
+          id: 'r4',
+          name: 'David Williams',
+          email: 'david.williams@customer.com',
+          group: 'External Stakeholders',
+          role: 'Customer',
+          linkSent: true,
+          responsesReceived: false
+        },
+        {
+          id: 'r5',
+          name: 'Lisa Anderson',
+          email: 'lisa.anderson@company.com',
+          group: 'Internal Team',
+          role: 'Product Manager',
+          linkSent: false,
+          responsesReceived: false
+        }
+      ],
+      step: 5
     },
     {
       id: 'q2',
-      name: 'Questionnaire #2',
-      recipient: 'Michael Chen',
-      email: 'michael.chen@company.com',
-      group: 'External Stakeholders',
-      role: 'Key Customer',
-      date: '2025-12-03',
-      selectedAssets: ['brand-positioning', 'brand-archetype'],
-      linkGenerated: true,
-      linkSent: false,
-      linkUrl: 'https://survey.brand.io/q/def456',
-      responsesReceived: false,
-      status: 'link-generated'
-    },
-    {
-      id: 'q3',
-      name: 'Questionnaire #3',
-      recipient: 'Emily Rodriguez',
-      email: 'emily.rodriguez@company.com',
-      group: 'Internal Team',
-      role: 'Product Manager',
-      date: '2025-12-05',
-      selectedAssets: ['golden-circle'],
-      linkGenerated: false,
-      linkSent: false,
-      responsesReceived: false,
-      status: 'setup'
+      name: 'Customer Experience Survey',
+      description: 'Gathering insights on customer satisfaction and experience',
+      status: 'draft',
+      createdDate: '2025-12-10',
+      selectedAssets: ['brand-archetype', 'social-relevancy'],
+      questions: [
+        {
+          id: 'q2-1',
+          text: 'How would you rate your overall experience with our brand?',
+          type: 'rating',
+          required: true
+        },
+        {
+          id: 'q2-2',
+          text: 'What improvements would you suggest?',
+          type: 'textarea',
+          required: false
+        }
+      ],
+      recipients: [],
+      step: 1
     }
   ]);
 
-  const [numberOfQuestionnaires, setNumberOfQuestionnaires] = useState(
-    initialConfig?.numberOfQuestionnaires || 3
-  );
-
-  const updateQuestionnaire = (id: string, field: string, value: any) => {
-    setQuestionnaires(prev => 
-      prev.map(q => 
-        q.id === id 
-          ? { 
-              ...q, 
-              [field]: value,
-              lastEditedBy: 'Current User',
-              lastEditedAt: new Date()
-            } 
-          : q
-      )
-    );
+  const formatDateString = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  const toggleAssetSelection = (questionnaireId: string, assetId: string) => {
-    setQuestionnaires(prev =>
-      prev.map(q => {
-        if (q.id === questionnaireId) {
-          const selectedAssets = q.selectedAssets.includes(assetId)
-            ? q.selectedAssets.filter(id => id !== assetId)
-            : [...q.selectedAssets, assetId];
-          return { ...q, selectedAssets };
-        }
-        return q;
-      })
-    );
-  };
-
-  const addNewQuestionnaire = () => {
-    const newId = `q${questionnaires.length + 1}`;
-    const newQuestionnaire: Questionnaire = {
-      id: newId,
-      name: `Questionnaire #${questionnaires.length + 1}`,
-      recipient: '',
-      email: '',
-      group: '',
-      role: '',
-      date: new Date().toISOString().split('T')[0],
-      selectedAssets: [],
-      linkGenerated: false,
-      linkSent: false,
-      responsesReceived: false,
-      status: 'setup'
+  const getStatusBadge = (status: Questionnaire['status']) => {
+    const variants = {
+      draft: { color: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300', icon: FileText },
+      collecting: { color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400', icon: Inbox },
+      closed: { color: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400', icon: XCircle },
+      analyzed: { color: 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 }
     };
-    setQuestionnaires(prev => [...prev, newQuestionnaire]);
-    setNumberOfQuestionnaires(prev => prev + 1);
+    const variant = variants[status];
+    const Icon = variant.icon;
+    
+    return (
+      <Badge variant="secondary" className={`${variant.color} capitalize`}>
+        <Icon className="h-3 w-3 mr-1" />
+        {status}
+      </Badge>
+    );
   };
 
-  const deleteQuestionnaire = (id: string) => {
-    setQuestionnaires(prev => prev.filter(q => q.id !== id));
-    setNumberOfQuestionnaires(prev => prev - 1);
+  const getResponseRate = (questionnaire: Questionnaire) => {
+    if (questionnaire.recipients.length === 0) return 0;
+    const responses = questionnaire.recipients.filter(r => r.responsesReceived).length;
+    return Math.round((responses / questionnaire.recipients.length) * 100);
   };
 
-  const generateLink = (id: string) => {
-    const randomId = Math.random().toString(36).substring(7);
-    const linkUrl = `https://survey.brand.io/q/${randomId}`;
-    updateQuestionnaire(id, 'linkUrl', linkUrl);
-    updateQuestionnaire(id, 'linkGenerated', true);
-    updateQuestionnaire(id, 'status', 'link-generated');
+  const getTotalQuestions = () => {
+    return questionnaires.reduce((sum, q) => sum + q.questions.length, 0);
   };
 
-  const copyLink = (url: string) => {
-    navigator.clipboard.writeText(url);
-    alert('Link copied to clipboard!');
+  const getTotalRecipients = () => {
+    return questionnaires.reduce((sum, q) => sum + q.recipients.length, 0);
   };
 
-  const formatDate = (date?: Date) => {
-    if (!date) return 'N/A';
-    return new Date(date).toLocaleDateString();
+  const getTotalResponses = () => {
+    return questionnaires.reduce((sum, q) => {
+      return sum + q.recipients.filter(r => r.responsesReceived).length;
+    }, 0);
   };
 
-  // Calculate workflow steps for each questionnaire
-  const getWorkflowSteps = (questionnaire: Questionnaire) => {
-    return [
-      {
-        step: 1,
-        title: 'Design Questionnaire',
-        description: 'Build questions and link them to brand assets',
-        isCompleted: questionnaire.linkGenerated,
-        isCurrent: questionnaire.status === 'setup'
-      },
-      {
-        step: 2,
-        title: 'Setup Recipients',
-        description: 'Configure recipient details and distribution',
-        isCompleted: questionnaire.linkSent,
-        isCurrent: questionnaire.status === 'link-generated'
-      },
-      {
-        step: 3,
-        title: 'Send & Track',
-        description: 'Distribute questionnaire and monitor responses',
-        isCompleted: questionnaire.responsesReceived,
-        isCurrent: questionnaire.status === 'link-sent'
-      },
-      {
-        step: 4,
-        title: 'Analyze Results',
-        description: 'Review insights and export findings',
-        isCompleted: questionnaire.status === 'analyzed',
-        isCurrent: questionnaire.status === 'responses-received'
-      }
-    ];
+  const getOverallResponseRate = () => {
+    const totalRecipients = getTotalRecipients();
+    if (totalRecipients === 0) return 0;
+    const totalResponses = getTotalResponses();
+    return Math.round((totalResponses / totalRecipients) * 100);
   };
 
-  const inProgressQuestionnaires = questionnaires.filter(q => 
-    q.status !== 'analyzed'
-  );
+  // Filter questionnaires by status
+  const filteredQuestionnaires = questionnaires.filter(q => {
+    if (viewStatus === 'draft') return q.status === 'draft';
+    if (viewStatus === 'in-progress') return q.status === 'collecting' || q.status === 'closed';
+    if (viewStatus === 'completed') return q.status === 'analyzed';
+    return true;
+  });
 
-  const completedQuestionnaires = questionnaires.filter(q => 
-    q.status === 'analyzed'
-  );
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'setup':
-        return <Badge variant="secondary" className="bg-gray-100 text-gray-700">Setup</Badge>;
-      case 'link-generated':
-        return <Badge variant="secondary" className="bg-blue-100 text-blue-700">Link Ready</Badge>;
-      case 'link-sent':
-        return <Badge variant="secondary" className="bg-purple-100 text-purple-700">Sent</Badge>;
-      case 'responses-received':
-        return <Badge variant="secondary" className="bg-green-100 text-green-700">Responses In</Badge>;
-      case 'analyzed':
-        return <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">Completed</Badge>;
-      default:
-        return <Badge variant="secondary">Unknown</Badge>;
+  const handleCreateQuestionnaire = () => {
+    if (!newQuestionnaireName.trim()) {
+      toast.error('Please enter a questionnaire name');
+      return;
     }
+
+    const newQuestionnaire: Questionnaire = {
+      id: `q${Date.now()}`,
+      name: newQuestionnaireName,
+      description: newQuestionnaireDescription,
+      status: 'draft',
+      createdDate: new Date().toISOString().split('T')[0],
+      selectedAssets: [],
+      questions: [],
+      recipients: [],
+      step: 1
+    };
+
+    setQuestionnaires([newQuestionnaire, ...questionnaires]);
+    setSelectedQuestionnaireId(newQuestionnaire.id);
+    setCreateModalOpen(false);
+    setNewQuestionnaireName('');
+    setNewQuestionnaireDescription('');
+    setSelectedTemplate('blank');
+    toast.success('Questionnaire created');
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header with Status Dropdown */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold mb-2">Brand Questionnaire Manager</h2>
-          <p className="text-muted-foreground">
-            Collect brand insights through structured questionnaires
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                {viewStatus === 'in-progress' ? (
-                  <>
-                    <Play className="h-4 w-4 text-blue-600" />
-                    In Progress
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    Approved
-                  </>
-                )}
-                <ChevronDown className="h-4 w-4 opacity-50" />
+    <div className="h-full flex flex-col bg-background">
+      {/* Header */}
+      <div className="border-b border-border bg-card">
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-semibold mb-2">Questionnaire</h1>
+              <p className="text-sm text-muted-foreground">
+                Collect brand insights through structured surveys
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Select value={viewStatus} onValueChange={(value: any) => setViewStatus(value)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button size="sm" onClick={() => setCreateModalOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Questionnaire
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem 
-                onClick={() => setViewStatus('in-progress')}
-                className="cursor-pointer py-3"
-              >
-                <Play className="h-4 w-4 mr-2 text-blue-600" />
-                <span>In Progress</span>
-                {viewStatus === 'in-progress' && <Check className="h-4 w-4 ml-auto" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => setViewStatus('approved')}
-                className="cursor-pointer py-3"
-              >
-                <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                <span>Approved</span>
-                {viewStatus === 'approved' && <Check className="h-4 w-4 ml-auto" />}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <HelpCircle className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">{getTotalQuestions()} Questions</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">{getTotalRecipients()} Recipients</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Inbox className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">{getTotalResponses()} Responses</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">{getOverallResponseRate()}% Response Rate</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* In Progress View */}
-      {viewStatus === 'in-progress' && (
-        <div className="space-y-6">
-          {/* Summary Stats */}
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div>
-                    <div className="text-2xl font-semibold">
-                      {inProgressQuestionnaires.length}/{numberOfQuestionnaires}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Active Questionnaires</div>
-                  </div>
-                  <Separator orientation="vertical" className="h-12" />
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-gray-400"></div>
-                      <span className="text-sm text-muted-foreground">
-                        {questionnaires.filter(q => q.status === 'setup').length} Setup
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                      <span className="text-sm text-muted-foreground">
-                        {questionnaires.filter(q => q.status === 'link-generated' || q.status === 'link-sent').length} Pending
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <span className="text-sm text-muted-foreground">
-                        {questionnaires.filter(q => q.status === 'responses-received').length} Received
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <Button onClick={addNewQuestionnaire}>
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-6 space-y-4">
+          {filteredQuestionnaires.length === 0 ? (
+            <Card className="rounded-xl">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <ClipboardList className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No questionnaires found</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {viewStatus === 'draft' && 'No draft questionnaires yet'}
+                  {viewStatus === 'in-progress' && 'No active questionnaires'}
+                  {viewStatus === 'completed' && 'No completed questionnaires'}
+                </p>
+                <Button size="sm" onClick={() => setCreateModalOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Questionnaire
+                  Create Questionnaire
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Questionnaire List */}
-          <div className="space-y-4">
-            {inProgressQuestionnaires.map((questionnaire) => {
-              const workflowSteps = getWorkflowSteps(questionnaire);
+              </CardContent>
+            </Card>
+          ) : (
+            filteredQuestionnaires.map((questionnaire) => {
               const isExpanded = selectedQuestionnaireId === questionnaire.id;
-              const completedSteps = workflowSteps.filter(s => s.isCompleted).length;
-              const totalSteps = workflowSteps.length;
-              const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
+              const responseRate = getResponseRate(questionnaire);
+              const respondedCount = questionnaire.recipients.filter(r => r.responsesReceived).length;
 
               return (
-                <Card key={questionnaire.id} className="overflow-hidden">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                          <ClipboardList className="h-6 w-6 text-white" />
+                <Card key={questionnaire.id} className="rounded-xl border border-border bg-card">
+                  {/* Card Header */}
+                  <div className="p-4 border-b border-border">
+                    <div className="flex items-start justify-between">
+                      {/* Left Side */}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-lg font-semibold">{questionnaire.name}</h3>
+                          {getStatusBadge(questionnaire.status)}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-semibold">{questionnaire.name}</h3>
-                            {getStatusBadge(questionnaire.status)}
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">
-                              {questionnaire.recipient || 'No recipient set'} 
-                              {questionnaire.role && ` • ${questionnaire.role}`}
-                            </p>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Target className="h-3 w-3" />
-                                {questionnaire.selectedAssets.length} assets selected
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {questionnaire.date}
-                              </span>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <HelpCircle className="h-3 w-3" />
+                            {questionnaire.questions.length} questions
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <Users className="h-3 w-3" />
+                            {questionnaire.recipients.length} recipients
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            Created {formatDateString(questionnaire.createdDate)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Right Side */}
+                      <div className="flex items-center gap-3">
+                        {/* Response Rate Indicator */}
+                        {questionnaire.recipients.length > 0 && (
+                          <div className="flex items-center gap-2">
+                            <div className="relative w-12 h-12">
+                              <svg className="w-12 h-12 transform -rotate-90">
+                                <circle
+                                  cx="24"
+                                  cy="24"
+                                  r="20"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                  fill="none"
+                                  className="text-muted"
+                                />
+                                <circle
+                                  cx="24"
+                                  cy="24"
+                                  r="20"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                  fill="none"
+                                  strokeDasharray={`${2 * Math.PI * 20}`}
+                                  strokeDashoffset={`${2 * Math.PI * 20 * (1 - responseRate / 100)}`}
+                                  className="text-primary transition-all"
+                                />
+                              </svg>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-xs font-semibold">{responseRate}%</span>
+                              </div>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {respondedCount}/{questionnaire.recipients.length}
                             </div>
                           </div>
-                        </div>
-                      </div>
+                        )}
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setSelectedQuestionnaireId(isExpanded ? null : questionnaire.id)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            {isExpanded ? 'Collapse' : 'Expand'} Workflow
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => deleteQuestionnaire(questionnaire.id)}>
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between text-xs mb-2">
-                        <span className="text-muted-foreground">Progress</span>
-                        <span className="font-semibold">{completedSteps}/{totalSteps} steps</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
-                          style={{ width: `${progressPercentage}%` }}
-                        />
+                        {/* Actions Menu */}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Duplicate
+                            </DropdownMenuItem>
+                            {questionnaire.status === 'collecting' && (
+                              <DropdownMenuItem>
+                                <XCircle className="h-4 w-4 mr-2" />
+                                Close Survey
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem className="text-red-600 dark:text-red-400">
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Expandable Workflow */}
-                    <Collapsible open={isExpanded} onOpenChange={(open) => setSelectedQuestionnaireId(open ? questionnaire.id : null)}>
-                      <CollapsibleTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="w-full justify-between hover:bg-muted/50 -mx-2 px-2"
-                        >
-                          <span className="flex items-center gap-2">
-                            <Lightbulb className="h-4 w-4" />
-                            View Questionnaire Workflow
-                          </span>
-                          {isExpanded ? (
-                            <ChevronDown className="h-4 w-4" />
-                          ) : (
-                            <ChevronRight className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-4">
-                        <div className="space-y-3">
-                          {workflowSteps.map((step, index) => (
-                            <QuestionnaireWorkflowStep
-                              key={step.step}
-                              step={step}
-                              questionnaire={questionnaire}
-                              availableAssets={availableAssets}
-                              updateQuestionnaire={updateQuestionnaire}
-                              toggleAssetSelection={toggleAssetSelection}
-                              generateLink={generateLink}
-                              copyLink={copyLink}
-                              formatDate={formatDate}
-                              isLastStep={index === workflowSteps.length - 1}
-                              researchPlanConfig={researchPlanConfig}
-                              onNavigateToAsset={onNavigateToAsset}
-                              onReturnToHub={onReturnToHub}
-                              currentAssetId={assetId}
-                            />
+                  {/* Card Content - Expandable */}
+                  <Collapsible open={isExpanded} onOpenChange={(open) => setSelectedQuestionnaireId(open ? questionnaire.id : null)}>
+                    <CollapsibleTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full justify-between hover:bg-muted/50 rounded-none border-b border-border p-4"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Eye className="h-4 w-4" />
+                          {isExpanded ? 'Hide Details' : 'View Details'}
+                        </span>
+                        <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="p-6 space-y-6">
+                        {/* Horizontal Stepper */}
+                        <div className="flex items-center justify-between py-4">
+                          {[
+                            { id: 1, label: 'Design', status: questionnaire.step >= 1 ? (questionnaire.step > 1 ? 'completed' : 'current') : 'upcoming' },
+                            { id: 2, label: 'Distribution', status: questionnaire.step >= 2 ? (questionnaire.step > 2 ? 'completed' : 'current') : 'upcoming' },
+                            { id: 3, label: 'Recipients', status: questionnaire.step >= 3 ? (questionnaire.step > 3 ? 'completed' : 'current') : 'upcoming' },
+                            { id: 4, label: 'Collect', status: questionnaire.step >= 4 ? (questionnaire.step > 4 ? 'completed' : 'current') : 'upcoming' },
+                            { id: 5, label: 'Analyze', status: questionnaire.step >= 5 ? 'current' : 'upcoming' }
+                          ].map((step, index, array) => (
+                            <React.Fragment key={step.id}>
+                              {/* Step */}
+                              <div className="flex items-center gap-2">
+                                {/* Circle */}
+                                {step.status === 'completed' ? (
+                                  <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                  </div>
+                                ) : step.status === 'current' ? (
+                                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                                    <span className="text-sm font-semibold text-primary-foreground">{step.id}</span>
+                                  </div>
+                                ) : (
+                                  <div className="h-8 w-8 rounded-full bg-muted border border-border flex items-center justify-center">
+                                    <span className="text-sm font-medium text-muted-foreground">{step.id}</span>
+                                  </div>
+                                )}
+                                
+                                {/* Label */}
+                                <span className={`text-sm ${
+                                  step.status === 'completed' ? 'font-medium text-green-600 dark:text-green-400' :
+                                  step.status === 'current' ? 'font-semibold text-primary' :
+                                  'text-muted-foreground'
+                                }`}>
+                                  {step.label}
+                                </span>
+                              </div>
+                              
+                              {/* Connector */}
+                              {index < array.length - 1 && (
+                                <div className={`flex-1 h-0.5 mx-3 ${
+                                  step.status === 'completed' ? 'bg-green-500 dark:bg-green-600' : 'bg-border'
+                                }`} />
+                              )}
+                            </React.Fragment>
                           ))}
                         </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </CardContent>
+
+                        {/* Locked Banner */}
+                        {(questionnaire.status === 'analyzed' || questionnaire.lockStatus === 'locked') && (
+                          <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-4 py-3 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Lock className="h-5 w-5 text-amber-600 dark:text-amber-500" />
+                              <span className="text-sm text-amber-800 dark:text-amber-200">
+                                This questionnaire is locked. Unlock to make changes.
+                              </span>
+                            </div>
+                            <button 
+                              onClick={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, lockStatus: undefined, status: 'closed' } : q
+                                ));
+                                toast.success('Questionnaire unlocked');
+                              }}
+                              className="text-sm font-medium text-primary hover:underline"
+                            >
+                              Unlock Questionnaire
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Divider */}
+                        <div className="border-t border-border pt-4">
+                          {/* Step Content */}
+                          {questionnaire.step === 1 && (
+                            <QuestionnaireStep1Design
+                              questionnaire={questionnaire}
+                              onUpdate={(field, value) => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, [field]: value } : q
+                                ));
+                              }}
+                              onContinue={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 2 } : q
+                                ));
+                                toast.success('Moving to distribution settings');
+                              }}
+                              onBack={() => {
+                                // Optional back handler
+                              }}
+                            />
+                          )}
+
+                          {questionnaire.step === 2 && (
+                            <QuestionnaireStep2Distribution
+                              questionnaire={questionnaire}
+                              onUpdate={(field, value) => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, [field]: value } : q
+                                ));
+                              }}
+                              onContinue={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 3 } : q
+                                ));
+                                toast.success('Moving to recipient management');
+                              }}
+                              onBack={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 1 } : q
+                                ));
+                              }}
+                            />
+                          )}
+
+                          {questionnaire.step === 3 && (
+                            <QuestionnaireStep3Recipients
+                              questionnaire={questionnaire}
+                              onUpdate={(field, value) => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, [field]: value } : q
+                                ));
+                              }}
+                              onContinue={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 4 } : q
+                                ));
+                                toast.success('Moving to collection phase');
+                              }}
+                              onBack={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 2 } : q
+                                ));
+                              }}
+                            />
+                          )}
+
+                          {questionnaire.step === 4 && (
+                            <QuestionnaireStep4Collect
+                              questionnaire={questionnaire}
+                              onUpdate={(field, value) => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, [field]: value } : q
+                                ));
+                              }}
+                              onContinue={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 5, status: 'closed' } : q
+                                ));
+                                toast.success('Moving to analysis');
+                              }}
+                              onBack={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, step: 3 } : q
+                                ));
+                              }}
+                            />
+                          )}
+
+                          {questionnaire.step === 5 && (
+                            <QuestionnaireAnalyzeResults
+                              questionnaire={questionnaire}
+                              onUnlock={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, lockStatus: undefined, status: 'closed' } : q
+                                ));
+                                toast.success('Questionnaire unlocked');
+                              }}
+                              onValidate={() => {
+                                setQuestionnaires(questionnaires.map(q =>
+                                  q.id === questionnaire.id ? { ...q, status: 'analyzed', lockStatus: 'locked' } : q
+                                ));
+                                toast.success('Questionnaire validated and locked');
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </Card>
               );
-            })}
+            })
+          )}
+        </div>
+      </div>
 
-            {inProgressQuestionnaires.length === 0 && (
-              <Card className="border-dashed">
-                <CardContent className="py-12 text-center">
-                  <ClipboardList className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                  <h3 className="font-semibold mb-2">No Active Questionnaires</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Create your first questionnaire to start collecting brand insights
-                  </p>
-                  <Button onClick={addNewQuestionnaire}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Questionnaire
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+      {/* Create Questionnaire Modal */}
+      <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
+        <DialogContent className="sm:max-w-[425px] p-0 gap-0 rounded-2xl">
+          <DialogHeader className="px-6 pt-6 pb-4">
+            <DialogTitle className="text-xl font-semibold">Create New Questionnaire</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground mt-1">
+              Add a new questionnaire to collect brand insights.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="px-6 py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium">Name</Label>
+              <Input
+                id="name"
+                placeholder="Brand Perception Survey"
+                value={newQuestionnaireName}
+                onChange={(e) => setNewQuestionnaireName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description" className="text-sm font-medium">Description</Label>
+              <Textarea
+                id="description"
+                placeholder="Quarterly survey to assess brand perception among stakeholders"
+                value={newQuestionnaireDescription}
+                onChange={(e) => setNewQuestionnaireDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="template" className="text-sm font-medium">Template</Label>
+              <Select
+                value={selectedTemplate}
+                onValueChange={setSelectedTemplate}
+              >
+                <SelectTrigger id="template">
+                  <SelectValue placeholder="Select a template">
+                    {selectedTemplate}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="blank">Blank</SelectItem>
+                  <SelectItem value="brand-perception">Brand Perception</SelectItem>
+                  <SelectItem value="customer-experience">Customer Experience</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Approved View */}
-      {viewStatus === 'approved' && (
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                Completed Questionnaires
-              </CardTitle>
-              <CardDescription>
-                Review finalized questionnaire results and insights
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {completedQuestionnaires.length === 0 ? (
-                <div className="text-center py-12">
-                  <CheckCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-                  <p className="text-muted-foreground">No completed questionnaires yet</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {completedQuestionnaires.map((questionnaire) => (
-                    <Card key={questionnaire.id} className="border-green-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h4 className="font-semibold mb-1">{questionnaire.name}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {questionnaire.recipient} • {questionnaire.role}
-                            </p>
-                          </div>
-                          <Button size="sm">
-                            <Download className="h-3 w-3 mr-1" />
-                            Export
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
+          <DialogFooter className="px-6 py-4 border-t border-border flex justify-end gap-3">
+            <Button type="button" variant="outline" onClick={() => setCreateModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" onClick={handleCreateQuestionnaire}>Create</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

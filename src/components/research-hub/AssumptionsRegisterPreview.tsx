@@ -11,7 +11,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { FileQuestion, CheckCircle, AlertTriangle, XCircle, ArrowRight } from 'lucide-react';
+import { FileQuestion, CheckCircle2, AlertTriangle, XCircle, ArrowRight } from 'lucide-react';
 
 interface Assumption {
   id: string;
@@ -51,7 +51,7 @@ export function AssumptionsRegisterPreview({
 
   const statusConfig = {
     validated: {
-      icon: CheckCircle,
+      icon: CheckCircle2,
       color: 'text-green-600',
       bgColor: 'bg-green-50 dark:bg-green-950/20',
       label: 'Gevalideerd'

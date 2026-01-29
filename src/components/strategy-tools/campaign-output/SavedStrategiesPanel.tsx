@@ -23,7 +23,7 @@ import {
   ChevronDown,
   CheckCircle,
   Clock,
-  Edit2,
+  Edit,
   X,
   Check
 } from 'lucide-react';
@@ -304,7 +304,7 @@ export function SavedStrategiesPanel({
                             Open
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleStartEdit(strategy)}>
-                            <Edit2 className="h-4 w-4 mr-2" />
+                            <Edit className="h-4 w-4 mr-2" />
                             Rename
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onDuplicateStrategy(strategy.id)}>

@@ -8,7 +8,7 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { 
   ArrowLeft, 
-  CheckCircle, 
+  CheckCircle2, 
   TrendingUp, 
   Users, 
   FileText, 
@@ -33,7 +33,7 @@ import {
   Table,
   Loader,
   Zap,
-  Edit3,
+  Edit,
   Heart,
   Globe,
   Package,
@@ -484,7 +484,7 @@ export function ResearchDashboard({
       <div className="flex-1 overflow-y-auto bg-gray-50/50 dark:bg-gray-900/50">
         <div className="sticky top-0 bg-background/95 backdrop-blur z-10 border-b border-border">
           <div className="max-w-6xl mx-auto px-8 py-4">
-            <Button variant="ghost" onClick={onBack} className="-ml-4 text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" onClick={onBack} className="-ml-4 text-muted-foreground hover:text-foreground transition-colors duration-200">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Asset
             </Button>
@@ -559,7 +559,7 @@ export function ResearchDashboard({
                     <ul className="space-y-3">
                       {result.keyInsights?.map((insight: string, i: number) => (
                         <li key={i} className="flex items-start gap-3 text-sm">
-                           <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                           <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
                            <span className="text-foreground/80">{insight}</span>
                         </li>
                       ))}
@@ -572,7 +572,7 @@ export function ResearchDashboard({
                      <CardTitle className="text-lg">Alignment Metrics</CardTitle>
                    </CardHeader>
                    <CardContent>
-                      <div className="space-y-5">
+                      <div className="space-y-6">
                         {result.metrics && Object.entries(result.metrics).map(([key, value]: [string, any]) => (
                           <div key={key}>
                             <div className="flex justify-between text-sm mb-2">
@@ -601,7 +601,7 @@ export function ResearchDashboard({
       <div className="flex-1 overflow-y-auto bg-gradient-to-b from-muted/30 to-background">
         <div className="sticky top-0 bg-background/95 backdrop-blur-md border-b border-border z-10 shadow-sm">
           <div className="max-w-4xl mx-auto px-8 py-5">
-            <Button variant="ghost" onClick={onBack} className="-ml-2 text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" onClick={onBack} className="-ml-2 text-muted-foreground hover:text-foreground transition-colors duration-200">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Asset
             </Button>
@@ -611,14 +611,14 @@ export function ResearchDashboard({
         <div className="max-w-4xl mx-auto px-8 py-10">
           {/* Result View */}
           {aiAnalysisViewStatus === 'result' && (
-            <div className="space-y-10">
+            <div className="space-y-8">
               
               {/* Completion Banner with Action Buttons */}
               <Card className="border-[#1FD1B2]/30 bg-gradient-to-br from-[#1FD1B2]/5 to-emerald-50/50 dark:from-[#1FD1B2]/10 dark:to-emerald-950/20 shadow-lg">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1FD1B2] to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-md">
-                      <CheckCircle className="h-6 w-6 text-white" />
+                      <CheckCircle2 className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-[#1F2937] dark:text-green-400 mb-2">
@@ -694,9 +694,9 @@ export function ResearchDashboard({
                 <Button 
                   size="lg" 
                   onClick={onBack}
-                  className="bg-[#1FD1B2] hover:bg-[#1FD1B2]/90 text-white shadow-sm"
+                  className="bg-[#1FD1B2] hover:bg-[#1FD1B2]/90 text-white shadow-sm transition-colors duration-200"
                 >
-                  <CheckCircle className="h-4 w-4 mr-2" />
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
                   Done
                 </Button>
               </div>
@@ -715,7 +715,7 @@ export function ResearchDashboard({
                   </div>
                   <div>
                     <h1 className="mb-1">AI Brand Analysis</h1>
-                    <p className="text-muted-foreground">Beantwoord de vragen om je brand framework te genereren</p>
+                    <p className="text-muted-foreground">Answer questions to generate your brand framework</p>
                   </div>
                 </div>
                 
@@ -732,7 +732,7 @@ export function ResearchDashboard({
                             </>
                           ) : (
                             <>
-                              <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                              <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
                               <span className="font-medium">Result</span>
                             </>
                           )}
@@ -747,7 +747,7 @@ export function ResearchDashboard({
                         {aiAnalysisViewStatus === 'in-progress' && <Check className="h-4 w-4 ml-auto" />}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setAiAnalysisViewStatus('result')} className="cursor-pointer py-3">
-                        <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                        <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
                         <span>Result</span>
                         {aiAnalysisViewStatus === 'result' && <Check className="h-4 w-4 ml-auto" />}
                       </DropdownMenuItem>
@@ -769,7 +769,7 @@ export function ResearchDashboard({
                   <div className="flex-1">
                     <div className="bg-white dark:bg-slate-800 rounded-2xl rounded-tl-sm p-4 shadow-sm border border-border/50">
                       <p className="text-sm text-foreground">
-                        Hallo! Ik help je graag om je brand framework te ontwikkelen. Laten we beginnen met een paar vragen over jouw bedrijf.
+                        Hello! I'd love to help you develop your brand framework. Let's start with a few questions about your business.
                       </p>
                     </div>
                   </div>
@@ -876,7 +876,7 @@ export function ResearchDashboard({
                 {/* Progress Bar */}
                 <div className="px-6 pt-4 pb-3 border-b border-border/50">
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                    <span className="font-medium">Voortgang</span>
+                    <span className="font-medium">Progress</span>
                     <span className="font-semibold text-[#5252E3]">{Math.round((currentStep / totalSteps) * 100)}%</span>
                   </div>
                   <div className="h-1.5 bg-muted rounded-full overflow-hidden">
@@ -912,7 +912,7 @@ export function ResearchDashboard({
                           disabled={currentStep === 1 || isTyping}
                         >
                           <ArrowLeft className="h-4 w-4 mr-1" />
-                          Vorige
+                          Previous
                         </Button>
                         <Button
                           onClick={() => {
@@ -948,7 +948,7 @@ export function ResearchDashboard({
                             }
                           }}
                           disabled={!questionnaireAnswers[`q${currentStep}` as keyof typeof questionnaireAnswers]?.trim() || isTyping}
-                          className="bg-[#5252E3] hover:bg-[#5252E3]/90 text-white"
+                          className="bg-[#5252E3] hover:bg-[#5252E3]/90 text-white transition-colors duration-200"
                         >
                           {isTyping ? (
                             <>
@@ -967,7 +967,7 @@ export function ResearchDashboard({
                   ) : (
                     <div className="text-center py-4">
                       <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1FD1B2]/10 text-[#1FD1B2] text-sm font-medium mb-4">
-                        <CheckCircle className="h-4 w-4" />
+                        <CheckCircle2 className="h-4 w-4" />
                         All questions answered!
                       </div>
                       <Button
@@ -982,7 +982,7 @@ export function ResearchDashboard({
                           setAiAnalysisViewStatus('result');
                         }}
                         size="lg"
-                        className="bg-gradient-to-r from-[#5252E3] to-[#1FD1B2] hover:from-[#5252E3]/90 hover:to-[#1FD1B2]/90 text-white shadow-lg gap-2"
+                        className="bg-gradient-to-r from-[#5252E3] to-[#1FD1B2] hover:from-[#5252E3]/90 hover:to-[#1FD1B2]/90 text-white shadow-lg gap-2 transition-all duration-200"
                       >
                         <Sparkles className="h-4 w-4" />
                         Generate Brand Report
@@ -1335,7 +1335,7 @@ export function ResearchDashboard({
               <div className="flex items-center space-x-3 mb-2">
                 <h1 className="text-2xl font-semibold">{result.name}</h1>
                 <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
-                  <CheckCircle className="h-3 w-3 mr-1" />
+                  <CheckCircle2 className="h-4 w-4 mr-1" />
                   Completed
                 </Badge>
               </div>

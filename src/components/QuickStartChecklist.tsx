@@ -1,393 +1,272 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { CheckCircle2, Circle, ChevronDown, ChevronUp, X, Lightbulb, Users, Target, Rocket } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { 
-  Rocket, 
-  CheckCircle, 
-  Circle,
-  ArrowRight,
-  X,
-  Sparkles,
-  Target,
-  FlaskConical,
-  Lightbulb,
-  PartyPopper
-} from 'lucide-react';
-
-interface QuickStartStep {
-  id: string;
-  title: string;
-  description: string;
-  icon: any;
-  actionLabel: string;
-  actionRoute: string;
-  checkCondition: () => boolean;
-}
+import { Card } from './ui/card';
+import { Progress } from './ui/progress';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface QuickStartChecklistProps {
-  onNavigate: (route: string) => void;
-  brandAssetsCount: number;
-  personasCount: number;
-  researchPlansCount: number;
-  strategiesCount: number;
+  onNavigate: (section: string) => void;
+  onDismiss?: () => void;
 }
 
-const CHECKLIST_DISMISSED_KEY = 'quick-start-dismissed';
-const CHECKLIST_DISMISSED_DATE_KEY = 'quick-start-dismissed-date';
-const REMIND_AFTER_DAYS = 7;
+interface ChecklistItem {
+  id: string;
+  label: string;
+  completed: boolean;
+  route: string;
+  icon: LucideIcon;
+}
 
-export function QuickStartChecklist({
-  onNavigate,
-  brandAssetsCount,
-  personasCount,
-  researchPlansCount,
-  strategiesCount
-}: QuickStartChecklistProps) {
-  const [isDismissed, setIsDismissed] = useState(true);
-  const [showConfetti, setShowConfetti] = useState(false);
+const CHECKLIST_KEY = 'quick-start-checklist';
+const CHECKLIST_DISMISSED_KEY = 'quick-start-checklist-dismissed';
 
-  // Define steps
-  const steps: QuickStartStep[] = [
+export function QuickStartChecklist({ onNavigate, onDismiss }: QuickStartChecklistProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [items, setItems] = useState<ChecklistItem[]>([
     {
       id: 'brand-asset',
-      title: 'Create your first Brand Asset',
-      description: 'Start with Golden Circle to define your WHY',
-      icon: Target,
-      actionLabel: 'Create Golden Circle',
-      actionRoute: '/foundation/brand-library',
-      checkCondition: () => brandAssetsCount > 0
+      label: 'Create your first brand asset',
+      completed: false,
+      route: 'brand',
+      icon: Lightbulb
     },
     {
       id: 'persona',
-      title: 'Define your Target Persona',
-      description: 'Understand who you\'re creating for',
-      icon: Sparkles,
-      actionLabel: 'Create Persona',
-      actionRoute: '/foundation/personas',
-      checkCondition: () => personasCount > 0
+      label: 'Define your target persona',
+      completed: false,
+      route: 'personas',
+      icon: Users
     },
     {
       id: 'research',
-      title: 'Run your first Research',
-      description: 'Validate your assumptions with data',
-      icon: FlaskConical,
-      actionLabel: 'Plan Research',
-      actionRoute: '/research/plans',
-      checkCondition: () => researchPlansCount > 0
+      label: 'Plan your first research session',
+      completed: false,
+      route: 'research',
+      icon: Target
     },
     {
-      id: 'strategy',
-      title: 'Generate Campaign Strategy',
-      description: 'Let AI create your first strategy',
-      icon: Lightbulb,
-      actionLabel: 'Go to Strategy Hub',
-      actionRoute: '/strategy/hub',
-      checkCondition: () => strategiesCount > 0
+      id: 'campaign',
+      label: 'Generate your first campaign strategy',
+      completed: false,
+      route: 'strategy',
+      icon: Rocket
     }
-  ];
+  ]);
 
-  // Calculate completion
-  const completedSteps = steps.filter(step => step.checkCondition());
-  const completionPercentage = Math.round((completedSteps.length / steps.length) * 100);
-  const isComplete = completedSteps.length === steps.length;
-
-  // Check if should show
+  // Load checklist state from localStorage
   useEffect(() => {
-    const dismissed = localStorage.getItem(CHECKLIST_DISMISSED_KEY);
-    const dismissedDate = localStorage.getItem(CHECKLIST_DISMISSED_DATE_KEY);
-
-    if (!dismissed) {
-      // Never dismissed - show it
-      setIsDismissed(false);
-    } else if (dismissedDate) {
-      // Check if enough time has passed to show again
-      const daysSinceDismissed = (Date.now() - parseInt(dismissedDate)) / (1000 * 60 * 60 * 24);
-      if (daysSinceDismissed >= REMIND_AFTER_DAYS && !isComplete) {
-        // Show again if not complete
-        setIsDismissed(false);
-        localStorage.removeItem(CHECKLIST_DISMISSED_KEY);
-        localStorage.removeItem(CHECKLIST_DISMISSED_DATE_KEY);
-      } else {
-        setIsDismissed(true);
+    const savedData = localStorage.getItem(CHECKLIST_KEY);
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        // Re-add icon functions based on id (icons can't be serialized)
+        const iconMap: Record<string, LucideIcon> = {
+          'brand-asset': Lightbulb,
+          'persona': Users,
+          'research': Target,
+          'campaign': Rocket
+        };
+        const restoredItems = parsed.map((item: any) => ({
+          ...item,
+          icon: iconMap[item.id] || Circle
+        }));
+        setItems(restoredItems);
+      } catch (e) {
+        // Ignore parse errors
       }
     }
-  }, [isComplete]);
+  }, []);
 
-  // Show confetti when complete
+  // Save checklist state to localStorage (without icon functions)
   useEffect(() => {
-    if (isComplete && !isDismissed) {
-      setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 3000);
-      return () => clearTimeout(timer);
+    const itemsToSave = items.map(({ icon, ...rest }) => rest);
+    localStorage.setItem(CHECKLIST_KEY, JSON.stringify(itemsToSave));
+  }, [items]);
+
+  const completedCount = items.filter(item => item.completed).length;
+  const totalCount = items.length;
+  const progressPercentage = (completedCount / totalCount) * 100;
+  const allCompleted = completedCount === totalCount;
+
+  const handleItemClick = (item: ChecklistItem) => {
+    if (!item.completed) {
+      // Mark as completed
+      setItems(prev =>
+        prev.map(i =>
+          i.id === item.id ? { ...i, completed: true } : i
+        )
+      );
     }
-  }, [isComplete, isDismissed]);
+    // Navigate to the route
+    onNavigate(item.route);
+  };
 
   const handleDismiss = () => {
-    setIsDismissed(true);
     localStorage.setItem(CHECKLIST_DISMISSED_KEY, 'true');
-    localStorage.setItem(CHECKLIST_DISMISSED_DATE_KEY, Date.now().toString());
+    onDismiss?.();
   };
 
-  const handleStepClick = (route: string) => {
-    onNavigate(route);
-  };
-
-  // Don't render if dismissed
-  if (isDismissed) {
-    return null;
-  }
+  const currentItemIndex = items.findIndex(item => !item.completed);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
+      className="fixed top-20 right-6 z-40 w-72"
     >
-      <Card className="relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-background">
-        {/* Confetti effect overlay */}
-        <AnimatePresence>
-          {showConfetti && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 pointer-events-none z-10 overflow-hidden"
-            >
-              {[...Array(30)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute"
-                  initial={{
-                    x: '50%',
-                    y: '50%',
-                    scale: 0,
-                    rotate: 0
-                  }}
-                  animate={{
-                    x: `${Math.random() * 100}%`,
-                    y: `${Math.random() * 100}%`,
-                    scale: [0, 1, 0.8, 0],
-                    rotate: Math.random() * 360
-                  }}
-                  transition={{
-                    duration: 2,
-                    delay: Math.random() * 0.5,
-                    ease: 'easeOut'
-                  }}
-                >
-                  <PartyPopper className="h-6 w-6 text-primary" />
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Close button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-4 right-4 h-8 w-8 z-20"
-          onClick={handleDismiss}
+      <Card className="rounded-xl border bg-card shadow-lg overflow-hidden">
+        {/* Header */}
+        <div
+          className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/50 transition-colors"
+          onClick={() => setIsCollapsed(!isCollapsed)}
         >
-          <X className="h-4 w-4" />
-        </Button>
-
-        <CardHeader className="pb-4">
-          <div className="flex items-start gap-4">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shrink-0">
-              {isComplete ? (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 10 }}
-                >
-                  <PartyPopper className="h-6 w-6 text-primary-foreground" />
-                </motion.div>
-              ) : (
-                <Rocket className="h-6 w-6 text-primary-foreground" />
-              )}
-            </div>
-            <div className="flex-1">
-              <CardTitle className="text-xl">
-                {isComplete ? '🎉 All Set! You\'re Ready!' : 'Get Started'}
-              </CardTitle>
-              <CardDescription className="mt-1">
-                {isComplete
-                  ? 'You\'ve completed all the essentials. Your strategic foundation is ready!'
-                  : 'Complete these steps to unlock the full power of the platform'}
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          {/* Steps */}
-          <div className="space-y-3">
-            {steps.map((step, index) => {
-              const isCompleted = step.checkCondition();
-              const Icon = step.icon;
-
-              return (
-                <motion.div
-                  key={step.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`group relative flex items-start gap-4 p-4 rounded-lg border-2 transition-all ${
-                    isCompleted
-                      ? 'border-green-500/30 bg-green-50/50 dark:bg-green-900/10'
-                      : 'border-border bg-background hover:border-primary/30 hover:bg-muted/50'
-                  }`}
-                >
-                  {/* Check icon */}
-                  <div className="shrink-0 mt-0.5">
-                    <AnimatePresence mode="wait">
-                      {isCompleted ? (
-                        <motion.div
-                          key="checked"
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          exit={{ scale: 0, rotate: 180 }}
-                          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                        >
-                          <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="unchecked"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0 }}
-                        >
-                          <Circle className="h-6 w-6 text-muted-foreground" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Icon className={`h-4 w-4 ${isCompleted ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}`} />
-                          <h4 className={`font-medium ${isCompleted ? 'line-through text-muted-foreground' : ''}`}>
-                            {index + 1}. {step.title}
-                          </h4>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {step.description}
-                        </p>
-                      </div>
-
-                      {/* Action button */}
-                      {!isCompleted && (
-                        <Button
-                          size="sm"
-                          onClick={() => handleStepClick(step.actionRoute)}
-                          className="gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          {step.actionLabel}
-                          <ArrowRight className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Progress bar */}
-          <div className="space-y-2 pt-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium">Progress</span>
-              <span className="text-muted-foreground">
-                {completedSteps.length}/{steps.length} complete
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-semibold text-sm">Quick Start</h3>
+              <span className="text-xs text-muted-foreground">
+                {completedCount}/{totalCount}
               </span>
             </div>
-            <div className="relative h-3 rounded-full bg-muted overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-primary/60"
-                initial={{ width: 0 }}
-                animate={{ width: `${completionPercentage}%` }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-              />
-              <motion.div
-                className="absolute inset-y-0 left-0 rounded-full bg-white/30"
-                initial={{ width: 0, x: '-100%' }}
-                animate={{ 
-                  width: `${completionPercentage}%`,
-                  x: 0
-                }}
-                transition={{ 
-                  duration: 0.5, 
-                  ease: 'easeOut',
-                  delay: 0.2 
-                }}
-              />
-            </div>
-            <p className="text-xs text-center text-muted-foreground">
-              {isComplete
-                ? '✨ You\'re all set! Keep building your strategic foundation.'
-                : `${completionPercentage}% complete • Keep going!`}
-            </p>
+            <Progress value={progressPercentage} className="h-2" />
           </div>
+          <div className="ml-3 flex items-center gap-2">
+            {!allCompleted && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsCollapsed(!isCollapsed);
+                }}
+              >
+                {isCollapsed ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronUp className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
 
-          {/* Complete message */}
-          {isComplete && (
+        {/* Checklist Items */}
+        <AnimatePresence>
+          {!isCollapsed && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              className="p-4 rounded-lg border-2 border-green-500/30 bg-green-50 dark:bg-green-900/20"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="border-t border-border"
             >
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <h4 className="font-medium text-green-900 dark:text-green-100 mb-1">
-                    Great Job! 🎊
-                  </h4>
-                  <p className="text-sm text-green-700 dark:text-green-300">
-                    You've completed the essentials. Now you can explore advanced features, 
-                    run more research, and generate powerful strategies based on your validated data.
-                  </p>
-                </div>
+              <div className="p-4 space-y-2">
+                {items.map((item, index) => {
+                  const Icon = item.icon;
+                  const isCurrent = index === currentItemIndex;
+                  
+                  return (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => handleItemClick(item)}
+                      className={`
+                        flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200
+                        ${item.completed 
+                          ? 'hover:bg-muted/30' 
+                          : isCurrent 
+                            ? 'bg-primary/10 hover:bg-primary/15 ring-1 ring-primary/20' 
+                            : 'hover:bg-muted/50'
+                        }
+                      `}
+                    >
+                      {item.completed ? (
+                        <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 shrink-0" />
+                      ) : (
+                        <Circle 
+                          className={`h-4 w-4 shrink-0 ${
+                            isCurrent 
+                              ? 'text-primary animate-pulse' 
+                              : 'text-muted-foreground'
+                          }`} 
+                        />
+                      )}
+                      <Icon className={`h-4 w-4 shrink-0 ${
+                        item.completed 
+                          ? 'text-muted-foreground' 
+                          : isCurrent 
+                            ? 'text-primary' 
+                            : 'text-muted-foreground'
+                      }`} />
+                      <span
+                        className={`text-sm flex-1 ${
+                          item.completed
+                            ? 'line-through text-muted-foreground'
+                            : isCurrent
+                              ? 'font-medium'
+                              : ''
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    </motion.div>
+                  );
+                })}
+
+                {/* All Complete Message */}
+                {allCompleted && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="pt-4 border-t border-border mt-4"
+                  >
+                    <div className="text-center space-y-3">
+                      <div className="text-2xl">🎉</div>
+                      <p className="text-sm font-semibold">All done!</p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDismiss();
+                        }}
+                        className="w-full"
+                      >
+                        Dismiss
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           )}
-
-          {/* Dismiss hint */}
-          {!isComplete && (
-            <p className="text-xs text-center text-muted-foreground pt-2">
-              💡 You can dismiss this checklist. We'll remind you in {REMIND_AFTER_DAYS} days if not complete.
-            </p>
-          )}
-        </CardContent>
+        </AnimatePresence>
       </Card>
     </motion.div>
   );
 }
 
-// Hook to manually show checklist (for testing)
-export function useQuickStartChecklist() {
-  const showChecklist = () => {
-    localStorage.removeItem(CHECKLIST_DISMISSED_KEY);
-    localStorage.removeItem(CHECKLIST_DISMISSED_DATE_KEY);
-    window.location.reload();
-  };
+// Hook to check if checklist should show
+export function useShouldShowChecklist(): boolean {
+  const [shouldShow, setShouldShow] = useState(false);
 
-  const hideChecklist = () => {
-    localStorage.setItem(CHECKLIST_DISMISSED_KEY, 'true');
-    localStorage.setItem(CHECKLIST_DISMISSED_DATE_KEY, Date.now().toString());
-  };
+  useEffect(() => {
+    const dismissed = localStorage.getItem(CHECKLIST_DISMISSED_KEY);
+    const tourCompleted = localStorage.getItem('welcome-modal-shown');
+    setShouldShow(!!tourCompleted && !dismissed);
+  }, []);
 
-  return { showChecklist, hideChecklist };
+  return shouldShow;
 }
 
-// Reset function for testing
-export function resetQuickStartChecklist() {
+// Function to reset checklist (for testing)
+export function resetChecklist() {
+  localStorage.removeItem(CHECKLIST_KEY);
   localStorage.removeItem(CHECKLIST_DISMISSED_KEY);
-  localStorage.removeItem(CHECKLIST_DISMISSED_DATE_KEY);
 }

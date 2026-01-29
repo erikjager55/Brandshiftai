@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { 
   Plus, Building2, Mail, Phone, Globe, ExternalLink, 
-  MoreVertical, Edit2, Trash2, Eye, FileText, Calendar 
+  MoreVertical, Edit, Trash2, Eye, FileText, Calendar 
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -109,7 +109,7 @@ export function ClientManagementPage() {
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Edit2 className="h-3 w-3 mr-2" />
+                        <Edit className="h-3 w-3 mr-2" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem

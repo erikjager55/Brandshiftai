@@ -25,9 +25,9 @@ export function DecisionAnalysisCompact({ analysis, onGenerateBrief }: DecisionA
   const readinessConfig = {
     ready: {
       icon: CheckCircle2,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-200',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200',
     },
     uncertain: {
       icon: AlertCircle,
@@ -54,7 +54,7 @@ export function DecisionAnalysisCompact({ analysis, onGenerateBrief }: DecisionA
 
   // Metric status configuration
   const metricConfig = {
-    good: { color: 'text-emerald-600' },
+    good: { color: 'text-green-600' },
     warning: { color: 'text-amber-600' },
     critical: { color: 'text-red-600' },
   };
@@ -121,7 +121,7 @@ export function DecisionAnalysisCompact({ analysis, onGenerateBrief }: DecisionA
           
           return (
             <Card key={block.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
+              <CardContent className="p-6">
                 
                 {/* Question */}
                 <h3 className="font-semibold text-slate-900 mb-3 text-sm">
@@ -180,7 +180,7 @@ export function DecisionAnalysisCompact({ analysis, onGenerateBrief }: DecisionA
 
       {/* Compact Footer */}
       <Card className="bg-slate-50 border-slate-200">
-        <CardContent className="p-5">
+        <CardContent className="p-6">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-6">
               <div>

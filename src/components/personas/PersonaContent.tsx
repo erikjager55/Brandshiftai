@@ -3,6 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 import { 
   User, 
   Target, 
@@ -20,8 +21,10 @@ import {
   Sparkles,
   Brain,
   Tag,
+  Camera,
 } from 'lucide-react';
 import { Persona } from '../../types/persona';
+import { toast } from 'sonner';
 
 interface PersonaContentProps {
   persona: Persona;
@@ -53,6 +56,9 @@ export function PersonaContent({ persona, isEditing, hasToolbar = false, onUpdat
     values: persona.values || [],
     interests: persona.interests || [],
   });
+
+  const [isGeneratingPhoto, setIsGeneratingPhoto] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(persona.avatar || '');
 
   const sections = [
     {
@@ -155,6 +161,44 @@ export function PersonaContent({ persona, isEditing, hasToolbar = false, onUpdat
     setItems(newItems);
   };
 
+  // Check if all demographics fields are filled
+  const areAllDemographicsFilled = () => {
+    return Object.values(demographics).every(value => value.trim() !== '');
+  };
+
+  const handleGenerateProfilePhoto = async () => {
+    if (!areAllDemographicsFilled()) {
+      toast.error('Vul eerst alle demografische gegevens in');
+      return;
+    }
+
+    setIsGeneratingPhoto(true);
+    
+    try {
+      // Create a search query based on demographics
+      const searchQuery = `${demographics.age} ${demographics.occupation} professional portrait`;
+      
+      // Simulate AI generation time
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Use a placeholder for now - in production this would call an image generation API
+      const generatedPhotoUrl = `https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop`;
+      
+      setProfilePhoto(generatedPhotoUrl);
+      
+      // Update persona if onUpdate callback exists
+      if (onUpdate) {
+        onUpdate({ avatar: generatedPhotoUrl });
+      }
+      
+      toast.success('Profielfoto succesvol gegenereerd!');
+    } catch (error) {
+      toast.error('Er ging iets mis bij het genereren van de foto');
+    } finally {
+      setIsGeneratingPhoto(false);
+    }
+  };
+
   const renderDemographicsCard = () => {
     const section = sections[0];
     const Icon = section.icon;
@@ -187,6 +231,54 @@ export function PersonaContent({ persona, isEditing, hasToolbar = false, onUpdat
 
           {/* Passport Content */}
           <div className="p-6">
+            {/* Profile Photo Section */}
+            <div className="mb-6 pb-6 border-b-2 border-dashed border-gray-300 dark:border-gray-700">
+              <div className="flex items-center gap-6">
+                {/* Photo Display */}
+                <div className="flex-shrink-0">
+                  {profilePhoto ? (
+                    <div className="relative w-32 h-32 rounded-xl overflow-hidden border-4 border-blue-200 dark:border-blue-800 shadow-lg">
+                      <img 
+                        src={profilePhoto} 
+                        alt="Profile" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-32 h-32 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 border-4 border-dashed border-blue-300 dark:border-blue-700 flex items-center justify-center">
+                      <User className="h-16 w-16 text-blue-400 dark:text-blue-600" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Generate Button and Info */}
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <h4 className="font-semibold text-sm text-foreground mb-1">Profile Picture</h4>
+                    <p className="text-xs text-muted-foreground">
+                      {profilePhoto 
+                        ? 'AI-generated profile picture based on demographics' 
+                        : 'Complete all demographics to generate a profile picture'}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleGenerateProfilePhoto}
+                    disabled={!areAllDemographicsFilled() || isGeneratingPhoto}
+                    size="sm"
+                    className="transition-colors duration-200"
+                  >
+                    <Camera className={`h-4 w-4 mr-2 ${isGeneratingPhoto ? 'animate-pulse' : ''}`} />
+                    {isGeneratingPhoto ? 'Generating...' : profilePhoto ? 'Regenerate Photo' : 'Generate Photo'}
+                  </Button>
+                  {!areAllDemographicsFilled() && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                      ⚠️ Vul alle velden hieronder in om een foto te kunnen genereren
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
               {section.fields?.map((field, idx) => {
                 const FieldIcon = field.icon;
@@ -303,9 +395,27 @@ export function PersonaContent({ persona, isEditing, hasToolbar = false, onUpdat
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground italic">
-                    No {section.title.toLowerCase()} defined yet
-                  </p>
+                  <div className="text-center py-6">
+                    <p className="text-sm text-muted-foreground italic mb-3">
+                      No {section.title.toLowerCase()} defined yet
+                    </p>
+                    {section.key === 'strategic-implications' && (
+                      <div className="flex gap-2 justify-center">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            // Switch to edit mode to add implications manually
+                            toast.info('Switch to edit mode to add strategic implications');
+                          }}
+                          className="gap-2"
+                        >
+                          <Sparkles className="h-4 w-4" />
+                          Generate with AI
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             )}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
-  Search, 
   Filter, 
   Grid, 
   List,
@@ -14,9 +13,9 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
+import { SearchBar } from './ui/SearchBar';
 import { 
   Select, 
   SelectContent, 
@@ -147,8 +146,8 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
     });
 
     // Show success toast
-    toast.success('AI Exploration voltooid!', {
-      description: `+35% research vertrouwen toegevoegd aan ${aiExplorationPersona.name}`,
+    toast.success('AI Exploration completed!', {
+      description: `+35% research confidence added to ${aiExplorationPersona.name}`,
       duration: 5000,
     });
   };
@@ -165,6 +164,20 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
         onNavigateToAIExploration={() => {
           setAIExplorationPersona(selectedPersona);
           setSelectedPersona(null);
+        }}
+        onNavigateToInterviews={() => {
+          toast.info('Navigating to Interviews results for ' + selectedPersona.name);
+          // TODO: Implement interviews results navigation
+        }}
+        onNavigateToQuestionnaire={() => {
+          toast.info('Navigating to Questionnaire progress for ' + selectedPersona.name);
+          // TODO: Implement questionnaire navigation
+        }}
+        onNavigateToUserTesting={() => {
+          toast('User Testing - Coming Soon', {
+            description: 'User testing validation is currently in development. Check back soon!',
+            duration: 4000,
+          });
         }}
       />
     );
@@ -216,7 +229,7 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
           <div className="grid md:grid-cols-3 gap-6">
             <Card>
               <CardContent className="p-6">
-                <div className="text-3xl font-bold text-emerald-600 mb-1">{readyCount}</div>
+                <div className="text-3xl font-bold text-green-600 mb-1">{readyCount}</div>
                 <div className="text-sm text-muted-foreground">Ready for strategic use</div>
               </CardContent>
             </Card>
@@ -236,15 +249,12 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
 
           {/* BLOCK 2: Search and Filters */}
           <div className="flex items-center gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search personas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search personas..."
+              className="flex-1"
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
@@ -275,6 +285,8 @@ export function PersonasSection({ onNavigate }: PersonasSectionProps) {
             onPersonaClick={(persona) => setSelectedPersona(persona)}
             onMethodClick={handleMethodClick}
             onChatClick={(persona) => setChatPersona(persona)}
+            isFiltered={searchQuery.length > 0 || filterStatus !== 'all'}
+            onCreateClick={() => setShowCreateDialog(true)}
           />
         </div>
       </div>

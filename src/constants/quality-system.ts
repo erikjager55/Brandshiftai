@@ -30,6 +30,17 @@ export type QualityLevel =
   | 'perfect';    // 95-100% - Perfect quality, exceptional
 
 // ============================================================================
+// VALIDATION LEVELS (For Brand Assets)
+// ============================================================================
+
+export type ValidationLevel = 
+  | 'not-started'  // 0%       - Not started
+  | 'blocked'      // 1-49%    - Not usable - blocks decisions
+  | 'limited'      // 50-79%   - Limited - usable with caution
+  | 'ready'        // 80-99%   - Ready - minor gaps
+  | 'validated';   // 100%     - Fully validated
+
+// ============================================================================
 // QUALITY CONFIGURATION
 // ============================================================================
 
@@ -292,3 +303,92 @@ export const QUALITY_SIZE_CONFIGS: Record<QualitySize, {
     container: 'gap-3'
   }
 };
+
+// ============================================================================
+// VALIDATION BADGE SYSTEM (For Brand Assets)
+// ============================================================================
+
+import { Circle } from 'lucide-react';
+
+export interface ValidationConfig {
+  level: ValidationLevel;
+  label: string;
+  icon: LucideIcon;
+  badgeClasses: string;
+  darkBadgeClasses: string;
+  iconClasses: string;
+  minScore: number;
+  maxScore: number;
+}
+
+export const VALIDATION_LEVELS: Record<ValidationLevel, ValidationConfig> = {
+  'not-started': {
+    level: 'not-started',
+    label: 'Not started',
+    icon: Circle,
+    badgeClasses: 'bg-gray-100 text-gray-600',
+    darkBadgeClasses: 'dark:bg-gray-800 dark:text-gray-400',
+    iconClasses: 'text-gray-600 dark:text-gray-400',
+    minScore: 0,
+    maxScore: 0
+  },
+  'blocked': {
+    level: 'blocked',
+    label: 'Not usable',
+    icon: AlertCircle,
+    badgeClasses: 'bg-red-100 text-red-600',
+    darkBadgeClasses: 'dark:bg-red-900/30 dark:text-red-400',
+    iconClasses: 'text-red-600 dark:text-red-400',
+    minScore: 1,
+    maxScore: 49
+  },
+  'limited': {
+    level: 'limited',
+    label: 'Limited',
+    icon: AlertTriangle,
+    badgeClasses: 'bg-amber-100 text-amber-600',
+    darkBadgeClasses: 'dark:bg-amber-900/30 dark:text-amber-400',
+    iconClasses: 'text-amber-600 dark:text-amber-400',
+    minScore: 50,
+    maxScore: 79
+  },
+  'ready': {
+    level: 'ready',
+    label: 'Ready',
+    icon: CheckCircle2,
+    badgeClasses: 'bg-green-100 text-green-600',
+    darkBadgeClasses: 'dark:bg-green-900/30 dark:text-green-400',
+    iconClasses: 'text-green-600 dark:text-green-400',
+    minScore: 80,
+    maxScore: 99
+  },
+  'validated': {
+    level: 'validated',
+    label: 'Validated',
+    icon: CheckCircle2,
+    badgeClasses: 'bg-green-100 text-green-600',
+    darkBadgeClasses: 'dark:bg-green-900/30 dark:text-green-400',
+    iconClasses: 'text-green-600 dark:text-green-400',
+    minScore: 100,
+    maxScore: 100
+  }
+};
+
+/**
+ * Get validation level based on score (0-100)
+ */
+export function getValidationLevel(score: number): ValidationLevel {
+  if (score === 0) return 'not-started';
+  if (score === 100) return 'validated';
+  if (score >= 80) return 'ready';
+  if (score >= 50) return 'limited';
+  return 'blocked';
+}
+
+/**
+ * Get validation configuration for a score
+ */
+export function getValidationConfig(score: number): ValidationConfig {
+  const level = getValidationLevel(score);
+  return VALIDATION_LEVELS[level];
+}

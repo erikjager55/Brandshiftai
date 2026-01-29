@@ -7,7 +7,7 @@ import { Label } from '../ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { UserPlus, Mail, Shield, Edit2, Trash2, Check, X } from 'lucide-react';
+import { UserPlus, Mail, Shield, Edit, Trash2, Check, X } from 'lucide-react';
 import { TeamMember, UserRole, InviteRequest } from '../../types/collaboration';
 import { formatDistanceToNow } from 'date-fns';
 

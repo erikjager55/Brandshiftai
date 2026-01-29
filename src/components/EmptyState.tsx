@@ -13,6 +13,7 @@ export interface EmptyStateProps {
     label: string;
     onClick: () => void;
     icon?: LucideIcon;
+    variant?: 'default' | 'cta'; // Support CTA variant for primary action
   };
   secondaryAction?: {
     label: string;
@@ -136,13 +137,17 @@ export function EmptyState({
           >
             {primaryAction && (
               <Button
-                size={size === 'large' ? 'lg' : 'default'}
+                size={primaryAction.variant === 'cta' ? 'cta' : (size === 'large' ? 'lg' : 'default')}
                 onClick={primaryAction.onClick}
-                className="gap-2 w-full sm:w-auto"
+                className="gap-2 w-full sm:w-auto group"
+                variant={primaryAction.variant}
               >
                 {primaryAction.icon && <primaryAction.icon className="h-4 w-4" />}
                 {primaryAction.label}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className={primaryAction.variant === 'cta' 
+                  ? "h-4 w-4 transition-transform group-hover:translate-x-1" 
+                  : "h-4 w-4"
+                } />
               </Button>
             )}
             {secondaryAction && (
@@ -211,7 +216,8 @@ export function EmptyPersonas({ onCreatePersona, onLearnMore }: {
       primaryAction={{
         label: 'Create Your First Persona',
         onClick: onCreatePersona,
-        icon: require('lucide-react').UserPlus
+        icon: require('lucide-react').UserPlus,
+        variant: 'cta' // Use CTA variant for primary empty state action
       }}
       secondaryAction={onLearnMore ? {
         label: 'Persona Best Practices',

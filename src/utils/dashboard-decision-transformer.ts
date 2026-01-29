@@ -23,6 +23,7 @@ export interface StrategicRisk {
   impact: 'critical' | 'high';
   category: string;
   targetSection: string; // Added for navigation
+  targetId?: string; // Added for specific asset/persona navigation
 }
 
 export interface NextBestActionData {
@@ -104,11 +105,12 @@ export function generateTopStrategicRisks(): StrategicRisk[] {
     const item = blocked[0];
     risks.push({
       id: `risk-blocked-${item.item.id}`,
-      title: `${item.item.type} is niet bruikbaar voor strategische beslissingen`,
-      description: `Coverage is ${Math.round(item.status.coverage)}% (<50% threshold). Beslissingen gebaseerd op dit ${item.item.itemType} dragen onaanvaardbaar hoog risico.`,
+      title: `${item.item.type} is not usable for strategic decisions`,
+      description: `Coverage is ${Math.round(item.status.coverage)}% (<50% threshold). Decisions based on this ${item.item.itemType} carry unacceptably high risk.`,
       impact: 'critical',
       category: item.item.itemType === 'asset' ? 'Brand Asset' : 'Persona',
-      targetSection: 'blocked'
+      targetSection: item.item.itemType === 'asset' ? 'brand' : 'personas',
+      targetId: item.item.id
     });
   }
 
@@ -118,11 +120,12 @@ export function generateTopStrategicRisks(): StrategicRisk[] {
     const item = atRisk[0];
     risks.push({
       id: `risk-atrisk-${item.item.id}`,
-      title: `${item.item.type} heeft beperkte validatie`,
-      description: `Coverage is ${Math.round(item.status.coverage)}% (50-79% threshold). Strategische keuzes kunnen sub-optimaal zijn zonder verdere validatie.`,
+      title: `${item.item.type} has limited validation`,
+      description: `Coverage is ${Math.round(item.status.coverage)}% (50-79% threshold). Strategic choices may be sub-optimal without further validation.`,
       impact: 'high',
       category: item.item.itemType === 'asset' ? 'Brand Asset' : 'Persona',
-      targetSection: 'at-risk'
+      targetSection: item.item.itemType === 'asset' ? 'brand' : 'personas',
+      targetId: item.item.id
     });
   }
 
@@ -148,11 +151,11 @@ export function generateNextBestAction(): NextBestActionData | null {
   if (blocked.length > 0) {
     const item = blocked[0];
     return {
-      title: `Valideer ${item.item.type}`,
-      reason: `Dit ${item.item.itemType} blokkeert strategische beslissingen (<50% coverage)`,
-      unlocksDecision: `${item.item.type} wordt bruikbaar in campagnes en strategische tools`,
-      riskReduction: 'Elimineert kritiek risico op misleidende beslissingen',
-      estimatedTime: item.status.missingTopMethods.includes('Workshop') ? '2-4 uur' : '1-2 uur',
+      title: `Validate ${item.item.type}`,
+      reason: `This ${item.item.itemType} is blocking strategic decisions (<50% coverage)`,
+      unlocksDecision: `${item.item.type} becomes usable in campaigns and strategic tools`,
+      riskReduction: 'Eliminates critical risk of misleading decisions',
+      estimatedTime: item.status.missingTopMethods.includes('Workshop') ? '2-4 hours' : '1-2 hours',
       impact: 'critical',
       targetType: item.item.itemType
     };
@@ -163,11 +166,11 @@ export function generateNextBestAction(): NextBestActionData | null {
   if (atRisk.length > 0) {
     const item = atRisk[0];
     return {
-      title: `Verbeter ${item.item.type}`,
-      reason: `Dit ${item.item.itemType} heeft beperkte validatie (50-79% coverage)`,
-      unlocksDecision: `${item.item.type} bereikt optimale betrouwbaarheid (≥80%)`,
-      riskReduction: 'Verkleint risico op sub-optimale ROI met 40-60%',
-      estimatedTime: '1-2 uur',
+      title: `Improve ${item.item.type}`,
+      reason: `This ${item.item.itemType} has limited validation (50-79% coverage)`,
+      unlocksDecision: `${item.item.type} reaches optimal reliability (≥80%)`,
+      riskReduction: 'Reduces risk of sub-optimal ROI by 40-60%',
+      estimatedTime: '1-2 hours',
       impact: 'high',
       targetType: item.item.itemType
     };

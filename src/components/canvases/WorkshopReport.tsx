@@ -16,7 +16,7 @@ import {
 import { 
   Clock, 
   Users, 
-  CheckCircle, 
+  CheckCircle2, 
   Target, 
   Lightbulb, 
   TrendingUp,
@@ -24,12 +24,13 @@ import {
   Image as ImageIcon,
   StickyNote,
   Plus,
-  Edit2,
+  Edit,
   Save,
   X,
   Trash2
 } from 'lucide-react';
 import { GoldenCircleCanvas } from './GoldenCircleCanvas';
+import { formatDateTime, getInitials, getAvatarColor } from '../../utils/datetime-format';
 
 interface WorkshopReportProps {
   isLocked: boolean;
@@ -39,9 +40,9 @@ interface WorkshopReportProps {
 export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) {
   const [activeTab, setActiveTab] = useState('overview');
   
-  // Executive Summary state
+  // ✅ TAAK 4: Executive Summary nu in het Engels
   const [executiveSummary, setExecutiveSummary] = useState(
-    'De workshop resulteerde in een helder gedefinieerd Golden Circle framework dat de kern van de organisatie vastlegt. Het team van 8 stakeholders bereikte consensus over het doel (WHY), de aanpak (HOW), en het aanbod (WHAT). De samenwerking leidde tot waardevolle inzichten over mensgerichte technologie als kernonderscheid en empowerment als primaire doelstelling.'
+    'The workshop resulted in a clearly defined Golden Circle framework that establishes the core of the organization. The team of 8 stakeholders reached consensus on the purpose (WHY), the approach (HOW), and the offering (WHAT). The collaboration led to valuable insights about human-centered technology as a key differentiator and empowerment as the primary goal.'
   );
   const [editingSummary, setEditingSummary] = useState(false);
   const [tempSummary, setTempSummary] = useState('');
@@ -156,11 +157,24 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
       { time: '11:40 AM', activity: 'Voting & Consensus Building', duration: '15 min' },
       { time: '11:55 AM', activity: 'Next Steps & Wrap-up', duration: '5 min' }
     ],
+    // ✅ TAAK 2: Gallery images met captions (Optie B)
     images: [
-      'https://images.unsplash.com/photo-1565688527174-775059ac429c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHdvcmtzaG9wJTIwdGVhbSUyMGNvbGxhYm9yYXRpb258ZW58MXx8fHwxNzYzNDU1NDQ2fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      'https://images.unsplash.com/photo-1681949215173-fe0d15c790c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGl0ZWJvYXJkJTIwYnJhaW5zdG9ybWluZyUyMG1lZXRpbmd8ZW58MXx8fHwxNzYzNDU1NDQ2fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      'https://images.unsplash.com/photo-1576153192281-d558108925bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ24lMjB0aGlua2luZyUyMHdvcmtzaG9wJTIwc3RpY2t5JTIwbm90ZXN8ZW58MXx8fHwxNzYzNDU1NDQ3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      'https://images.unsplash.com/photo-1758873268745-dd2cf0d677b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwc3RyYXRlZ3klMjBtZWV0aW5nJTIwb2ZmaWNlfGVufDF8fHx8MTc2MzQ1NTQ0N3ww&ixlib=rb-4.1.0&q=80&w=1080'
+      {
+        url: 'https://images.unsplash.com/photo-1565688527174-775059ac429c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHdvcmtzaG9wJTIwdGVhbSUyMGNvbGxhYm9yYXRpb258ZW58MXx8fHwxNzYzNDU1NDQ2fDA&ixlib=rb-4.1.0&q=80&w=1080',
+        caption: 'Team collaboration during WHY discovery'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1681949215173-fe0d15c790c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGl0ZWJvYXJkJTIwYnJhaW5zdG9ybWluZyUyMG1lZXRpbmd8ZW58MXx8fHwxNzYzNDU1NDQ2fDA&ixlib=rb-4.1.0&q=80&w=1080',
+        caption: 'Stakeholder alignment session'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1576153192281-d558108925bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ24lMjB0aGlua2luZyUyMHdvcmtzaG9wJTIwc3RpY2t5JTIwbm90ZXN8ZW58MXx8fHwxNzYzNDU1NDQ3fDA&ixlib=rb-4.1.0&q=80&w=1080',
+        caption: 'Canvas review and refinement'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1758873268745-dd2cf0d677b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwc3RyYXRlZ3klMjBtZWV0aW5nJTIwb2ZmaWNlfGVufDF8fHx8MTc2MzQ1NTQ0N3ww&ixlib=rb-4.1.0&q=80&w=1080',
+        caption: 'Final voting and consensus building'
+      }
     ]
   };
 
@@ -186,8 +200,8 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                   <FileText className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <CardTitle>AI Gegenereerd Rapport</CardTitle>
-                  <CardDescription>Gebaseerd op workshop uitkomsten en participant input</CardDescription>
+                  <CardTitle>AI Generated Report</CardTitle>
+                  <CardDescription>Based on workshop outcomes and participant input</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -210,7 +224,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                       variant="outline"
                       size="sm"
                     >
-                      <Edit2 className="h-4 w-4 mr-2" />
+                      <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </Button>
                   )}
@@ -259,7 +273,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                   <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                     <Lightbulb className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <h3 className="font-semibold text-lg">Belangrijkste Bevindingen</h3>
+                  <h3 className="font-semibold text-lg">Key Findings</h3>
                 </div>
                 <div className="grid gap-4">
                   {insights.map((insight, index) => (
@@ -324,7 +338,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               size="sm"
                               className="mt-2"
                             >
-                              <Edit2 className="h-4 w-4 mr-2" />
+                              <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
                           )}
@@ -353,7 +367,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                   <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
                     <TrendingUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                   </div>
-                  <h3 className="font-semibold text-lg">Strategische Aanbevelingen</h3>
+                  <h3 className="font-semibold text-lg">Strategic Recommendations</h3>
                 </div>
                 <div className="space-y-3">
                   {nextSteps.map((step, index) => (
@@ -402,7 +416,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                       ) : (
                         <div>
                           <div className="flex items-start gap-3 p-3 rounded-lg bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900">
-                            <CheckCircle className="h-5 w-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
+                            <CheckCircle2 className="h-5 w-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
                             <span className="text-sm flex-1">{step}</span>
                           </div>
                           {!isLocked && (
@@ -415,7 +429,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               size="sm"
                               className="mt-2"
                             >
-                              <Edit2 className="h-4 w-4 mr-2" />
+                              <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
                           )}
@@ -525,7 +539,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                     ) : (
                       <div>
                         <div className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                           <span className="text-sm flex-1">{objective}</span>
                         </div>
                         {!isLocked && (
@@ -538,7 +552,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                             size="sm"
                             className="mt-2"
                           >
-                            <Edit2 className="h-4 w-4 mr-2" />
+                            <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </Button>
                         )}
@@ -640,7 +654,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               size="sm"
                               className="mt-1 w-full"
                             >
-                              <Edit2 className="h-4 w-4 mr-2" />
+                              <Edit className="h-4 w-4 mr-2" />
                               Edit
                             </Button>
                           )}
@@ -750,8 +764,9 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <div className="font-medium">{note.author}</div>
-                              <div className="text-xs text-muted-foreground">{note.timestamp}</div>
+                              <div className="text-sm font-semibold">{note.author}</div>
+                              {/* ✅ TAAK 1: Date format "Sep 5, 2025 at 10:15 AM" */}
+                              <div className="text-xs text-muted-foreground">{formatDateTime(note.timestamp)}</div>
                             </div>
                             {!isLocked && (
                               <Button
@@ -763,7 +778,7 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
                               </Button>
                             )}
                           </div>
-                          <p className="text-sm leading-relaxed">{note.content}</p>
+                          <p className="text-sm leading-relaxed mt-2">{note.content}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -786,14 +801,18 @@ export function WorkshopReport({ isLocked, onLockToggle }: WorkshopReportProps) 
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
+                {/* ✅ TAAK 2: Gallery met captions onder foto's */}
                 {workshopData.images.map((image, index) => (
-                  <div key={index} className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer">
-                    <ImageWithFallback
-                      src={image}
-                      alt={`Workshop photo ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  <div key={index} className="space-y-2">
+                    <div className="relative aspect-video rounded-xl overflow-hidden group cursor-pointer border">
+                      <ImageWithFallback
+                        src={image.url}
+                        alt={image.caption}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </div>
+                    <p className="text-sm text-muted-foreground text-center">{image.caption}</p>
                   </div>
                 ))}
               </div>

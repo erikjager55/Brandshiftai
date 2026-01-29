@@ -118,13 +118,13 @@ class GlobalSearchService {
             type: 'action',
             title: 'View Relationships',
             subtitle: 'See data connections',
-            icon: 'Network',
-            route: 'relationships'
+            icon: 'GitBranch',
+            route: '/relationships'
           }
         ]
       },
       {
-        id: 'pages',
+        id: 'go-to',
         label: 'Go To',
         results: this.getAllPages()
       }
@@ -165,16 +165,16 @@ class GlobalSearchService {
     return mockPersonas
       .filter(persona => {
         const nameMatch = persona.name.toLowerCase().includes(query);
-        const roleMatch = persona.role.toLowerCase().includes(query);
-        const descMatch = persona.description?.toLowerCase().includes(query);
+        const roleMatch = persona.tagline?.toLowerCase().includes(query);
+        const descMatch = persona.demographics?.occupation?.toLowerCase().includes(query);
         return nameMatch || roleMatch || descMatch;
       })
       .map(persona => ({
         id: persona.id,
         type: 'persona' as SearchResultType,
         title: persona.name,
-        subtitle: persona.role,
-        description: persona.description,
+        subtitle: persona.tagline || persona.demographics?.occupation || 'Persona',
+        description: persona.demographics?.occupation,
         icon: 'Users',
         route: `personas/${persona.id}`,
         metadata: {
@@ -290,7 +290,7 @@ class GlobalSearchService {
         title: 'Dashboard', 
         description: 'Overview and statistics',
         icon: 'Home', 
-        route: 'dashboard' 
+        route: '/dashboard' 
       },
       { 
         id: 'research', 
@@ -298,15 +298,15 @@ class GlobalSearchService {
         title: 'Research Hub', 
         description: 'Manage research plans and methods',
         icon: 'Target', 
-        route: 'research' 
+        route: '/research' 
       },
       { 
         id: 'brand', 
         type: 'page' as SearchResultType, 
         title: 'Brand Assets', 
         description: 'Your brand foundation',
-        icon: 'Palette', 
-        route: 'brand' 
+        icon: 'Layers', 
+        route: '/brand' 
       },
       { 
         id: 'personas', 
@@ -314,31 +314,23 @@ class GlobalSearchService {
         title: 'Personas', 
         description: 'Target audience profiles',
         icon: 'Users', 
-        route: 'personas' 
-      },
-      { 
-        id: 'strategy', 
-        type: 'page' as SearchResultType, 
-        title: 'Strategy & Goals', 
-        description: 'Strategic planning tools',
-        icon: 'Zap', 
-        route: 'strategy' 
+        route: '/personas' 
       },
       { 
         id: 'products', 
         type: 'page' as SearchResultType, 
         title: 'Products & Services', 
-        description: 'Product catalog',
+        description: 'Your product catalog',
         icon: 'Package', 
-        route: 'products' 
+        route: '/products' 
       },
       { 
-        id: 'trends', 
+        id: 'market-insights', 
         type: 'page' as SearchResultType, 
-        title: 'Trend Library', 
-        description: 'Industry trends and insights',
+        title: 'Market Insights', 
+        description: 'Competitor and market data',
         icon: 'TrendingUp', 
-        route: 'trends' 
+        route: '/market-insights' 
       },
       { 
         id: 'knowledge', 
@@ -346,15 +338,39 @@ class GlobalSearchService {
         title: 'Knowledge Library', 
         description: 'Documents and resources',
         icon: 'BookOpen', 
-        route: 'knowledge' 
+        route: '/knowledge' 
       },
       { 
-        id: 'relationships', 
+        id: 'brandstyle', 
         type: 'page' as SearchResultType, 
-        title: 'Relationships', 
-        description: 'Data connections and insights',
-        icon: 'Network', 
-        route: 'relationships' 
+        title: 'Brandstyle', 
+        description: 'Visual identity guidelines',
+        icon: 'Palette', 
+        route: '/brandstyle' 
+      },
+      { 
+        id: 'campaigns', 
+        type: 'page' as SearchResultType, 
+        title: 'Active Campaigns', 
+        description: 'Your marketing campaigns',
+        icon: 'Megaphone', 
+        route: '/campaigns' 
+      },
+      { 
+        id: 'content', 
+        type: 'page' as SearchResultType, 
+        title: 'Content Library', 
+        description: 'All your content',
+        icon: 'FileText', 
+        route: '/content' 
+      },
+      { 
+        id: 'settings', 
+        type: 'page' as SearchResultType, 
+        title: 'Settings', 
+        description: 'Account and preferences',
+        icon: 'Settings', 
+        route: '/settings' 
       }
     ];
   }

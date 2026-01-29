@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreditCard, Smartphone, Building2, AlertCircle, CheckCircle2, Clock, Settings, Trash2 } from 'lucide-react';
+import { CreditCard, Smartphone, Building2, AlertCircle, CheckCircle2, Clock, Settings, Trash2, Plus } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { cn } from '../../lib/utils';
@@ -113,7 +113,8 @@ export function StoredPaymentProfile({
           Add a payment method to speed up future purchases
         </p>
         {showActions && onAddPaymentMethod && (
-          <Button onClick={onAddPaymentMethod} size="sm">
+          <Button onClick={onAddPaymentMethod} size="sm" className="gap-2">
+            <Plus className="h-4 w-4" />
             Add Payment Method
           </Button>
         )}
@@ -264,8 +265,8 @@ export function StoredPaymentProfile({
 
       {/* Add payment method button */}
       {showActions && onAddPaymentMethod && !compact && (
-        <Button onClick={onAddPaymentMethod} variant="outline" size="sm" className="w-full">
-          <CreditCard className="h-4 w-4 mr-2" />
+        <Button onClick={onAddPaymentMethod} variant="outline" size="sm" className="w-full gap-2">
+          <Plus className="h-4 w-4" />
           Add Another Payment Method
         </Button>
       )}

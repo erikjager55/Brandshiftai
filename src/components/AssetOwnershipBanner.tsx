@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
-import { Lock, ArrowRight } from 'lucide-react';
+import { Lock, Plus } from 'lucide-react';
 
 interface AssetOwnershipBannerProps {
   isUnlocked: boolean;
@@ -29,9 +29,9 @@ export function AssetOwnershipBanner({ isUnlocked, onCreatePlan }: AssetOwnershi
           </div>
         </div>
         
-        <Button onClick={onCreatePlan} className="whitespace-nowrap">
+        <Button onClick={onCreatePlan} className="whitespace-nowrap gap-2">
+          <Plus className="h-4 w-4" />
           Create Research Plan
-          <ArrowRight className="h-4 w-4 ml-2" />
         </Button>
       </CardContent>
     </Card>

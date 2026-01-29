@@ -46,14 +46,11 @@ export interface DecisionStatusConfig {
 export const DECISION_STATUS_CONFIG: Record<DecisionStatus, DecisionStatusConfig> = {
   'safe-to-decide': {
     label: 'Safe to Decide',
-    color: 'text-emerald-700 dark:text-emerald-300',
-    bgColor: 'bg-emerald-50 dark:bg-emerald-950/20',
-    borderColor: 'border-emerald-200 dark:border-emerald-800/30',
+    color: 'text-green-700 dark:text-green-300',
+    bgColor: 'bg-green-50 dark:bg-green-950/20',
+    borderColor: 'border-green-200 dark:border-green-800/30',
     icon: '✓',
-    description: 'Sufficient research completed to make informed strategic decisions',
-    risk: 'Minimal risk - decisions are backed by validated research',
-    canProceed: true,
-    warningLevel: 'none'
+    description: 'Sufficient research coverage',
   },
   'decision-at-risk': {
     label: 'Proceed with Caution',

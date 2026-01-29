@@ -165,7 +165,7 @@ export function EnhancedAssetPickerModal({
   const availableStatuses = Array.from(new Set(items.map(i => i.status).filter(Boolean)));
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4 animate-in fade-in duration-200">
       <Card className="w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl animate-in slide-in-from-bottom-4 duration-300">
         {/* Header */}
         <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-purple-500/5 pb-6">
@@ -292,7 +292,7 @@ export function EnhancedAssetPickerModal({
                           }`}
                           onClick={() => selectable && toggleItem(item.id)}
                         >
-                          <div className="p-5">
+                          <div className="p-6">
                             <div className="flex items-start gap-4">
                               {getItemIcon(item)}
                               
@@ -455,7 +455,7 @@ export function EnhancedAssetPickerModal({
         </CardContent>
 
         {/* Footer */}
-        <div className="p-5 border-t bg-muted/30 flex justify-between items-center">
+        <div className="p-6 border-t bg-muted/30 flex justify-between items-center">
           <div>
             <p className="font-medium">
               {tempSelected.length} {tempSelected.length === 1 ? 'item' : 'items'} selected

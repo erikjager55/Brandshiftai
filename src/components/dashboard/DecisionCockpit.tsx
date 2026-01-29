@@ -14,7 +14,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { CheckCircle, AlertTriangle, ShieldAlert, ArrowRight } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ShieldAlert, ArrowRight } from 'lucide-react';
 
 interface DecisionItem {
   id: string;
@@ -49,7 +49,7 @@ export function DecisionCockpit({
       <Card className="border-l-4 border-l-green-600">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <CheckCircle className="h-5 w-5 text-green-600" />
+            <CheckCircle2 className="h-5 w-5 text-green-600" />
             Safe to Decide
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-1">

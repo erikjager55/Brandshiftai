@@ -23,12 +23,15 @@ const buttonVariants = cva(
         success: "bg-green-600 text-white hover:bg-green-700 shadow-sm",
         warning: "bg-yellow-600 text-white hover:bg-yellow-700 shadow-sm",
         gradient: "bg-gradient-to-r from-[#5252E3] to-[#1FD1B2] text-white hover:opacity-90 shadow-md",
+        // CTA variant - BELANGRIJKSTE actie op de pagina
+        cta: "bg-gradient-to-r from-[#5252E3] to-[#1FD1B2] text-white font-medium shadow-md hover:shadow-lg group",
       },
       size: {
         default: "h-10 px-4 py-2 has-[>svg]:px-3",
         sm: "h-9 rounded-xl gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-11 rounded-xl px-6 has-[>svg]:px-4",
         xl: "h-12 rounded-xl px-8 has-[>svg]:px-6 text-base",
+        cta: "h-12 rounded-xl px-6 py-3 has-[>svg]:px-5 text-base",
         icon: "size-10 rounded-xl",
         "icon-sm": "size-8 rounded-lg",
         "icon-lg": "size-12 rounded-xl",

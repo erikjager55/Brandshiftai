@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { RegenerateAssetWizard } from './wizard/RegenerateAssetWizard';
 import {
-  Edit3,
+  Edit,
   Save,
   X,
   Lock,
@@ -33,6 +34,16 @@ import {
   Users2,
   Palette,
   TrendingUp,
+  ChevronDown,
+  ChevronRight,
+  HelpCircle,
+  MoreVertical,
+  Download,
+  Copy,
+  Trash2,
+  Archive,
+  Circle,
+  AlertTriangle,
 } from 'lucide-react';
 import { useResearchStore } from '../store/researchStore';
 import { ThinkFeelActContent } from './asset-content/ThinkFeelActContent';
@@ -49,6 +60,10 @@ import { ResearchFlowModal } from './ResearchFlowModal';
 import { VALIDATION_METHODS } from '../config/validation-methods';
 import { ResearchStatusOverview, ResearchMethodWithStatus } from './research/ResearchStatusOverview';
 import { MethodStatus, MethodImpact, MethodConfidence } from './research/ResearchMethodCard';
+import { ValidationBadge } from './validation/ValidationBadge';
+import { getValidationConfig } from '../constants/quality-system';
+import { cn } from '../lib/utils';
+import { DeleteAssetModal } from './modals/DeleteAssetModal';
 
 interface UniversalAssetDashboardProps {
   assetId: string;
@@ -84,17 +99,17 @@ const calculateDecisionStatus = (asset: any) => {
 
 const statusConfig = {
   'awaiting-research': {
-    label: 'Awaiting Research',
-    className: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800',
+    label: 'Draft',
+    className: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700',
     icon: AlertCircle,
   },
   'in-development': {
     label: 'In Development',
-    className: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+    className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800',
     icon: Lightbulb,
   },
   'ready-to-activate': {
-    label: 'Ready to Activate',
+    label: 'Validated',
     className: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800',
     icon: CheckCircle2,
   },
@@ -110,8 +125,12 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
   const [isFlowModalOpen, setIsFlowModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [showRegenerateWizard, setShowRegenerateWizard] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [lockedBy, setLockedBy] = useState<string | null>(null);
+  const [isActionsMenuOpen, setIsActionsMenuOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
   
   // Get the asset
   const asset = mockBrandAssets.find((a) => a.id === assetId);
@@ -252,6 +271,25 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto p-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+          <button 
+            onClick={onBack}
+            className="text-primary hover:underline"
+          >
+            Dashboard
+          </button>
+          <ChevronRight className="h-4 w-4" />
+          <button 
+            onClick={onBack}
+            className="text-primary hover:underline"
+          >
+            Brand Assets
+          </button>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-foreground font-medium">{asset.type}</span>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           <Button
@@ -264,30 +302,132 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
           </Button>
 
           <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4">
-              <div 
-                className="h-16 w-16 rounded-2xl flex items-center justify-center shadow-lg"
-                style={{
-                  background: `linear-gradient(to bottom right, ${config.gradientColors.from}, ${config.gradientColors.to})`,
-                }}
-              >
-                <AssetIcon className="h-8 w-8 text-white" />
+            <div className="flex items-start gap-4">
+              <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center">
+                <AssetIcon className="h-7 w-7 text-primary" />
               </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-semibold mb-1">{asset.type}</h1>
-                <p className="text-muted-foreground">
+              <div>
+                <h1 className="text-3xl font-semibold">{asset.type}</h1>
+                <p className="text-sm text-muted-foreground mt-1 max-w-xl">
                   {asset.description}
                 </p>
               </div>
             </div>
 
-            <Badge
-              variant="outline"
-              className={`${statusConfig[asset.status]?.className} border px-4 py-2`}
-            >
-              <StatusIcon className="h-4 w-4 mr-2" />
-              {statusConfig[asset.status]?.label}
-            </Badge>
+            <div className="flex items-center gap-3">
+              {/* Validation % Badge */}
+              <ValidationBadge
+                score={Math.round(unlockProgress)}
+                size="lg"
+                showIcon={true}
+                showPercentage={true}
+              />
+
+              {/* Status Badge */}
+              <Badge
+                variant="outline"
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold",
+                  statusConfig[asset.status]?.className,
+                  "border"
+                )}
+              >
+                <StatusIcon className="h-3.5 w-3.5" />
+                {statusConfig[asset.status]?.label}
+              </Badge>
+
+              {/* Actions Menu */}
+              <div className="relative">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  onClick={() => setIsActionsMenuOpen(!isActionsMenuOpen)}
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+                
+                {/* Dropdown Menu */}
+                {isActionsMenuOpen && (
+                  <>
+                    {/* Overlay to close menu */}
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsActionsMenuOpen(false)}
+                    />
+                    
+                    {/* Menu */}
+                    <div className="absolute right-0 top-10 z-20 w-48 bg-popover border border-border rounded-xl shadow-lg p-1">
+                      {/* Edit Details */}
+                      <button
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors text-left"
+                        onClick={() => {
+                          setIsActionsMenuOpen(false);
+                          setIsEditing(true);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                        Edit Details
+                      </button>
+                      
+                      {/* Change Status */}
+                      <button
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors text-left"
+                        onClick={() => {
+                          setIsStatusMenuOpen(!isStatusMenuOpen);
+                        }}
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                        Change Status
+                        <ChevronRight className="h-4 w-4 ml-auto" />
+                      </button>
+                      
+                      {/* Duplicate Asset */}
+                      <button
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors text-left"
+                        onClick={() => {
+                          setIsActionsMenuOpen(false);
+                          toast.success('Asset duplicated!', {
+                            description: `A copy of ${asset.type} has been created.`,
+                          });
+                        }}
+                      >
+                        <Copy className="h-4 w-4" />
+                        Duplicate Asset
+                      </button>
+                      
+                      {/* Export */}
+                      <button
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors text-left"
+                        onClick={() => {
+                          setIsActionsMenuOpen(false);
+                          toast.success('Exporting...', {
+                            description: `Downloading ${asset.type} as PDF.`,
+                          });
+                        }}
+                      >
+                        <Download className="h-4 w-4" />
+                        Export
+                      </button>
+                      
+                      {/* Divider */}
+                      <div className="my-1 h-px bg-border" />
+                      
+                      {/* Delete Asset */}
+                      <button
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-destructive/10 transition-colors text-left text-destructive"
+                        onClick={() => {
+                          setIsActionsMenuOpen(false);
+                          setIsDeleteModalOpen(true);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete Asset
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Framework Accordion - only show if configured */}
@@ -326,7 +466,7 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
                                 example.impact === 'high' 
                                   ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800'
                                   : example.impact === 'medium'
-                                  ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800'
+                                  ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
                                   : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
                               }`}
                             >
@@ -352,10 +492,10 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 flex items-center gap-2"
+              className="mt-4 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 flex items-center gap-2"
             >
-              <Lock className="h-4 w-4 text-yellow-700 dark:text-yellow-400" />
-              <span className="text-sm text-yellow-700 dark:text-yellow-400">
+              <Lock className="h-4 w-4 text-amber-700 dark:text-amber-400" />
+              <span className="text-sm text-amber-700 dark:text-amber-400">
                 <strong>{lockedBy}</strong> locked this asset for editing
               </span>
             </motion.div>
@@ -377,12 +517,12 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
                       disabled={isLocked && lockedBy !== 'You'}
                       className="h-9 px-4 font-medium border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-all"
                     >
-                      <Edit3 className="h-4 w-4 mr-2" />
+                      <Edit className="h-4 w-4 mr-2" />
                       Edit Content
                     </Button>
                     {config.showRegenerateButton && (
                       <Button
-                        onClick={handleRegenerate}
+                        onClick={() => setShowRegenerateWizard(true)}
                         variant="outline"
                         size="sm"
                         disabled={isRegenerating || (isLocked && lockedBy !== 'You')}
@@ -398,7 +538,7 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
                     <Button 
                       onClick={handleSaveEdits} 
                       size="sm"
-                      className="h-9 px-5 font-medium bg-primary hover:bg-primary/90 text-white shadow-sm hover:shadow transition-all"
+                      className="h-9 px-6 font-medium bg-primary hover:bg-primary/90 text-white shadow-sm hover:shadow transition-all"
                     >
                       <Save className="h-4 w-4 mr-2" />
                       Save Changes
@@ -502,6 +642,39 @@ export function UniversalAssetDashboard({ assetId, onBack, onStartResearch }: Un
           />
         )}
       </AnimatePresence>
+
+      {/* Delete Modal */}
+      {isDeleteModalOpen && (
+        <DeleteAssetModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          assetName={asset.type}
+          artifactsCount={asset.artifactsGenerated}
+          researchSessionsCount={completedMethods.length}
+          onConfirm={() => {
+            toast.success('Asset deleted!', {
+              description: `Your ${asset.type} has been removed.`,
+            });
+            onBack();
+          }}
+        />
+      )}
+
+      {/* Regenerate Asset Wizard */}
+      <RegenerateAssetWizard
+        open={showRegenerateWizard}
+        onClose={() => setShowRegenerateWizard(false)}
+        assetName={asset.type}
+        assetType="Brand Foundation"
+        currentContent={asset.content || ''}
+        onSave={(newContent, researchSources) => {
+          console.log('Saved new content based on', researchSources.length, 'research sources');
+          toast.success(`${asset.type} updated!`, {
+            description: `Updated based on ${researchSources.length} research source${researchSources.length > 1 ? 's' : ''}.`,
+          });
+          setShowRegenerateWizard(false);
+        }}
+      />
     </div>
   );
 }

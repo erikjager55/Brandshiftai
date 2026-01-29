@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
+import { AnalyzingModal } from './AnalyzingModal';
 
 export interface BrandStyleData {
   url: string;
@@ -78,6 +79,7 @@ export function BrandstyleAnalyzer({ onAnalysisComplete }: BrandstyleAnalyzerPro
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateUrl = (input: string): boolean => {
@@ -218,6 +220,7 @@ export function BrandstyleAnalyzer({ onAnalysisComplete }: BrandstyleAnalyzerPro
     }
 
     setIsAnalyzing(true);
+    setShowModal(true);
 
     setTimeout(() => {
       const normalizedUrl = url.startsWith('http') ? url : `https://${url}`;
@@ -250,6 +253,7 @@ export function BrandstyleAnalyzer({ onAnalysisComplete }: BrandstyleAnalyzerPro
     }
 
     setIsAnalyzing(true);
+    setShowModal(true);
 
     setTimeout(() => {
       const mockStyleData = generateMockStyleData(`PDF: ${uploadedFile.name}`);
@@ -301,7 +305,7 @@ export function BrandstyleAnalyzer({ onAnalysisComplete }: BrandstyleAnalyzerPro
                 setMode('url');
                 setError('');
               }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 mode === 'url'
                   ? 'bg-background shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -315,7 +319,7 @@ export function BrandstyleAnalyzer({ onAnalysisComplete }: BrandstyleAnalyzerPro
                 setMode('pdf');
                 setError('');
               }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 mode === 'pdf'
                   ? 'bg-background shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -698,6 +702,20 @@ export function BrandstyleAnalyzer({ onAnalysisComplete }: BrandstyleAnalyzerPro
           </Card>
         </div>
       </div>
+      {showModal && <AnalyzingModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setIsAnalyzing(false);
+        }}
+        onComplete={() => {
+          setShowModal(false);
+          // Navigation happens in the parent component
+        }}
+        analysisType="brandstyle"
+        inputType={mode}
+        source={mode === 'url' ? url : uploadedFile?.name || ''}
+      />}
     </div>
   );
 }

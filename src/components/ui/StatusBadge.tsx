@@ -1,28 +1,28 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { getStatusColors } from '@/constants/design-system';
+import { LucideIcon } from 'lucide-react';
 
 /**
  * ============================================================================
  * STATUS BADGE - SINGLE SOURCE OF TRUTH
  * ============================================================================
  * 
- * This component provides consistent status/info badge styling across the
- * entire application. All colored status containers must use this component.
+ * Consistent StatusBadge systeem met exact 6 semantische varianten.
  * 
- * NO LOCAL OVERRIDES ALLOWED - All styling comes from design-system.ts
+ * DESIGN PRINCIPES:
+ * - Badges zijn NOOIT klikbaar (geen onClick)
+ * - Kleur + tekst communiceren samen de status
+ * - Alle badges: rounded-full, text-xs, font-medium, px-2.5 py-0.5
+ * - Optioneel icon support voor extra context
  * 
- * Used by:
- * - ResearchDashboard
- * - AIExportOptions
- * - AIVersionHistory
- * - BrandArchetypeCanvas
- * - BrandValuesCanvas
- * - CanvasWorkshopInProgress
- * - CanvasWorkshopManager_INTEGRATED
- * - TransformativeGoalsDashboard
- * - SocialRelevancyDashboard
- * - +15 other components
+ * VARIANTEN:
+ * 1. SUCCESS (groen) - Positief afgerond
+ * 2. WARNING (amber) - Actie nodig
+ * 3. ERROR (rood) - Probleem/geblokkeerd
+ * 4. INFO (blauw) - Informatief/nieuw
+ * 5. NEUTRAL (grijs) - Inactief/default
+ * 6. LOCKED (amber accent) - Premium/vergrendeld
+ * 
  * ============================================================================
  */
 
@@ -30,34 +30,48 @@ import { getStatusColors } from '@/constants/design-system';
 // TYPES
 // ============================================================================
 
-export type StatusBadgeVariant = 'success' | 'warning' | 'error' | 'info' | 'neutral';
+export type StatusBadgeVariant = 
+  | 'success'  // Completed, Ready, Active, Validated, Approved
+  | 'warning'  // Pending, In Progress, Needs Attention, Draft
+  | 'error'    // Failed, Error, Blocked, Rejected, Overdue
+  | 'info'     // New, Processing, Info, Beta, Updated
+  | 'neutral'  // Inactive, Disabled, Archived, None
+  | 'locked';  // Premium, Pro, Locked, Upgrade Required
 
 export interface StatusBadgeProps {
   /**
-   * Visual variant based on status type
-   * - success: Green (completed, validated, active)
-   * - warning: Yellow (pending, attention needed)
-   * - error: Red (blocked, failed, critical)
-   * - info: Blue (information, in progress)
-   * - neutral: Gray (default, inactive)
+   * Semantische variant met specifieke betekenis
    */
   variant: StatusBadgeVariant;
   
   /**
-   * Content to display inside the badge
+   * Badge tekst
    */
   children: React.ReactNode;
   
   /**
-   * Additional CSS classes to merge
+   * Optioneel Lucide icon (h-3 w-3 size)
    */
-  className?: string;
+  icon?: LucideIcon;
   
   /**
-   * Size variant
+   * Extra CSS classes
    */
-  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
+
+// ============================================================================
+// VARIANT CONFIGURATIONS
+// ============================================================================
+
+const VARIANT_STYLES: Record<StatusBadgeVariant, string> = {
+  success: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800',
+  warning: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
+  error: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
+  info: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
+  neutral: 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700',
+  locked: 'bg-amber-100 text-amber-700 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700',
+};
 
 // ============================================================================
 // MAIN COMPONENT
@@ -66,31 +80,25 @@ export interface StatusBadgeProps {
 export function StatusBadge({ 
   variant, 
   children, 
-  className,
-  size = 'md'
+  icon: Icon,
+  className 
 }: StatusBadgeProps) {
-  const colors = getStatusColors(variant);
-  
-  // Size variants
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs rounded-md',
-    md: 'px-3 py-2 text-sm rounded-lg',
-    lg: 'px-4 py-3 text-base rounded-xl',
-  };
-  
   return (
-    <div 
+    <span 
       className={cn(
-        'border',
-        colors.bg,
-        colors.border,
-        colors.text,
-        sizeClasses[size],
+        // Base styles - consistent voor alle badges
+        'inline-flex items-center gap-1',
+        'rounded-full border',
+        'text-xs font-medium',
+        'px-2.5 py-0.5',
+        // Variant-specifieke kleuren
+        VARIANT_STYLES[variant],
         className
       )}
     >
+      {Icon && <Icon className="h-3 w-3" />}
       {children}
-    </div>
+    </span>
   );
 }
 
@@ -101,55 +109,97 @@ export function StatusBadge({
  */
 
 /**
- * Success Badge - Green variant for completed/validated states
+ * Success Badge - Groen voor positief afgeronde statussen
+ * Gebruik voor: Completed, Ready, Active, Validated, Approved
  */
-export function SuccessBadge({ children, className, size }: Omit<StatusBadgeProps, 'variant'>) {
+export function SuccessBadge({ 
+  children, 
+  icon, 
+  className 
+}: Omit<StatusBadgeProps, 'variant'>) {
   return (
-    <StatusBadge variant="success" className={className} size={size}>
+    <StatusBadge variant="success" icon={icon} className={className}>
       {children}
     </StatusBadge>
   );
 }
 
 /**
- * Warning Badge - Yellow variant for pending/attention states
+ * Warning Badge - Amber voor statussen die actie vereisen
+ * Gebruik voor: Pending, In Progress, Needs Attention, Draft
  */
-export function WarningBadge({ children, className, size }: Omit<StatusBadgeProps, 'variant'>) {
+export function WarningBadge({ 
+  children, 
+  icon, 
+  className 
+}: Omit<StatusBadgeProps, 'variant'>) {
   return (
-    <StatusBadge variant="warning" className={className} size={size}>
+    <StatusBadge variant="warning" icon={icon} className={className}>
       {children}
     </StatusBadge>
   );
 }
 
 /**
- * Error Badge - Red variant for blocked/failed states
+ * Error Badge - Rood voor problemen en geblokkeerde statussen
+ * Gebruik voor: Failed, Error, Blocked, Rejected, Overdue
  */
-export function ErrorBadge({ children, className, size }: Omit<StatusBadgeProps, 'variant'>) {
+export function ErrorBadge({ 
+  children, 
+  icon, 
+  className 
+}: Omit<StatusBadgeProps, 'variant'>) {
   return (
-    <StatusBadge variant="error" className={className} size={size}>
+    <StatusBadge variant="error" icon={icon} className={className}>
       {children}
     </StatusBadge>
   );
 }
 
 /**
- * Info Badge - Blue variant for information/in-progress states
+ * Info Badge - Blauw voor informatieve en nieuwe statussen
+ * Gebruik voor: New, Processing, Info, Beta, Updated
  */
-export function InfoBadge({ children, className, size }: Omit<StatusBadgeProps, 'variant'>) {
+export function InfoBadge({ 
+  children, 
+  icon, 
+  className 
+}: Omit<StatusBadgeProps, 'variant'>) {
   return (
-    <StatusBadge variant="info" className={className} size={size}>
+    <StatusBadge variant="info" icon={icon} className={className}>
       {children}
     </StatusBadge>
   );
 }
 
 /**
- * Neutral Badge - Gray variant for default/inactive states
+ * Neutral Badge - Grijs voor inactieve en default statussen
+ * Gebruik voor: Inactive, Disabled, Archived, None
  */
-export function NeutralBadge({ children, className, size }: Omit<StatusBadgeProps, 'variant'>) {
+export function NeutralBadge({ 
+  children, 
+  icon, 
+  className 
+}: Omit<StatusBadgeProps, 'variant'>) {
   return (
-    <StatusBadge variant="neutral" className={className} size={size}>
+    <StatusBadge variant="neutral" icon={icon} className={className}>
+      {children}
+    </StatusBadge>
+  );
+}
+
+/**
+ * Locked Badge - Amber accent voor premium/vergrendelde features
+ * Gebruik voor: Premium, Pro, Locked, Upgrade Required
+ * Vaak gecombineerd met Lock icon
+ */
+export function LockedBadge({ 
+  children, 
+  icon, 
+  className 
+}: Omit<StatusBadgeProps, 'variant'>) {
+  return (
+    <StatusBadge variant="locked" icon={icon} className={className}>
       {children}
     </StatusBadge>
   );

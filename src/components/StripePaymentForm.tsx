@@ -259,11 +259,11 @@ export function StripePaymentForm({ amount, onSuccess, onCancel }: StripePayment
       )}
 
       {/* Test Card Info */}
-      <div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-        <p className="text-xs font-medium text-yellow-900 dark:text-yellow-100 mb-1">
+      <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <p className="text-xs font-medium text-amber-900 dark:text-amber-100 mb-1">
           Test Mode - Use test card:
         </p>
-        <p className="text-xs text-yellow-800 dark:text-yellow-200 font-mono">
+        <p className="text-xs text-amber-800 dark:text-amber-200 font-mono">
           4242 4242 4242 4242 • Any future date • Any 3 digits
         </p>
       </div>

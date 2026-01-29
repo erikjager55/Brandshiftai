@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Separator } from '../ui/separator';
 import {
-  CheckCircle,
+  CheckCircle2,
   ChevronRight,
   ChevronLeft,
   Clock,
@@ -334,7 +334,7 @@ export function CanvasWorkshopInProgress({
         <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top">
           <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
             <CardContent className="p-3 flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
               <span className="text-sm font-medium text-green-900 dark:text-green-100">
                 Progress saved successfully
               </span>
@@ -365,7 +365,7 @@ export function CanvasWorkshopInProgress({
               <button
                 key={workshop.id}
                 onClick={() => onWorkshopSelect(workshop.id)}
-                className={`w-80 p-4 rounded-xl border-2 text-left transition-all hover:shadow-md group shrink-0 ${
+                className={`w-80 p-4 rounded-xl border-2 text-left transition-all duration-200 hover:shadow-md group shrink-0 ${
                   selectedWorkshopId === workshop.id
                     ? 'bg-primary/5 border-primary shadow-sm'
                     : 'bg-card border-border hover:border-primary/30'
@@ -412,7 +412,7 @@ export function CanvasWorkshopInProgress({
         <div className="px-3 pb-3 border-t pt-3 bg-muted/30">
           <Button variant="outline" size="sm" onClick={onBack}>
             <ChevronLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
+            Back to Asset
           </Button>
         </div>
       </Card>
@@ -469,7 +469,7 @@ export function CanvasWorkshopInProgress({
                         size="sm" 
                         variant="ghost" 
                         onClick={handlePauseSession} 
-                        className="h-9 w-9 p-0 rounded-full hover:bg-muted" 
+                        className="h-9 w-9 p-0 rounded-full hover:bg-muted transition-colors duration-200" 
                         title="Pause session"
                       >
                         <Pause className="h-4 w-4" />
@@ -479,7 +479,7 @@ export function CanvasWorkshopInProgress({
                         onClick={handleApproveClick}
                         className="h-9 px-4"
                       >
-                        <CheckCircle className="h-4 w-4 mr-2" />
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
                         Complete
                       </Button>
                     </>
@@ -536,7 +536,7 @@ export function CanvasWorkshopInProgress({
                                     ? 'bg-primary text-primary-foreground'
                                     : 'bg-muted text-muted-foreground'
                                 }`}>
-                                  {isCompleted ? <CheckCircle className="h-4 w-4" /> : step.id}
+                                  {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : step.id}
                                 </div>
                                 <div className="flex-1 text-left">
                                   <div className={`text-xs font-medium ${isActive ? 'text-primary' : isCompleted ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}`}>
@@ -580,17 +580,11 @@ export function CanvasWorkshopInProgress({
                         </div>
                         
                         {/* Video Player - Takes remaining space */}
-                        <div className="flex-1 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-slate-700/50 relative group min-h-0">
-                          <iframe
-                            width="100%"
-                            height="100%"
-                            src={currentStepData.videoUrl}
-                            title={currentStepData.title}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            className="w-full h-full"
-                          />
+                        {/* ✅ TAAK 7: Rick Astley video vervangen door placeholder */}
+                        <div className="flex-1 border-dashed border-2 border-border rounded-2xl bg-muted/30 flex flex-col items-center justify-center text-center min-h-0 p-12">
+                          <Video className="h-12 w-12 text-muted-foreground mb-4" />
+                          <p className="text-lg font-semibold mb-2">Workshop presentation will appear here</p>
+                          <p className="text-sm text-muted-foreground">Share your screen or upload slides</p>
                         </div>
                       </div>
                     </div>
@@ -633,7 +627,7 @@ export function CanvasWorkshopInProgress({
                               variant="outline" 
                               onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
                               disabled={currentStep === 1}
-                              className="h-10 px-5"
+                              className="h-10 px-6"
                             >
                               <ChevronLeft className="h-4 w-4 mr-1" />
                               Previous
@@ -641,11 +635,11 @@ export function CanvasWorkshopInProgress({
                             <Button 
                               onClick={() => setCurrentStep(prev => Math.min(workshopSteps.length, prev + 1))}
                               disabled={currentStep === workshopSteps.length && !stepResponses[currentStep]}
-                              className="h-10 px-5"
+                              className="h-10 px-6"
                             >
                               {currentStep === workshopSteps.length ? (
                                 <>
-                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  <CheckCircle2 className="h-4 w-4 mr-2" />
                                   Finish
                                 </>
                               ) : (
@@ -707,7 +701,7 @@ export function CanvasWorkshopInProgress({
                                     ? 'bg-primary text-primary-foreground'
                                     : 'bg-muted text-muted-foreground'
                                 }`}>
-                                  {isCompleted ? <CheckCircle className="h-4 w-4" /> : step.id}
+                                  {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : step.id}
                                 </div>
                                 <div className="flex-1 text-left">
                                   <div className={`text-xs font-medium ${isActive ? 'text-primary' : isCompleted ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}`}>
@@ -799,7 +793,7 @@ export function CanvasWorkshopInProgress({
                           {/* Facilitator Tips */}
                           {!isPresentationExpanded && (
                             <Card className="border-2 shadow-sm bg-amber-50/50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-900">
-                              <CardContent className="p-5 space-y-3">
+                              <CardContent className="p-6 space-y-3">
                                 <div className="flex items-center gap-2">
                                   <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
                                     <Lightbulb className="h-4 w-4 text-amber-600 dark:text-amber-500" />
@@ -861,7 +855,7 @@ export function CanvasWorkshopInProgress({
                               variant="outline" 
                               onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
                               disabled={currentStep === 1}
-                              className="h-10 px-5"
+                              className="h-10 px-6"
                             >
                               <ChevronLeft className="h-4 w-4 mr-1" />
                               Previous
@@ -869,11 +863,11 @@ export function CanvasWorkshopInProgress({
                             <Button 
                               onClick={() => setCurrentStep(prev => Math.min(workshopSteps.length, prev + 1))}
                               disabled={currentStep === workshopSteps.length && !stepResponses[currentStep]}
-                              className="h-10 px-5"
+                              className="h-10 px-6"
                             >
                               {currentStep === workshopSteps.length ? (
                                 <>
-                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  <CheckCircle2 className="h-4 w-4 mr-2" />
                                   Finish
                                 </>
                               ) : (
@@ -923,7 +917,7 @@ export function CanvasWorkshopInProgress({
         <DialogContent className="max-w-md">
           <DialogHeader className="space-y-3">
             <div className="h-12 w-12 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto">
-              <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
             <DialogTitle className="text-center text-xl">Complete Workshop Session?</DialogTitle>
             <DialogDescription className="text-center">
@@ -963,7 +957,7 @@ export function CanvasWorkshopInProgress({
               Cancel
             </Button>
             <Button onClick={handleConfirmApproval} className="bg-green-600 hover:bg-green-700">
-              <CheckCircle className="h-4 w-4 mr-2" />
+              <CheckCircle2 className="h-4 w-4 mr-2" />
               Approve & Complete
             </Button>
           </DialogFooter>

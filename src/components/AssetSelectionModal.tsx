@@ -112,7 +112,7 @@ export function AssetSelectionModal({ onClose, onSelect, onSelectMultiple }: Ass
   const trustBadgeStyles = {
     high: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-300 dark:border-green-700',
     medium: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-300 dark:border-blue-700',
-    low: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-300 dark:border-orange-700'
+    low: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-300 dark:border-amber-700'
   };
 
   const getAssetIcon = (type: string, trustLevel: string) => {
@@ -121,7 +121,7 @@ export function AssetSelectionModal({ onClose, onSelect, onSelectMultiple }: Ass
       ? 'text-green-600 dark:text-green-400'
       : trustLevel === 'medium'
       ? 'text-blue-600 dark:text-blue-400'
-      : 'text-orange-600 dark:text-orange-400';
+      : 'text-amber-600 dark:text-amber-400';
 
     switch (type) {
       case 'product':
@@ -223,7 +223,7 @@ export function AssetSelectionModal({ onClose, onSelect, onSelectMultiple }: Ass
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`px-4 py-2 text-sm font-medium rounded-xl transition-colors ${
                     activeTab === tab.id
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
@@ -286,7 +286,7 @@ export function AssetSelectionModal({ onClose, onSelect, onSelectMultiple }: Ass
                               ? 'bg-green-100 dark:bg-green-900/30'
                               : asset.trustLevel === 'medium'
                               ? 'bg-blue-100 dark:bg-blue-900/30'
-                              : 'bg-orange-100 dark:bg-orange-900/30'
+                              : 'bg-amber-100 dark:bg-amber-900/30'
                           }`}>
                             {getAssetIcon(asset.type, asset.trustLevel)}
                           </div>
@@ -339,7 +339,7 @@ export function AssetSelectionModal({ onClose, onSelect, onSelectMultiple }: Ass
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Can't find what you need?{' '}
-                  <button className="text-primary hover:underline">
+                  <button className="text-primary hover:underline transition-colors duration-200">
                     Generate with AI
                   </button>
                 </p>

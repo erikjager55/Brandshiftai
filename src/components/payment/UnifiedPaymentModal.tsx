@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { PaymentMethodSelector, PaymentMethodType } from './PaymentMethodSelector';
 import { StoredPaymentProfile, ProfileVariant } from './StoredPaymentProfile';
 import { paymentProfileService } from '../../services/PaymentProfileService';
-import { CreditCard, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { CreditCard, Loader2, CheckCircle2, AlertCircle, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -235,7 +235,8 @@ export function UnifiedPaymentModal({
                     {actionLabel} ${amount.toLocaleString()}
                   </Button>
                 ) : (
-                  <Button onClick={handleAddNewMethod} className="flex-1 bg-primary">
+                  <Button onClick={handleAddNewMethod} className="flex-1 bg-primary gap-2">
+                    <Plus className="h-4 w-4" />
                     Add Payment Method
                   </Button>
                 )}

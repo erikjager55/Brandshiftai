@@ -156,14 +156,14 @@ export function StrategyHubSection() {
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                <Zap className="h-5 w-5 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center">
+                <Zap className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-semibold">Strategy Hub</h1>
-                <p className="text-sm text-muted-foreground">
-                  {filteredTools.length} {filteredTools.length === 1 ? 'tool' : 'tools'} available
+                <h1 className="text-3xl font-semibold">Strategy Hub</h1>
+                <p className="text-muted-foreground">
+                  {filteredTools.length} strategic tools to power your campaigns
                 </p>
               </div>
             </div>

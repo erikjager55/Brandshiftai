@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { ScrollArea } from '../ui/scroll-area';
 import { WarningBadge, SuccessBadge, InfoBadge } from '../ui/StatusBadge';
 import { InfoMessage } from '../ui/InfoBox';
-import { Clock, GitBranch, CheckCircle, Eye, ArrowRight, Sparkles, RotateCcw } from 'lucide-react';
+import { Clock, GitBranch, CheckCircle2, Eye, ArrowRight, Sparkles, RotateCcw } from 'lucide-react';
 import { motion } from 'motion/react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -187,7 +187,7 @@ export function AIVersionHistory({
                               onClick={() => handleCompareToggle(version.id)}
                               className="flex-1 gap-2"
                             >
-                              <CheckCircle className="h-3 w-3" />
+                              <CheckCircle2 className="h-4 w-4" />
                               {isSelectedForCompare ? 'Selected' : 'Compare'}
                             </Button>
                           )}

@@ -2,611 +2,617 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { PageCard } from './ui/page-card';
 import { Progress } from './ui/progress';
-import { Input } from './ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { SearchBar } from './ui/SearchBar';
+import { NewCampaignWizard } from './NewCampaignWizard';
+import { QuickContentModal } from './QuickContentModalNew';
 import { 
   Edit,
   Trash2,
   Megaphone,
-  Target,
   Plus,
-  Users,
-  Shield,
-  Tag,
   FileText,
-  Image,
-  Video,
-  Mail,
-  Globe,
-  Calendar,
   CheckCircle2,
-  Circle,
-  MoreHorizontal,
-  BarChart3,
+  MoreVertical,
   Play,
-  Eye,
-  Search,
-  Filter,
-  Clock,
-  X,
+  Sparkles,
+  Copy,
+  Archive,
+  Zap,
   LayoutGrid,
   List,
-  RotateCcw,
-  Trash,
-  Sparkles
+  ChevronRight,
+  Users2,
 } from 'lucide-react';
-import { CampaignSettingsModal } from './CampaignSettingsModal';
-import { DeliverableCard } from './campaign-strategy/DeliverableCard';
-import { getAllCampaigns, campaignToStrategy } from '../data/mock-campaigns';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { cn } from '../lib/utils';
 
 interface Deliverable {
   id: string;
   name: string;
-  description?: string;
   type: 'document' | 'image' | 'video' | 'email' | 'website' | 'social';
   status: 'completed' | 'in-progress' | 'not-started';
   progress?: number;
-  dueDate?: string;
-  assignee?: string;
 }
 
-interface Strategy {
+interface Campaign {
   id: string;
   name: string;
-  type: 'campaign-strategy' | 'brand-refresh' | 'content-strategy';
-  status: 'ready' | 'draft' | 'generating';
-  assets: {
-    brand?: number;
-    persona?: number;
-    product?: number;
-  };
-  contextInputs: {
-    brand?: { name: string; count: number };
-    persona?: { name: string; count: number };
-    product?: { name: string; count: number };
-  };
+  type: 'strategic' | 'quick';
+  status: 'active' | 'draft' | 'completed';
   deliverables: Deliverable[];
-  modifiedTime: string;
-  modifiedBy: string;
-  deletedAt?: string;
+  confidence?: number;
+  assetsUsed?: number;
+  contentType?: string;
+  qualityScore?: number;
+  team?: { name: string; avatar: string }[];
+  createdAt: string;
 }
 
 interface ActiveCampaignsPageProps {
   onNavigateToCampaign?: (campaignId: string, tab?: 'configure' | 'result') => void;
 }
 
-const typeConfig = {
-  'campaign-strategy': {
-    icon: Megaphone,
-    label: 'Campaign Strategy',
-    color: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-100 dark:bg-blue-900/30'
+// Mock data
+const mockCampaigns: Campaign[] = [
+  {
+    id: 'camp-1',
+    name: 'Q1 Product Launch Campaign',
+    type: 'strategic',
+    status: 'active',
+    confidence: 87,
+    assetsUsed: 4,
+    deliverables: [
+      { id: 'd1', name: 'Landing Page', type: 'website', status: 'completed', progress: 100 },
+      { id: 'd2', name: 'Email Series', type: 'email', status: 'completed', progress: 100 },
+      { id: 'd3', name: 'Social Media Assets', type: 'social', status: 'in-progress', progress: 60 },
+      { id: 'd4', name: 'Product Video', type: 'video', status: 'in-progress', progress: 40 },
+      { id: 'd5', name: 'Blog Post Series', type: 'document', status: 'not-started', progress: 0 },
+      { id: 'd6', name: 'Ad Creatives', type: 'image', status: 'not-started', progress: 0 },
+    ],
+    team: [
+      { name: 'Sarah', avatar: 'S' },
+      { name: 'Mike', avatar: 'M' },
+      { name: 'Lisa', avatar: 'L' },
+    ],
+    createdAt: '2024-01-15',
   },
-  'brand-refresh': {
-    icon: Target,
-    label: 'Brand Refresh',
-    color: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-100 dark:bg-purple-900/30'
+  {
+    id: 'camp-2',
+    name: 'Brand Awareness Campaign',
+    type: 'strategic',
+    status: 'active',
+    confidence: 92,
+    assetsUsed: 3,
+    deliverables: [
+      { id: 'd7', name: 'Brand Video', type: 'video', status: 'completed', progress: 100 },
+      { id: 'd8', name: 'Social Campaign', type: 'social', status: 'completed', progress: 100 },
+      { id: 'd9', name: 'Press Release', type: 'document', status: 'in-progress', progress: 75 },
+    ],
+    team: [
+      { name: 'John', avatar: 'J' },
+      { name: 'Emma', avatar: 'E' },
+    ],
+    createdAt: '2024-01-10',
   },
-  'content-strategy': {
-    icon: Target,
-    label: 'Content Strategy',
-    color: 'text-green-600 dark:text-green-400',
-    bg: 'bg-green-100 dark:bg-green-900/30'
-  }
-};
-
-const statusConfig = {
-  ready: {
-    label: 'Active',
-    className: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800'
+  {
+    id: 'quick-1',
+    name: 'New pricing model for startup founders...',
+    type: 'quick',
+    status: 'completed',
+    contentType: 'Blog Post',
+    qualityScore: 8.5,
+    deliverables: [
+      { id: 'd10', name: 'Blog Post', type: 'document', status: 'completed', progress: 100 },
+    ],
+    createdAt: '2024-01-22',
   },
-  draft: {
-    label: 'Draft',
-    className: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700'
+  {
+    id: 'quick-2',
+    name: 'Announcing Q1 results and upcoming...',
+    type: 'quick',
+    status: 'active',
+    contentType: 'Social Media',
+    deliverables: [
+      { id: 'd11', name: 'LinkedIn Posts', type: 'social', status: 'in-progress', progress: 50 },
+    ],
+    createdAt: '2024-01-21',
   },
-  generating: {
-    label: 'Generating...',
-    className: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800'
-  }
-};
-
-const deliverableIcons = {
-  document: FileText,
-  image: Image,
-  video: Video,
-  email: Mail,
-  website: Globe,
-  social: Target
-};
+  {
+    id: 'quick-3',
+    name: 'Monthly newsletter highlights...',
+    type: 'quick',
+    status: 'completed',
+    contentType: 'Email',
+    qualityScore: 9.2,
+    deliverables: [
+      { id: 'd12', name: 'Newsletter', type: 'email', status: 'completed', progress: 100 },
+    ],
+    createdAt: '2024-01-20',
+  },
+  {
+    id: 'camp-3',
+    name: 'Customer Success Stories',
+    type: 'strategic',
+    status: 'completed',
+    confidence: 95,
+    assetsUsed: 2,
+    deliverables: [
+      { id: 'd13', name: 'Case Study 1', type: 'document', status: 'completed', progress: 100 },
+      { id: 'd14', name: 'Case Study 2', type: 'document', status: 'completed', progress: 100 },
+      { id: 'd15', name: 'Video Testimonials', type: 'video', status: 'completed', progress: 100 },
+    ],
+    team: [
+      { name: 'David', avatar: 'D' },
+    ],
+    createdAt: '2023-12-20',
+  },
+];
 
 export function ActiveCampaignsPage({ onNavigateToCampaign }: ActiveCampaignsPageProps) {
-  // Laad strategies vanuit gedeelde data source
-  const [strategies, setStrategies] = useState(() => 
-    getAllCampaigns().map(campaignToStrategy)
-  );
-  const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState<string>('all');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [selectedDeliverableStatus, setSelectedDeliverableStatus] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'active' | 'trash'>('active');
+  const [selectedTab, setSelectedTab] = useState<'all' | 'strategic' | 'quick' | 'completed'>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showWizard, setShowWizard] = useState(false);
+  const [showQuickContentModal, setShowQuickContentModal] = useState(false);
 
-  // Separate active and deleted strategies
-  const activeStrategies = useMemo(() => 
-    strategies.filter(s => !s.deletedAt),
-    [strategies]
-  );
+  // Filter campaigns
+  const filteredCampaigns = useMemo(() => {
+    return campaigns.filter(campaign => {
+      const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      let matchesTab = true;
+      if (selectedTab === 'strategic') {
+        matchesTab = campaign.type === 'strategic';
+      } else if (selectedTab === 'quick') {
+        matchesTab = campaign.type === 'quick';
+      } else if (selectedTab === 'completed') {
+        matchesTab = campaign.status === 'completed';
+      }
 
-  const deletedStrategies = useMemo(() => 
-    strategies.filter(s => s.deletedAt),
-    [strategies]
-  );
-
-  // Current strategies based on view mode
-  const currentStrategies = viewMode === 'active' ? activeStrategies : deletedStrategies;
-
-  // Filter strategies
-  const filteredStrategies = useMemo(() => {
-    return currentStrategies.filter(strategy => {
-      const matchesSearch = strategy.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = selectedType === 'all' || strategy.type === selectedType;
-      const matchesStatus = selectedStatus === 'all' || strategy.status === selectedStatus;
-      const matchesDeliverableStatus = 
-        selectedDeliverableStatus === 'all' || 
-        strategy.deliverables.some(d => d.status === selectedDeliverableStatus);
-
-      return matchesSearch && matchesType && matchesStatus && matchesDeliverableStatus;
+      return matchesSearch && matchesTab;
     });
-  }, [currentStrategies, searchTerm, selectedType, selectedStatus, selectedDeliverableStatus]);
+  }, [campaigns, searchTerm, selectedTab]);
 
-  // Calculate stats for all deliverables across campaigns
-  const deliverableStats = useMemo(() => {
-    const allDeliverables = filteredStrategies.flatMap(s => s.deliverables);
-    const total = allDeliverables.length;
-    const completed = allDeliverables.filter(d => d.status === 'completed').length;
-    const inProgress = allDeliverables.filter(d => d.status === 'in-progress').length;
-    const notStarted = allDeliverables.filter(d => d.status === 'not-started').length;
+  // Calculate stats
+  const stats = useMemo(() => {
+    const activeCount = campaigns.filter(c => c.status === 'active').length;
+    const quickCount = campaigns.filter(c => c.type === 'quick').length;
+    const completedCount = campaigns.filter(c => c.status === 'completed').length;
+    const totalContent = campaigns.reduce((sum, c) => sum + c.deliverables.length, 0);
 
-    return { total, completed, inProgress, notStarted };
-  }, [filteredStrategies]);
-
-  const handleReset = () => {
-    setSearchTerm('');
-    setSelectedType('all');
-    setSelectedStatus('all');
-    setSelectedDeliverableStatus('all');
-  };
-
-  const hasActiveFilters = searchTerm || selectedType !== 'all' || selectedStatus !== 'all' || selectedDeliverableStatus !== 'all';
+    return { activeCount, quickCount, completedCount, totalContent };
+  }, [campaigns]);
 
   const handleDelete = (id: string) => {
-    setStrategies(strategies.map(s => 
-      s.id === id 
-        ? { ...s, deletedAt: new Date().toISOString() }
-        : s
+    setCampaigns(campaigns.filter(c => c.id !== id));
+  };
+
+  const handleDuplicate = (campaign: Campaign) => {
+    const newCampaign: Campaign = {
+      ...campaign,
+      id: `${campaign.id}-copy-${Date.now()}`,
+      name: `${campaign.name} (Copy)`,
+      status: 'draft',
+      createdAt: new Date().toISOString(),
+    };
+    setCampaigns([newCampaign, ...campaigns]);
+  };
+
+  const handleConvertToCampaign = (quickCampaignId: string) => {
+    setCampaigns(campaigns.map(c => 
+      c.id === quickCampaignId 
+        ? { ...c, type: 'strategic' as const, confidence: 75, assetsUsed: 1 }
+        : c
     ));
   };
 
-  const handleRestore = (id: string) => {
-    setStrategies(strategies.map(s => 
-      s.id === id 
-        ? { ...s, deletedAt: undefined }
-        : s
-    ));
-  };
-
-  const handleSave = (data: { name: string; notes: string; assignee: string }) => {
-    if (editingStrategy) {
-      setStrategies(strategies.map(s => 
-        s.id === editingStrategy.id 
-          ? { ...s, name: data.name }
-          : s
-      ));
+  const getStatusBadge = (status: Campaign['status']) => {
+    switch (status) {
+      case 'active':
+        return (
+          <Badge className="rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+            Active
+          </Badge>
+        );
+      case 'draft':
+        return (
+          <Badge className="rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 text-xs">
+            Draft
+          </Badge>
+        );
+      case 'completed':
+        return (
+          <Badge className="rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-xs">
+            Completed
+          </Badge>
+        );
     }
+  };
+
+  const calculateProgress = (deliverables: Deliverable[]) => {
+    if (deliverables.length === 0) return 0;
+    const completed = deliverables.filter(d => d.status === 'completed').length;
+    return (completed / deliverables.length) * 100;
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-10">
-        <div className="max-w-7xl mx-auto px-8 py-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Target className="h-8 w-8 text-primary" />
+        <div className="max-w-7xl mx-auto px-8 py-6 space-y-6">
+          {/* Title Row */}
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-4">
+              <div className="rounded-xl bg-primary/10 p-3">
+                <Megaphone className="h-6 w-6 text-primary" />
+              </div>
               <div>
-                <h1 className="text-3xl font-semibold mb-1">Active Campaigns</h1>
-                <p className="text-muted-foreground">
-                  {filteredStrategies.length} {filteredStrategies.length === 1 ? 'campaign' : 'campaigns'} • {deliverableStats.total} deliverables
+                <h1 className="text-3xl font-semibold">Campaigns</h1>
+                <p className="text-sm text-muted-foreground">
+                  All your strategic campaigns and content
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Button
-                variant={viewMode === 'trash' ? 'ghost' : 'outline'}
-                onClick={() => setViewMode('trash')}
-                className="relative"
-              >
-                <Trash className="h-4 w-4 mr-2" />
-                Trash
-                {deletedStrategies.length > 0 && (
-                  <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-xs">
-                    {deletedStrategies.length}
-                  </Badge>
-                )}
+            <div className="flex items-center gap-2">
+              <Button variant="outline" className="gap-2" onClick={() => setShowQuickContentModal(true)}>
+                <Zap className="h-4 w-4" />
+                Quick Content
               </Button>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                New Strategy
+              <Button className="gap-2" onClick={() => setShowWizard(true)}>
+                <Plus className="h-4 w-4" />
+                New Campaign
               </Button>
             </div>
           </div>
 
-          {/* View Mode Tabs */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'active' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('active')}
-              className="rounded-full"
-            >
-              Active ({activeStrategies.length})
-            </Button>
-            <Button
-              variant={viewMode === 'trash' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setViewMode('trash')}
-              className="rounded-full"
-            >
-              Trash ({deletedStrategies.length})
-            </Button>
+          {/* Stats Row */}
+          <div className="grid grid-cols-4 gap-4">
+            {/* Active */}
+            <Card className="rounded-xl border">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="rounded-lg bg-green-100 dark:bg-green-900/30 p-2">
+                    <Play className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </div>
+                </div>
+                <div className="text-4xl font-semibold text-green-600 dark:text-green-400 mb-1">
+                  {stats.activeCount}
+                </div>
+                <div className="text-sm text-muted-foreground">Active</div>
+              </CardContent>
+            </Card>
+
+            {/* Quick */}
+            <Card className="rounded-xl border">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="rounded-lg bg-blue-100 dark:bg-blue-900/30 p-2">
+                    <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  </div>
+                </div>
+                <div className="text-4xl font-semibold text-blue-600 dark:text-blue-400 mb-1">
+                  {stats.quickCount}
+                </div>
+                <div className="text-sm text-muted-foreground">Quick</div>
+              </CardContent>
+            </Card>
+
+            {/* Completed */}
+            <Card className="rounded-xl border">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="rounded-lg bg-gray-100 dark:bg-gray-800 p-2">
+                    <CheckCircle2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  </div>
+                </div>
+                <div className="text-4xl font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                  {stats.completedCount}
+                </div>
+                <div className="text-sm text-muted-foreground">Completed</div>
+              </CardContent>
+            </Card>
+
+            {/* Total Content */}
+            <Card className="rounded-xl border">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="rounded-lg bg-purple-100 dark:bg-purple-900/30 p-2">
+                    <FileText className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  </div>
+                </div>
+                <div className="text-4xl font-semibold text-purple-600 dark:text-purple-400 mb-1">
+                  {stats.totalContent}
+                </div>
+                <div className="text-sm text-muted-foreground">Total Content</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Filter Bar */}
+          <div className="flex items-center gap-3">
+            {/* Tabs */}
+            <div className="flex items-center gap-2">
+              {(['all', 'strategic', 'quick', 'completed'] as const).map(tab => (
+                <Button
+                  key={tab}
+                  variant={selectedTab === tab ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setSelectedTab(tab)}
+                  className="capitalize"
+                >
+                  {tab}
+                </Button>
+              ))}
+            </div>
+
+            <SearchBar
+              value={searchTerm}
+              onChange={setSearchTerm}
+              placeholder="Search campaigns..."
+              className="flex-1 max-w-md"
+            />
+
+            <div className="flex items-center rounded-xl border bg-background">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="rounded-r-none"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="rounded-l-none"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-8 py-8">
-        {/* Deliverable Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Total Deliverables</p>
-                  <p className="text-2xl font-semibold">{deliverableStats.total}</p>
-                </div>
-                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {filteredCampaigns.length > 0 ? (
+          <div className={cn('grid gap-6', viewMode === 'grid' ? 'md:grid-cols-2' : 'grid-cols-1')}>
+            {filteredCampaigns.map(campaign => {
+              const progress = calculateProgress(campaign.deliverables);
+              const completedDeliverables = campaign.deliverables.filter(d => d.status === 'completed').length;
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Completed</p>
-                  <p className="text-2xl font-semibold">{deliverableStats.completed}</p>
-                </div>
-                <div className="h-10 w-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">In Progress</p>
-                  <p className="text-2xl font-semibold">{deliverableStats.inProgress}</p>
-                </div>
-                <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Not Started</p>
-                  <p className="text-2xl font-semibold">{deliverableStats.notStarted}</p>
-                </div>
-                <div className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                  <Circle className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <div className="mb-6">
-          <div className="flex items-stretch gap-3">
-            <Input
-              placeholder="Search campaigns..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1"
-            />
-            <Select
-              value={selectedType}
-              onValueChange={(value) => setSelectedType(value)}
-            >
-              <SelectTrigger className="w-48 h-10">
-                <SelectValue placeholder="Type">
-                  {selectedType === 'all' ? 'All Types' : typeConfig[selectedType].label}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="campaign-strategy">Campaign Strategy</SelectItem>
-                <SelectItem value="brand-refresh">Brand Refresh</SelectItem>
-                <SelectItem value="content-strategy">Content Strategy</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={selectedStatus}
-              onValueChange={(value) => setSelectedStatus(value)}
-            >
-              <SelectTrigger className="w-48 h-10">
-                <SelectValue placeholder="Status">
-                  {selectedStatus === 'all' ? 'All Statuses' : statusConfig[selectedStatus].label}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="ready">Active</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="generating">Generating...</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={selectedDeliverableStatus}
-              onValueChange={(value) => setSelectedDeliverableStatus(value)}
-            >
-              <SelectTrigger className="w-48 h-10">
-                <SelectValue placeholder="Deliverable Status">
-                  {selectedDeliverableStatus === 'all' ? 'All Deliverables' : selectedDeliverableStatus}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Deliverables</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="not-started">Not Started</SelectItem>
-              </SelectContent>
-            </Select>
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleReset}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Campaign Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredStrategies.map((strategy) => {
-            const typeInfo = typeConfig[strategy.type];
-            const statusInfo = statusConfig[strategy.status];
-            const TypeIcon = typeInfo.icon;
-            
-            // Calculate deliverables progress
-            const completedDeliverables = strategy.deliverables.filter(d => d.status === 'completed').length;
-            const totalDeliverables = strategy.deliverables.length;
-            const progressPercent = totalDeliverables > 0 
-              ? Math.round((completedDeliverables / totalDeliverables) * 100) 
-              : 0;
-
-            return (
-              <Card
-                key={strategy.id}
-                onClick={() => viewMode === 'active' && onNavigateToCampaign?.(strategy.id, 'result')}
-                className="group cursor-pointer hover:border-primary/50 transition-all hover:shadow-md p-4"
-              >
-                {/* Header: Icon + Status Badge */}
-                <div className="flex items-start justify-between mb-3">
-                  <div className={`h-10 w-10 rounded-lg ${typeInfo.bg} flex items-center justify-center flex-shrink-0`}>
-                    <TypeIcon className={`h-5 w-5 ${typeInfo.color}`} />
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className={`${statusInfo.className} border rounded-full px-3 ${
-                      strategy.status === 'generating' ? 'animate-pulse' : ''
-                    }`}
+              // Strategic Campaign Card
+              if (campaign.type === 'strategic') {
+                return (
+                  <Card
+                    key={campaign.id}
+                    className="rounded-xl border p-6 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer"
+                    onClick={() => onNavigateToCampaign?.(campaign.id, 'result')}
                   >
-                    {statusInfo.label}
-                  </Badge>
-                </div>
-
-                {/* Campaign Name with Edit Button */}
-                <div className="flex items-start gap-2 mb-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold group-hover:text-primary transition-colors leading-snug">
-                      {strategy.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {typeInfo.label}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    {viewMode === 'active' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingStrategy(strategy);
-                        }}
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
-                    {viewMode === 'active' ? (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(strategy.id);
-                        }}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0 text-primary hover:text-primary hover:bg-primary/10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRestore(strategy.id);
-                        }}
-                      >
-                        <RotateCcw className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Context Inputs */}
-                <div className="flex flex-wrap gap-2 mb-3 pb-3 border-b border-border">
-                  {strategy.contextInputs.brand && (
-                    <div 
-                      className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted/50" 
-                      title={`Brand: ${strategy.contextInputs.brand.name}`}
-                    >
-                      <Shield className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
-                        {strategy.contextInputs.brand.count} {strategy.contextInputs.brand.count === 1 ? 'brand' : 'brands'}
-                      </span>
+                    {/* Header Row */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold mb-2">{campaign.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <Badge className="rounded-full bg-primary/10 text-primary text-xs">
+                            Strategic
+                          </Badge>
+                          {getStatusBadge(campaign.status)}
+                        </div>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={e => e.stopPropagation()}
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={e => e.stopPropagation()}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={e => {
+                            e.stopPropagation();
+                            handleDuplicate(campaign);
+                          }}>
+                            <Copy className="h-4 w-4 mr-2" />
+                            Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={e => e.stopPropagation()}>
+                            <Archive className="h-4 w-4 mr-2" />
+                            Archive
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-red-600 dark:text-red-400"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleDelete(campaign.id);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                  )}
-                  {strategy.contextInputs.persona && (
-                    <div 
-                      className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted/50" 
-                      title={`Persona: ${strategy.contextInputs.persona.name}`}
-                    >
-                      <Users className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
-                        {strategy.contextInputs.persona.count} {strategy.contextInputs.persona.count === 1 ? 'persona' : 'personas'}
-                      </span>
-                    </div>
-                  )}
-                  {strategy.contextInputs.product && (
-                    <div 
-                      className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted/50" 
-                      title={`Product: ${strategy.contextInputs.product.name}`}
-                    >
-                      <Tag className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">
-                        {strategy.contextInputs.product.count} {strategy.contextInputs.product.count === 1 ? 'product' : 'products'}
-                      </span>
-                    </div>
-                  )}
-                </div>
 
-                {/* Deliverables Section */}
-                {strategy.deliverables.length > 0 && (
-                  <div className="space-y-2 mb-3">
+                    {/* Meta Row */}
+                    <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-amber-500" />
+                        <span>{campaign.confidence}% Confidence</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        <span>Based on {campaign.assetsUsed} assets</span>
+                      </div>
+                    </div>
+
+                    {/* Progress Section */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Deliverables</span>
+                        <span className="font-semibold">
+                          {completedDeliverables}/{campaign.deliverables.length} complete
+                        </span>
+                      </div>
+                      <Progress value={progress} className="h-2" />
+                    </div>
+
+                    {/* Footer */}
                     <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                        Deliverables
-                      </h4>
-                      <span className="text-xs text-muted-foreground">
-                        {completedDeliverables}/{totalDeliverables} completed
-                      </span>
+                      <div className="flex items-center -space-x-2">
+                        {campaign.team?.map((member, i) => (
+                          <div
+                            key={i}
+                            className="h-8 w-8 rounded-full bg-primary/10 border-2 border-background flex items-center justify-center text-xs font-semibold text-primary"
+                          >
+                            {member.avatar}
+                          </div>
+                        ))}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={e => {
+                          e.stopPropagation();
+                          onNavigateToCampaign?.(campaign.id, 'result');
+                        }}
+                      >
+                        View Campaign
+                      </Button>
                     </div>
-                    <div className="space-y-1.5">
-                      {strategy.deliverables.map((deliverable) => (
-                        <DeliverableCard
-                          key={deliverable.id}
-                          deliverable={deliverable}
-                          onWorkClick={() => {
-                            console.log('Work on deliverable:', deliverable.name);
-                          }}
-                          onViewClick={() => {
-                            console.log('View deliverable:', deliverable.name);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Empty state if no deliverables */}
-                {strategy.deliverables.length === 0 && (
-                  <div className="py-6 text-center border-2 border-dashed border-border rounded-lg mb-3">
-                    <div className="h-8 w-8 rounded-full bg-muted mx-auto mb-2 flex items-center justify-center">
-                      <Plus className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <p className="text-sm font-medium mb-0.5">No deliverables yet</p>
-                    <p className="text-xs text-muted-foreground">
-                      Add deliverables to this campaign
-                    </p>
-                  </div>
-                )}
+                  </Card>
+                );
+              }
 
-                {/* Modified Info */}
-                <div className="pt-2 border-t border-border">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>
-                      Modified {strategy.modifiedTime}
-                    </span>
-                    <span className="text-foreground font-medium">
-                      by {strategy.modifiedBy}
-                    </span>
+              // Quick Campaign Card
+              return (
+                <Card
+                  key={campaign.id}
+                  className="rounded-xl border border-dashed border-blue-200 dark:border-blue-800 p-6 hover:shadow-md hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200 cursor-pointer"
+                  onClick={() => onNavigateToCampaign?.(campaign.id, 'result')}
+                >
+                  {/* Header Row */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-2">{campaign.name}</h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge className="rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 text-xs flex items-center gap-1">
+                          <Zap className="h-3 w-3" />
+                          Quick
+                        </Badge>
+                        {getStatusBadge(campaign.status)}
+                      </div>
+                      {/* Origin Indicator */}
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Zap className="h-3 w-3 text-amber-500" />
+                        <span>Created via Quick Content</span>
+                        <span>•</span>
+                        <span>{campaign.createdAt}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
 
-        {/* Empty State */}
-        {filteredStrategies.length === 0 && (
-          <div className="p-12 text-center">
-            <Sparkles className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No campaigns yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Create your first strategy to get started
+                  {/* Compact Meta */}
+                  <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      <span>{campaign.contentType}</span>
+                    </div>
+                    <span>•</span>
+                    <span>{campaign.deliverables.length} deliverable</span>
+                    {campaign.qualityScore && (
+                      <>
+                        <span>•</span>
+                        <div className="flex items-center gap-1">
+                          <Sparkles className="h-4 w-4 text-amber-500" />
+                          <span>{campaign.qualityScore}/10</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between">
+                    <button
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleConvertToCampaign(campaign.id);
+                      }}
+                    >
+                      Convert to Campaign
+                    </button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={e => {
+                        e.stopPropagation();
+                        onNavigateToCampaign?.(campaign.id, 'result');
+                      }}
+                    >
+                      Open
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <Megaphone className="h-10 w-10 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No campaigns yet</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Create your first campaign or quick content
             </p>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Strategy
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button className="gap-2" onClick={() => setShowWizard(true)}>
+                <Plus className="h-4 w-4" />
+                New Campaign
+              </Button>
+              <Button variant="outline" className="gap-2" onClick={() => setShowQuickContentModal(true)}>
+                <Zap className="h-4 w-4" />
+                Quick Content
+              </Button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Campaign Settings Modal */}
-      {editingStrategy && (
-        <CampaignSettingsModal
-          isOpen={!!editingStrategy}
-          onClose={() => setEditingStrategy(null)}
-          campaign={{
-            id: editingStrategy.id,
-            name: editingStrategy.name,
-            notes: '',
-            assignee: '1'
-          }}
-          onSave={handleSave}
-          onDelete={handleDelete}
-        />
+      {/* New Campaign Wizard */}
+      {showWizard && (
+        <div className="fixed inset-0 z-50">
+          <NewCampaignWizard onClose={() => setShowWizard(false)} />
+        </div>
+      )}
+
+      {/* Quick Content Modal */}
+      {showQuickContentModal && (
+        <div className="fixed inset-0 z-50">
+          <QuickContentModal 
+            isOpen={showQuickContentModal} 
+            onClose={() => setShowQuickContentModal(false)} 
+          />
+        </div>
       )}
     </div>
   );

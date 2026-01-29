@@ -22,7 +22,7 @@ import {
 import { 
   Users,
   ChevronDown,
-  CheckCircle,
+  CheckCircle2,
   Calendar,
   Download,
   Clock,
@@ -36,7 +36,7 @@ import {
   Unlock,
   Mail,
   Phone,
-  Edit3,
+  Edit,
   Save,
   X,
   Package,
@@ -66,6 +66,7 @@ import {
 } from '../ui/select';
 import { InterviewWorkflowStep } from './InterviewWorkflowStep';
 import { currentBundle } from '../../data/mock-bundles';
+import { StatusDropdown, ExtendedStatus } from '../research/StatusDropdown';
 
 interface Interview {
   id: string;
@@ -110,7 +111,8 @@ interface InterviewsManagerProps {
 }
 
 export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, researchPlanConfig, onNavigateToAsset, onReturnToHub }: InterviewsManagerProps) {
-  const [viewStatus, setViewStatus] = useState<'in-progress' | 'approved'>('in-progress');
+  const [researchStatus, setResearchStatus] = useState<ExtendedStatus>('in_progress');
+  const [viewStatus, setViewStatus] = useState<'in-progress' | 'completed'>('in-progress');
   const [selectedInterviewId, setSelectedInterviewId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState<string | null>(null);
   const [lockModalOpen, setLockModalOpen] = useState(false);
@@ -430,7 +432,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       'add-contact': { label: 'Add Contact', color: 'bg-gray-100 text-gray-700' },
-      'contacted': { label: 'Contacted', color: 'bg-yellow-100 text-yellow-700' },
+      'contacted': { label: 'Contacted', color: 'bg-amber-100 text-amber-700' },
       'appointment-made': { label: 'Scheduled', color: 'bg-blue-100 text-blue-700' },
       'interview-held': { label: 'Interview Held', color: 'bg-purple-100 text-purple-700' },
       'results-added': { label: 'Results Added', color: 'bg-green-100 text-green-700' }
@@ -448,7 +450,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
     switch (viewStatus) {
       case 'in-progress':
         return <Play className="h-5 w-5" />;
-      case 'approved':
+      case 'completed':
         return <Check className="h-5 w-5" />;
     }
   };
@@ -457,8 +459,8 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
     switch (viewStatus) {
       case 'in-progress':
         return 'In Progress';
-      case 'approved':
-        return 'Approved';
+      case 'completed':
+        return 'Completed';
     }
   };
 
@@ -466,7 +468,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
     switch (viewStatus) {
       case 'in-progress':
         return 'text-blue-600';
-      case 'approved':
+      case 'completed':
         return 'text-green-600';
       default:
         return 'text-blue-600';
@@ -634,7 +636,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openDetailView(interview.id)}>
-                            <Edit3 className="h-4 w-4 mr-2" />
+                            <Edit className="h-4 w-4 mr-2" />
                             Edit Details
                           </DropdownMenuItem>
                           {interview.status === 'results-added' && interview.lockStatus === 'editable' && (
@@ -903,7 +905,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
               <h2 className="font-bold text-xl">1-on-1 Interview Manager</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 {viewStatus === 'in-progress' && 'Conduct structured interviews with stakeholders'}
-                {viewStatus === 'approved' && 'Completed and locked interviews ready for analysis'}
+                {viewStatus === 'completed' && 'Completed and locked interviews ready for analysis'}
               </p>
             </div>
           </div>
@@ -926,10 +928,10 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
                   <span>In Progress</span>
                   {viewStatus === 'in-progress' && <Check className="h-4 w-4 ml-auto" />}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setViewStatus('approved')} className="cursor-pointer py-3">
+                <DropdownMenuItem onClick={() => setViewStatus('completed')} className="cursor-pointer py-3">
                   <Check className="h-4 w-4 mr-2 text-green-600" />
-                  <span>Approved</span>
-                  {viewStatus === 'approved' && <Check className="h-4 w-4 ml-auto" />}
+                  <span>Completed</span>
+                  {viewStatus === 'completed' && <Check className="h-4 w-4 ml-auto" />}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -938,7 +940,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
       </div>
 
       {viewStatus === 'in-progress' && renderInProgressView()}
-      {viewStatus === 'approved' && renderApprovedView()}
+      {viewStatus === 'completed' && renderApprovedView()}
 
       {/* Add Interview Dialog */}
       <Dialog open={addInterviewDialogOpen} onOpenChange={setAddInterviewDialogOpen}>
@@ -973,7 +975,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
 
       {/* Detail View Dialog */}
       <Dialog open={detailViewOpen} onOpenChange={setDetailViewOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" aria-describedby={undefined}>
           {selectedDetailInterviewData && (
             <>
               <DialogHeader>
@@ -1131,7 +1133,7 @@ export function InterviewsManager({ assetId, onRerender, onEdit, initialConfig, 
                                 </div>
                               </div>
                               {isSelected && (
-                                <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                                <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
                               )}
                             </div>
                           </div>

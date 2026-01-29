@@ -69,7 +69,7 @@ export function ViewModeSelector({ currentMode, onModeChange }: ViewModeSelector
         <Button 
           variant="outline" 
           size="sm" 
-          className="gap-2 h-9"
+          className="gap-2 h-9 transition-colors duration-200"
         >
           <CurrentIcon className="h-4 w-4" />
           <span className="hidden lg:inline">{getModeLabel(currentMode)}</span>
@@ -85,7 +85,7 @@ export function ViewModeSelector({ currentMode, onModeChange }: ViewModeSelector
         {/* Platform View */}
         <DropdownMenuItem
           onClick={() => onModeChange('normal')}
-          className={currentMode === 'normal' ? 'bg-muted' : ''}
+          className={`transition-colors duration-200 ${currentMode === 'normal' ? 'bg-muted' : ''}`}
         >
           <div className="flex items-start gap-3 py-1">
             <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
@@ -103,7 +103,7 @@ export function ViewModeSelector({ currentMode, onModeChange }: ViewModeSelector
         {/* Executive View */}
         <DropdownMenuItem
           onClick={() => onModeChange('executive')}
-          className={currentMode === 'executive' ? 'bg-muted' : ''}
+          className={`transition-colors duration-200 ${currentMode === 'executive' ? 'bg-muted' : ''}`}
         >
           <div className="flex items-start gap-3 py-1">
             <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center flex-shrink-0">
@@ -121,7 +121,7 @@ export function ViewModeSelector({ currentMode, onModeChange }: ViewModeSelector
         {/* Report Mode */}
         <DropdownMenuItem
           onClick={() => onModeChange('report')}
-          className={currentMode === 'report' ? 'bg-muted' : ''}
+          className={`transition-colors duration-200 ${currentMode === 'report' ? 'bg-muted' : ''}`}
         >
           <div className="flex items-start gap-3 py-1">
             <div className="h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">

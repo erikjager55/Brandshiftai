@@ -865,7 +865,7 @@ export function CampaignStrategyGeneratorDetail({
                     })()}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-6">
                   {/* Campaign Name */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -1276,11 +1276,11 @@ export function CampaignStrategyGeneratorDetail({
                     })()}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="space-y-6">
                   {/* Campaign Duration */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-emerald-600" />
+                      <Calendar className="h-4 w-4 text-green-600" />
                       Campaign Duration
                       {campaignConfig.timeline && (
                         <CheckCircle className="h-4 w-4 text-green-600 ml-auto" />
@@ -1324,7 +1324,7 @@ export function CampaignStrategyGeneratorDetail({
                   {/* Budget Range */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-emerald-600" />
+                      <DollarSign className="h-4 w-4 text-green-600" />
                       Total Budget
                       {campaignConfig.budget && (
                         <CheckCircle className="h-4 w-4 text-green-600 ml-auto" />
@@ -1391,7 +1391,7 @@ export function CampaignStrategyGeneratorDetail({
                   {/* Primary KPI */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <Target className="h-4 w-4 text-emerald-600" />
+                      <Target className="h-4 w-4 text-green-600" />
                       Primary KPI
                       {campaignConfig.primaryKPI && (
                         <CheckCircle className="h-4 w-4 text-green-600 ml-auto" />
@@ -1440,7 +1440,7 @@ export function CampaignStrategyGeneratorDetail({
                   {/* Secondary KPIs */}
                   <div>
                     <label className="text-sm font-medium mb-2 flex items-center gap-2">
-                      <BarChart3 className="h-4 w-4 text-emerald-600" />
+                      <BarChart3 className="h-4 w-4 text-green-600" />
                       Secondary KPIs (Optional)
                       {campaignConfig.secondaryKPIs.length > 0 && (
                         <CheckCircle className="h-4 w-4 text-green-600 ml-auto" />

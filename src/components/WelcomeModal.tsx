@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { X, ChevronRight, ChevronLeft, Zap, Users, Target, TrendingUp, CheckCircle2, Sparkles, ArrowLeft, Rocket, Circle } from 'lucide-react';
 import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
-import { 
-  X, 
-  ChevronRight, 
-  ChevronLeft,
-  Sparkles,
-  Target,
-  Rocket,
-  CheckCircle
-} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import logo from 'figma:asset/e0e0a87a533427f73679f2a4dcecdf2a949b2149.png';
 
 interface WelcomeModalProps {
   isOpen?: boolean;
@@ -31,9 +26,8 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
       icon: Sparkles,
       iconColor: 'text-primary',
       iconBg: 'bg-primary/10',
-      title: 'Welcome to Your Strategic Research Hub',
-      description: 'Transform your brand from intuition-driven to data-backed strategy in weeks, not months.',
-      image: 'https://images.unsplash.com/photo-1739298061740-5ed03045b280?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwY29sbGFib3JhdGlvbiUyMHN0cmF0ZWd5fGVufDF8fHx8MTc2NjM5NTkxMXww&ixlib=rb-4.1.0&q=80&w=1080',
+      title: 'Welcome to Brandshift.ai',
+      subtitle: 'Transform your brand from intuition-driven to data-backed strategy in weeks, not months.',
       features: [
         'Build your brand foundation with proven frameworks',
         'Validate assets through professional research',
@@ -43,29 +37,31 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
     {
       id: 'how-it-works',
       icon: Target,
-      iconColor: 'text-[#5252E3]',
-      iconBg: 'bg-[#5252E3]/10',
+      iconColor: 'text-primary',
+      iconBg: 'bg-primary/10',
       title: 'How It Works',
-      description: 'A simple 3-step process to go from brand assets to validated strategies.',
-      image: 'https://images.unsplash.com/photo-1763038311036-6d18805537e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZXNlYXJjaCUyMGRhdGElMjBpbnNpZ2h0c3xlbnwxfHx8fDE3NjY0OTcwODR8MA&ixlib=rb-4.1.0&q=80&w=1080',
+      subtitle: 'A simple 3-step process to go from brand assets to validated strategies.',
       steps: [
         {
           number: '1',
           title: 'Define Your Brand',
           description: 'Create strategic assets like Golden Circle, Vision, and Mission',
-          color: 'border-primary bg-primary/10'
+          borderColor: 'border-l-primary',
+          bgColor: 'bg-primary/5'
         },
         {
           number: '2',
           title: 'Research & Validate',
           description: 'Use 4 methods: Workshops, Surveys, Interviews, or AI Exploration',
-          color: 'border-[#5252E3] bg-[#5252E3]/10'
+          borderColor: 'border-l-primary/70',
+          bgColor: 'bg-primary/5'
         },
         {
           number: '3',
           title: 'Generate Strategy',
           description: 'AI creates campaigns, GTM plans, and customer journeys from your data',
-          color: 'border-[#F9FD48] bg-[#F9FD48]/20'
+          borderColor: 'border-l-primary/50',
+          bgColor: 'bg-primary/5'
         }
       ]
     },
@@ -75,8 +71,7 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
       iconColor: 'text-primary',
       iconBg: 'bg-primary/10',
       title: "Let's Get Started!",
-      description: 'Follow our Quick Start checklist to unlock the full power of the platform.',
-      image: 'https://images.unsplash.com/photo-1758518731027-78a22c8852ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdWNjZXNzJTIwYWNoaWV2ZW1lbnQlMjBnb2FsfGVufDF8fHx8MTc2NjQxNDc0MXww&ixlib=rb-4.1.0&q=80&w=1080',
+      subtitle: 'Follow our Quick Start checklist to unlock the full power of the platform.',
       quickWins: [
         'Create your first brand asset (Golden Circle)',
         'Define your target persona',
@@ -171,14 +166,8 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
           {/* Header */}
           <div className="relative border-b border-border p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm">
-                <span className="text-white font-bold text-xl">B</span>
-              </div>
+              <img src={logo} alt="Brandshift.ai" className="h-10 object-contain" />
               <div>
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-base font-semibold text-foreground">Brandshift</span>
-                  <span className="text-base font-semibold text-primary">.ai</span>
-                </div>
                 <p className="text-sm text-muted-foreground">
                   Step {currentSlide + 1} of {slides.length}
                 </p>
@@ -235,11 +224,11 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
                   {/* Left Column - Content */}
                   <div className="flex flex-col justify-center space-y-6">
                     <div>
-                      <h3 className="text-3xl font-semibold mb-3">
+                      <h3 className="text-2xl font-semibold mb-2">
                         {currentSlideData.title}
                       </h3>
-                      <p className="text-lg text-muted-foreground">
-                        {currentSlideData.description}
+                      <p className="text-sm text-muted-foreground">
+                        {currentSlideData.subtitle}
                       </p>
                     </div>
 
@@ -252,10 +241,10 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 + 0.3 }}
-                            className="flex items-start gap-3"
+                            className="flex items-start gap-2"
                           >
-                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
-                            <span className="text-muted-foreground">{feature}</span>
+                            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
+                            <span className="text-sm">{feature}</span>
                           </motion.li>
                         ))}
                       </ul>
@@ -263,17 +252,17 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
 
                     {/* Slide 2: Steps */}
                     {currentSlideData.id === 'how-it-works' && currentSlideData.steps && (
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         {currentSlideData.steps.map((step, index) => (
                           <motion.div
                             key={index}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.15 + 0.3 }}
-                            className={`p-4 rounded-lg border-2 ${step.color}`}
+                            className={`p-4 rounded-xl border-l-4 ${step.borderColor} ${step.bgColor}`}
                           >
                             <div className="flex items-start gap-3">
-                              <div className="h-8 w-8 rounded-full bg-white dark:bg-background border-2 border-current flex items-center justify-center shrink-0 font-bold">
+                              <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 font-semibold text-sm">
                                 {step.number}
                               </div>
                               <div>
@@ -291,7 +280,7 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
                     {/* Slide 3: Quick Wins */}
                     {currentSlideData.id === 'get-started' && currentSlideData.quickWins && (
                       <div className="space-y-3">
-                        <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                           You'll Complete:
                         </p>
                         {currentSlideData.quickWins.map((item, index) => (
@@ -300,32 +289,115 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: index * 0.1 + 0.3 }}
-                            className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
+                            className="flex items-center gap-3 p-3 rounded-lg border hover:border-primary/30 transition-all duration-200 cursor-default"
                           >
-                            <div className="h-6 w-6 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center text-xs font-medium text-muted-foreground">
+                            <div className="h-6 w-6 rounded-full border-2 border-primary text-primary text-sm font-semibold flex items-center justify-center shrink-0">
                               {index + 1}
                             </div>
-                            <span>{item}</span>
+                            <span className="text-sm">{item}</span>
                           </motion.div>
                         ))}
                       </div>
                     )}
                   </div>
 
-                  {/* Right Column - Image */}
+                  {/* Right Column - Visual */}
                   <div className="hidden md:flex items-center justify-center">
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.2 }}
-                      className="relative w-full h-full max-h-96 rounded-xl overflow-hidden shadow-xl"
+                      className="relative w-full h-full max-h-96 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8 flex items-center justify-center"
                     >
-                      <img
-                        src={currentSlideData.image}
-                        alt={currentSlideData.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      {/* Abstract Geometric Illustration */}
+                      {currentSlideData.id === 'welcome' && (
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          {/* Large Circle */}
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
+                            className="absolute w-48 h-48 rounded-full bg-primary/20 blur-3xl"
+                          />
+                          {/* Hexagon */}
+                          <motion.div
+                            initial={{ rotate: -90, opacity: 0 }}
+                            animate={{ rotate: 0, opacity: 1 }}
+                            transition={{ delay: 0.4, duration: 0.6 }}
+                            className="absolute w-32 h-32 bg-primary/30 rotate-12"
+                            style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
+                          />
+                          {/* Small circles */}
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.5, duration: 0.4 }}
+                            className="absolute top-8 right-12 w-16 h-16 rounded-full bg-primary/20"
+                          />
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.6, duration: 0.4 }}
+                            className="absolute bottom-12 left-8 w-12 h-12 rounded-full bg-primary/25"
+                          />
+                        </div>
+                      )}
+
+                      {/* Flow Diagram for Step 2 */}
+                      {currentSlideData.id === 'how-it-works' && (
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          <div className="flex flex-col items-center gap-6">
+                            {[1, 2, 3].map((num, index) => (
+                              <motion.div
+                                key={num}
+                                initial={{ opacity: 0, x: -30 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 + index * 0.2 }}
+                                className="flex items-center gap-4"
+                              >
+                                <div className={`w-16 h-16 rounded-xl bg-primary/${90 - index * 20} flex items-center justify-center text-primary-foreground font-semibold text-lg`}>
+                                  {num}
+                                </div>
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: 120 }}
+                                  transition={{ delay: 0.5 + index * 0.2, duration: 0.4 }}
+                                  className={`h-1 bg-primary/${70 - index * 10} rounded-full`}
+                                />
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Success Visual for Step 3 */}
+                      {currentSlideData.id === 'get-started' && (
+                        <div className="relative w-full h-full flex items-center justify-center">
+                          <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+                            className="w-32 h-32 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center"
+                          >
+                            <CheckCircle2 className="h-16 w-16 text-green-600 dark:text-green-400" />
+                          </motion.div>
+                          {/* Confetti dots */}
+                          {[...Array(8)].map((_, i) => (
+                            <motion.div
+                              key={i}
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{
+                                scale: [0, 1, 1],
+                                opacity: [0, 1, 0],
+                                x: Math.cos(i * 45 * Math.PI / 180) * 80,
+                                y: Math.sin(i * 45 * Math.PI / 180) * 80
+                              }}
+                              transition={{ delay: 0.5 + i * 0.05, duration: 0.8 }}
+                              className="absolute w-3 h-3 rounded-full bg-primary/60"
+                            />
+                          ))}
+                        </div>
+                      )}
                     </motion.div>
                   </div>
                 </div>
@@ -357,7 +429,7 @@ export function WelcomeModal({ isOpen = true, onClose, onGetStarted }: WelcomeMo
                     onClick={handlePrevious}
                     className="gap-2"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ArrowLeft className="h-4 w-4" />
                     Previous
                   </Button>
                 )}

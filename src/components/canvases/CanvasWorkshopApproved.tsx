@@ -5,26 +5,22 @@ import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 import { Progress } from '../ui/progress';
 import {
-  CheckCircle,
-  Calendar,
-  Download,
-  Lock,
-  Unlock,
-  Table,
+  CheckCircle2,
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
-  RefreshCw,
+  Mail,
+  Download,
+  Sparkles,
+  Calendar,
   Users,
   Clock,
-  MapPin,
-  FileText,
-  Sparkles,
-  Target,
-  Lightbulb,
-  TrendingUp
+  Lock,
+  Unlock,
+  Table
 } from 'lucide-react';
 import { WorkshopReport } from './WorkshopReport';
+import { formatDate } from '../../utils/date-format';
 
 interface Workshop {
   id: string;
@@ -73,8 +69,8 @@ export function CanvasWorkshopApproved({
     id: workshop.id,
     name: `${workshop.description} Workshop`,
     status: 'completed',
-    completedDate: workshop.date,
-    lastUpdated: workshop.date,
+    completedDate: formatDate(workshop.date),
+    lastUpdated: formatDate(workshop.date),
     dataPoints: Math.floor(Math.random() * 50) + 30,
     participantCount: workshop.participantCount || Math.floor(Math.random() * 8) + 4,
     sessionDuration: `${Math.floor(Math.random() * 2) + 1}.5 hours`,
@@ -114,7 +110,7 @@ export function CanvasWorkshopApproved({
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Workshop Navigator */}
       {workshops.length > 1 && (
         <div className="flex items-center justify-between">
@@ -152,7 +148,7 @@ export function CanvasWorkshopApproved({
         <CardContent className="pt-6">
           <div className="flex items-start gap-4 mb-6">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1FD1B2] to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-md">
-              <CheckCircle className="h-6 w-6 text-white" />
+              <CheckCircle2 className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-semibold text-[#1F2937] dark:text-green-400 mb-2">
@@ -190,18 +186,19 @@ export function CanvasWorkshopApproved({
           
           {/* Action Buttons */}
           <div className="flex items-center gap-3 flex-wrap pt-5 border-t border-[#1FD1B2]/20">
+            {/* ✅ TAAK 5: "Locked" vervangen door "Completed" */}
             <Button 
               variant={isReportLocked ? "default" : "outline"}
               onClick={() => setIsReportLocked(!isReportLocked)}
               className={isReportLocked 
-                ? "bg-[#1FD1B2] hover:bg-[#1FD1B2]/90 text-white" 
+                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/40" 
                 : "hover:border-[#1FD1B2] hover:text-[#1FD1B2] transition-colors bg-white/80 dark:bg-slate-900/80"
               }
             >
               {isReportLocked ? (
                 <>
-                  <Lock className="h-4 w-4 mr-2" />
-                  Locked
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  Completed
                 </>
               ) : (
                 <>
@@ -228,22 +225,22 @@ export function CanvasWorkshopApproved({
         onLockToggle={() => setIsReportLocked(!isReportLocked)}
       />
 
-      {/* Bottom Actions */}
+      {/* ✅ TAAK 6: Bottom Actions - "Return to In Progress" vervangen door "Back to Asset" */}
       <div className="flex justify-between items-center pt-6 pb-4 border-t border-border">
         <Button 
           variant="outline" 
-          onClick={onSwitchToInProgress} 
+          onClick={onBack}
           size="lg"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Return to In Progress
+          Back to Asset
         </Button>
         <Button 
           size="lg" 
           onClick={onBack}
           className="bg-[#1FD1B2] hover:bg-[#1FD1B2]/90 text-white shadow-sm"
         >
-          <CheckCircle className="h-4 w-4 mr-2" />
+          <CheckCircle2 className="h-4 w-4 mr-2" />
           Done
         </Button>
       </div>

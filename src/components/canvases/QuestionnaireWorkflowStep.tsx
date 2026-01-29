@@ -7,7 +7,7 @@ import { Textarea } from '../ui/textarea';
 import {
   Check,
   Circle,
-  CheckCircle,
+  CheckCircle2,
   Save,
   Eye,
   Heart,
@@ -25,14 +25,15 @@ import {
   ClipboardCheck,
   Plus,
   Trash2,
-  Edit3,
+  Edit,
   GripVertical,
   ChevronDown,
   BarChart3,
   MessageSquare,
   Star,
   CheckSquare,
-  Circle as RadioIcon
+  Circle as RadioIcon,
+  Download
 } from 'lucide-react';
 import {
   Select,
@@ -126,7 +127,7 @@ export function QuestionnaireWorkflowStep({
 
   const getStatusIcon = (isCompleted: boolean, isCurrent: boolean) => {
     if (isCompleted) {
-      return <CheckCircle className="h-5 w-5 text-green-600" />;
+      return <CheckCircle2 className="h-5 w-5 text-green-600" />;
     } else if (isCurrent) {
       return <Circle className="h-5 w-5 text-blue-600 fill-blue-600" />;
     } else {
@@ -194,15 +195,15 @@ export function QuestionnaireWorkflowStep({
   const getQuestionTypeLabel = (type: string) => {
     switch (type) {
       case 'text':
-        return 'Short Answer';
+        return 'Open (free text)';
       case 'textarea':
-        return 'Long Answer';
+        return 'Open (free text)';
       case 'multiple-choice':
         return 'Multiple Choice';
       case 'rating':
-        return 'Rating Scale';
+        return 'Rating Scale (1-5)';
       case 'yes-no':
-        return 'Yes/No';
+        return 'Multi-Select';
       default:
         return type;
     }
@@ -262,18 +263,16 @@ export function QuestionnaireWorkflowStep({
                 questionnaire.questions.map((question, index) => (
                   <div 
                     key={question.id} 
-                    className={`p-4 bg-white dark:bg-gray-900 rounded-lg border-2 transition-all ${
+                    className={`p-4 border border-border rounded-xl transition-all hover:border-primary/30 ${
                       editingQuestionId === question.id 
-                        ? 'border-blue-500 ring-2 ring-blue-200' 
-                        : 'border-gray-200 dark:border-gray-700'
+                        ? 'border-primary ring-2 ring-primary/20' 
+                        : ''
                     }`}
                   >
                     {/* Question Header */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <GripVertical className="h-4 w-4" />
-                        <span className="font-semibold">{index + 1}</span>
-                      </div>
+                    <div className="flex items-start gap-3">
+                      <GripVertical className="h-4 w-4 cursor-grab text-muted-foreground mt-3" />
+                      <span className="text-sm font-semibold text-muted-foreground w-6 mt-3">{index + 1}</span>
                       
                       <div className="flex-1 space-y-3">
                         {/* Question Text */}
@@ -291,7 +290,7 @@ export function QuestionnaireWorkflowStep({
                         {/* Question Settings (shown when editing) */}
                         {editingQuestionId === question.id && (
                           <div className="space-y-3 pt-3 border-t">
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-4">
                               {/* Question Type */}
                               <div>
                                 <Label className="text-xs mb-1.5 block">Question Type</Label>
@@ -306,13 +305,7 @@ export function QuestionnaireWorkflowStep({
                                     <SelectItem value="text">
                                       <div className="flex items-center gap-2">
                                         <MessageSquare className="h-3 w-3" />
-                                        Short Answer
-                                      </div>
-                                    </SelectItem>
-                                    <SelectItem value="textarea">
-                                      <div className="flex items-center gap-2">
-                                        <FileText className="h-3 w-3" />
-                                        Long Answer
+                                        Open (free text)
                                       </div>
                                     </SelectItem>
                                     <SelectItem value="multiple-choice">
@@ -321,16 +314,16 @@ export function QuestionnaireWorkflowStep({
                                         Multiple Choice
                                       </div>
                                     </SelectItem>
-                                    <SelectItem value="rating">
-                                      <div className="flex items-center gap-2">
-                                        <Star className="h-3 w-3" />
-                                        Rating Scale
-                                      </div>
-                                    </SelectItem>
                                     <SelectItem value="yes-no">
                                       <div className="flex items-center gap-2">
                                         <RadioIcon className="h-3 w-3" />
-                                        Yes/No
+                                        Multi-Select
+                                      </div>
+                                    </SelectItem>
+                                    <SelectItem value="rating">
+                                      <div className="flex items-center gap-2">
+                                        <Star className="h-3 w-3" />
+                                        Rating Scale (1-5)
                                       </div>
                                     </SelectItem>
                                   </SelectContent>
@@ -474,7 +467,7 @@ export function QuestionnaireWorkflowStep({
                           </Badge>
                         )}
                         {question.required && (
-                          <Badge variant="secondary" className="text-xs h-5 bg-orange-100 text-orange-700">
+                          <Badge variant="secondary" className="text-xs h-5 bg-amber-100 text-amber-700">
                             Required
                           </Badge>
                         )}
@@ -505,21 +498,23 @@ export function QuestionnaireWorkflowStep({
 
             {/* Assets Summary */}
             {questionnaire.selectedAssets.length > 0 && (
-              <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
-                <Label className="text-xs mb-2 block flex items-center gap-1">
-                  <Target className="h-3 w-3" />
-                  Linked Brand Assets ({questionnaire.selectedAssets.length})
-                </Label>
+              <div className="rounded-lg bg-muted/50 p-3 mt-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Label className="text-xs font-semibold">Linked Brand Assets</Label>
+                  <Badge variant="secondary" className="text-xs h-5">
+                    {questionnaire.selectedAssets.length}
+                  </Badge>
+                </div>
                 <div className="flex flex-wrap gap-1.5">
                   {questionnaire.selectedAssets.map((assetId) => {
                     const asset = availableAssets.find(a => a.id === assetId);
                     if (!asset) return null;
                     const Icon = asset.icon;
                     return (
-                      <Badge key={assetId} variant="secondary" className="text-xs bg-white dark:bg-gray-800">
-                        <Icon className="h-3 w-3 mr-1" />
-                        {asset.name}
-                      </Badge>
+                      <span key={assetId} className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/10 text-sm">
+                        <Icon className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-xs font-medium text-primary">{asset.name}</span>
+                      </span>
                     );
                   })}
                 </div>
@@ -538,7 +533,7 @@ export function QuestionnaireWorkflowStep({
               }}
               disabled={!questionnaire.questions || questionnaire.questions.length === 0 || questionnaire.linkGenerated}
             >
-              <CheckCircle className="h-3 w-3 mr-1" />
+              <CheckCircle2 className="h-3 w-3 mr-1" />
               Complete Design & Generate Link
             </Button>
           </div>
@@ -801,7 +796,7 @@ export function QuestionnaireWorkflowStep({
                     </Button>
                   </>
                 ) : (
-                  <div className="text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded p-3">
+                  <div className="text-xs text-muted-foreground bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded p-3">
                     <p className="flex items-center gap-1">
                       <HelpCircle className="h-3 w-3" />
                       Send the questionnaire (Step 2) before tracking responses
@@ -815,59 +810,60 @@ export function QuestionnaireWorkflowStep({
 
         {/* Step 4: Analyze Results */}
         {step.step === 4 && (
-          <div className="space-y-3 mt-3 p-3 bg-muted/50 rounded-lg">
+          <div className="space-y-4 mt-3">
             {questionnaire.responsesReceived ? (
               <>
-                {/* Results Summary */}
-                <div className="p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded">
-                  <p className="text-xs text-green-900 dark:text-green-100 font-medium mb-1">
-                    ✓ Responses Collected
-                  </p>
-                  <p className="text-xs text-green-700 dark:text-green-300">
-                    Ready to analyze insights from {questionnaire.recipient}
-                  </p>
+                {/* Success Banner */}
+                <div className="rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 p-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                      Responses collected from {questionnaire.recipient}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Quick Stats */}
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border text-center">
-                    <div className="text-lg font-semibold">{questionnaire.questions?.length || 0}</div>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <div className="text-2xl font-semibold">{questionnaire.questions?.length || 0}</div>
                     <div className="text-xs text-muted-foreground">Questions</div>
                   </div>
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border text-center">
-                    <div className="text-lg font-semibold">{questionnaire.selectedAssets.length}</div>
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <div className="text-2xl font-semibold">{questionnaire.selectedAssets.length}</div>
                     <div className="text-xs text-muted-foreground">Assets</div>
                   </div>
-                  <div className="p-2 bg-white dark:bg-gray-900 rounded border text-center">
-                    <div className="text-lg font-semibold">100%</div>
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <div className="text-2xl font-semibold">100%</div>
                     <div className="text-xs text-muted-foreground">Complete</div>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button size="sm" className="h-8 text-xs flex-1" variant="outline">
-                    <BarChart3 className="h-3 w-3 mr-1" />
+                {/* Actions */}
+                <div className="flex gap-3">
+                  <Button size="sm" className="h-9 text-sm flex-1" variant="outline">
+                    <BarChart3 className="h-4 w-4 mr-2" />
                     View Analysis
                   </Button>
-                  <Button size="sm" className="h-8 text-xs flex-1" variant="outline">
-                    <Eye className="h-3 w-3 mr-1" />
+                  <Button size="sm" className="h-9 text-sm flex-1" variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
                     Export Report
                   </Button>
                 </div>
 
                 <Button
                   size="sm"
-                  className="h-8 text-xs w-full bg-green-600 hover:bg-green-700"
+                  className="h-9 text-sm w-full mt-4 bg-green-600 hover:bg-green-700"
                   onClick={() => {
                     updateQuestionnaire(questionnaire.id, 'status', 'analyzed');
                   }}
                 >
-                  <CheckCircle className="h-3 w-3 mr-1" />
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
                   Mark as Complete
                 </Button>
               </>
             ) : (
-              <div className="text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded p-3">
+              <div className="text-xs text-muted-foreground bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded p-3">
                 <p className="flex items-center gap-1">
                   <HelpCircle className="h-3 w-3" />
                   Collect responses (Step 3) before analyzing results

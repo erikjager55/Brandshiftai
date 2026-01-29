@@ -94,7 +94,7 @@ export function SessionOutcomeHeader({
               </Button>
             </div>
             
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-900/10 px-3 py-1.5 rounded-full border border-yellow-100 dark:border-yellow-900/20">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-amber-50 dark:bg-amber-900/10 px-3 py-1.5 rounded-full border border-amber-100 dark:border-amber-900/20">
               <Lock className="w-3 h-3" />
               <span>Session Locked</span>
             </div>

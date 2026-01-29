@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrandAsset, ResearchMethodType } from '../../types/brand-asset';
 import { getAllMethodTypes, getMethodInfo, getStatusInfo } from '../../utils/asset-status';
-import { CheckCircle, Clock, Circle, X } from 'lucide-react';
+import { CheckCircle2, Clock, Circle, X } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { AssetStatusIndicator } from './AssetStatusBadge';
 
@@ -26,7 +26,7 @@ export function AssetMethodMatrix({
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />;
+        return <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />;
       case 'in-progress':
         return <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />;
       case 'cancelled':
@@ -127,7 +127,7 @@ export function AssetMethodMatrix({
         {/* Legend */}
         <div className="mt-6 flex flex-wrap gap-4 text-sm">
           <div className="flex items-center space-x-2">
-            <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
             <span className="text-muted-foreground">Completed</span>
           </div>
           <div className="flex items-center space-x-2">

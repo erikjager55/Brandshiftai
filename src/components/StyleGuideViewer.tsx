@@ -22,7 +22,7 @@ import {
   Sparkles,
   Lock,
   Unlock,
-  Edit3,
+  Edit,
   Save,
   X as XIcon,
   Plus,
@@ -486,7 +486,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                     </Badge>
                   ) : isEditing ? (
                     <Badge variant="default" className="gap-1.5 bg-primary">
-                      <Edit3 className="h-3 w-3" />
+                      <Edit className="h-4 w-4" />
                       Editing
                     </Badge>
                   ) : null}
@@ -534,7 +534,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                     onClick={handleEdit}
                     disabled={isLocked}
                   >
-                    <Edit3 className="h-4 w-4 mr-2" />
+                    <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </Button>
                   <Button variant="outline" size="sm">
@@ -559,7 +559,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                 <button
                   key={section.id}
                   onClick={() => scrollToSection(section.id)}
-                  className={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all ${
                     activeSection === section.id
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -1144,7 +1144,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
                           {isEditing && (
                             <button
                               onClick={() => removeKeyword(index)}
-                              className="ml-1 hover:text-destructive"
+                              className="ml-1 hover:text-destructive transition-colors duration-200"
                             >
                               <XIcon className="h-3 w-3" />
                             </button>

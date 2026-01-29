@@ -191,7 +191,7 @@ export function CampaignSettingsModal({
           <Button
             type="button"
             variant="ghost"
-            className={`text-destructive hover:text-destructive hover:bg-destructive/10 ${
+            className={`text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors duration-200 ${
               showDeleteConfirm ? 'bg-destructive/10' : ''
             }`}
             onClick={handleDelete}
@@ -206,12 +206,13 @@ export function CampaignSettingsModal({
               type="button"
               variant="outline"
               onClick={onClose}
+              className="transition-colors duration-200"
             >
               Cancel
             </Button>
             <Button
               type="button"
-              className="bg-foreground text-background hover:bg-foreground/90"
+              className="bg-foreground text-background hover:bg-foreground/90 transition-colors duration-200"
               onClick={handleSave}
             >
               Save Changes

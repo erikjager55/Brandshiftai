@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Bot, Presentation, Users, ClipboardList, CheckCircle, ArrowRight } from 'lucide-react';
+import { Bot, Presentation, Users, ClipboardList, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface ResearchOption {
   id: number;
@@ -140,7 +140,7 @@ export function ResearchOptionsView({ onSelectMethod }: ResearchOptionsViewProps
                         <CardTitle>{method.name}</CardTitle>
                         {method.included && (
                           <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                            <CheckCircle className="h-3 w-3 mr-1" />
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
                             Included
                           </Badge>
                         )}
@@ -177,7 +177,7 @@ export function ResearchOptionsView({ onSelectMethod }: ResearchOptionsViewProps
                   <ul className="space-y-2">
                     {method.features.map((feature, index) => (
                       <li key={index} className="flex items-start space-x-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </li>
                     ))}

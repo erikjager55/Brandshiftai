@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { AlertTriangle, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { BulkActionType, BulkOperationResult } from '../types/bulk-operations';
 
@@ -51,7 +51,7 @@ export function BulkActionDialog({
             <div className="space-y-2">
               <label className="text-sm font-medium">New Status</label>
               <select
-                className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background"
                 value={params.status || ''}
                 onChange={(e) => setParams({ ...params, status: e.target.value })}
               >
@@ -74,7 +74,7 @@ export function BulkActionDialog({
             <div className="space-y-2">
               <label className="text-sm font-medium">New Priority</label>
               <select
-                className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background"
                 value={params.priority || ''}
                 onChange={(e) => setParams({ ...params, priority: e.target.value })}
               >
@@ -97,7 +97,7 @@ export function BulkActionDialog({
               <label className="text-sm font-medium">Tags (comma-separated)</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background"
                 placeholder="e.g. core, template, important"
                 value={params.tagsInput || ''}
                 onChange={(e) => {
@@ -119,7 +119,7 @@ export function BulkActionDialog({
             <div className="space-y-2">
               <label className="text-sm font-medium">New Category</label>
               <select
-                className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background"
                 value={params.category || ''}
                 onChange={(e) => setParams({ ...params, category: e.target.value })}
               >
@@ -185,7 +185,7 @@ export function BulkActionDialog({
           {/* Result Header */}
           <div className="flex items-center gap-3 mb-4">
             {result.status === 'completed' ? (
-              <CheckCircle className="h-6 w-6 text-green-500" />
+              <CheckCircle2 className="h-6 w-6 text-green-500" />
             ) : (
               <XCircle className="h-6 w-6 text-red-500" />
             )}
@@ -257,7 +257,7 @@ export function BulkActionDialog({
           {config.isDestructive ? (
             <AlertTriangle className="h-6 w-6 text-destructive" />
           ) : (
-            <CheckCircle className="h-6 w-6 text-primary" />
+            <CheckCircle2 className="h-6 w-6 text-primary" />
           )}
           <h2 className="text-xl font-semibold">{config.title}</h2>
         </div>

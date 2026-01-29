@@ -1,39 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Textarea } from './ui/textarea';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
 import { PageHeader } from './ui/PageHeader';
-import { EmptyState } from './ui/EmptyState';
-import { Stack } from './ui/Stack';
-import { Grid } from './ui/Grid';
-import { Container } from './ui/Container';
 import { Flex } from './ui/Flex';
+import { Stack } from './ui/Stack';
+import { EmptyState } from './EmptyState';
+import { SimpleEmptyState } from './ui/SimpleEmptyState';
 import {
   Package,
   Plus,
-  Edit,
-  Trash2,
   ChevronRight,
-  TrendingUp,
   AlertCircle,
   CheckCircle,
   Users,
@@ -96,22 +73,20 @@ export function ProductsServices({ onNavigate }: ProductsServicesProps) {
         }
       />
 
-      {/* Content - Using Container and Grid for auto layout */}
-      <Container maxWidth="xl" paddingX="md" paddingY="md">
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-8 py-8">
         {products.length === 0 ? (
-          <EmptyState
+          <SimpleEmptyState
             icon={Package}
-            title="Nog geen producten of diensten"
-            description="Voeg je eerste product of dienst toe om te beginnen"
-            action={
-              <Button onClick={() => onNavigate?.('product-analyzer')}>
-                <Plus className="h-4 w-4 mr-2" />
-                Product/Service Toevoegen
-              </Button>
-            }
+            title="No products or services yet"
+            description="Add your first product or service to get started with your catalog."
+            action={{
+              label: 'Add Product/Service',
+              onClick: () => onNavigate?.('product-analyzer')
+            }}
           />
         ) : (
-          <Grid cols={2} gap="lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {products.map((product) => {
               const Icon = getIcon(product.category);
               const pricingDisplay = product.pricing?.amount || product.pricing?.model || 'Custom';
@@ -123,32 +98,32 @@ export function ProductsServices({ onNavigate }: ProductsServicesProps) {
                   onClick={() => onNavigate?.('product-detail', product.id)}
                 >
                   <CardHeader className="pb-4">
-                    <Flex align="start" justify="between">
-                      <Flex align="start" gap="3" className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
                         <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-primary/20 transition-colors">
                           <Icon className="h-5 w-5 text-primary" />
                         </div>
-                        <Stack direction="vertical" gap="xs" className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 space-y-1">
                           <CardTitle className="text-lg truncate group-hover:text-primary transition-colors">
                             {product.name}
                           </CardTitle>
                           <CardDescription>
                             {product.category} • {pricingDisplay}
                           </CardDescription>
-                        </Stack>
-                      </Flex>
+                        </div>
+                      </div>
                       <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
-                    </Flex>
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <Stack direction="vertical" gap="md">
+                    <div className="space-y-4">
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {product.description}
                       </p>
                       {product.features && product.features.length > 0 && (
-                        <Stack direction="vertical" gap="sm">
+                        <div className="space-y-2">
                           <h4 className="text-sm font-medium">Key Features:</h4>
-                          <Flex wrap gap="1.5">
+                          <div className="flex flex-wrap gap-1.5">
                             {product.features.slice(0, 4).map((feature, index) => (
                               <Badge key={index} variant="outline" className="text-xs rounded-md">
                                 {feature}
@@ -156,20 +131,20 @@ export function ProductsServices({ onNavigate }: ProductsServicesProps) {
                             ))}
                             {product.features.length > 4 && (
                               <Badge variant="outline" className="text-xs rounded-md bg-muted">
-                                +{product.features.length - 4} meer
+                                +{product.features.length - 4} more
                               </Badge>
                             )}
-                          </Flex>
-                        </Stack>
+                          </div>
+                        </div>
                       )}
-                    </Stack>
+                    </div>
                   </CardContent>
                 </Card>
               );
             })}
-          </Grid>
+          </div>
         )}
-      </Container>
+      </div>
     </div>
   );
 }

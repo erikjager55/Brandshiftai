@@ -14,7 +14,7 @@ import {
   TrendingUp,
   Shield,
   Award,
-  CheckCircle,
+  CheckCircle2,
   Rocket,
   Sparkles,
 } from 'lucide-react';
@@ -238,7 +238,7 @@ export function BundleDetailsPage({ bundle, onBack, onStartPlan }: BundleDetails
                     <span>Expert-led research</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                     <span>Most popular choice</span>
                   </div>
                 </div>

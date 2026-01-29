@@ -280,7 +280,7 @@ export function ProductServiceAnalyzer({ onAnalysisComplete }: ProductServiceAna
                 setMode('url');
                 setError('');
               }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 mode === 'url'
                   ? 'bg-background shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -294,7 +294,7 @@ export function ProductServiceAnalyzer({ onAnalysisComplete }: ProductServiceAna
                 setMode('pdf');
                 setError('');
               }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 mode === 'pdf'
                   ? 'bg-background shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -308,7 +308,7 @@ export function ProductServiceAnalyzer({ onAnalysisComplete }: ProductServiceAna
                 setMode('manual');
                 setError('');
               }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 mode === 'manual'
                   ? 'bg-background shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground'

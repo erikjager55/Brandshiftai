@@ -88,8 +88,8 @@ export function ResearchToolNav({
       case 'needs-review':
         return {
           icon: AlertTriangle,
-          color: 'text-yellow-600 dark:text-yellow-500',
-          bgColor: 'bg-yellow-600 dark:bg-yellow-500',
+          color: 'text-amber-600 dark:text-amber-500',
+          bgColor: 'bg-amber-600 dark:bg-amber-500',
           pulse: false
         };
       case 'in-progress':
@@ -119,7 +119,7 @@ export function ResearchToolNav({
   const getStatusBadge = (status: ToolStatus) => {
     switch (status) {
       case 'needs-review':
-        return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/20 dark:text-yellow-400 text-xs">Needs Review</Badge>;
+        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 text-xs">Needs Review</Badge>;
       case 'in-progress':
         return <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/20 dark:text-orange-400 text-xs">In Progress</Badge>;
       default:
@@ -180,7 +180,7 @@ export function ResearchToolNav({
       {/* Section Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 rounded-md transition-colors"
+        className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 rounded-lg transition-colors"
       >
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-muted-foreground">Research Tools</span>
@@ -204,7 +204,7 @@ export function ResearchToolNav({
             <div className="grid grid-cols-2 gap-1.5">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-2 py-1.5 rounded-md text-xs transition-colors ${
+                className={`px-2 py-1.5 rounded-lg text-xs transition-colors ${
                   filter === 'all'
                     ? 'bg-primary text-primary-foreground font-medium'
                     : 'bg-muted/50 text-muted-foreground hover:bg-muted'
@@ -214,7 +214,7 @@ export function ResearchToolNav({
               </button>
               <button
                 onClick={() => setFilter('action-required')}
-                className={`px-2 py-1.5 rounded-md text-xs transition-colors ${
+                className={`px-2 py-1.5 rounded-lg text-xs transition-colors ${
                   filter === 'action-required'
                     ? 'bg-primary text-primary-foreground font-medium'
                     : 'bg-muted/50 text-muted-foreground hover:bg-muted'
@@ -224,7 +224,7 @@ export function ResearchToolNav({
               </button>
               <button
                 onClick={() => setFilter('completed')}
-                className={`px-2 py-1.5 rounded-md text-xs transition-colors ${
+                className={`px-2 py-1.5 rounded-lg text-xs transition-colors ${
                   filter === 'completed'
                     ? 'bg-primary text-primary-foreground font-medium'
                     : 'bg-muted/50 text-muted-foreground hover:bg-muted'
@@ -234,7 +234,7 @@ export function ResearchToolNav({
               </button>
               <button
                 onClick={() => setFilter('not-started')}
-                className={`px-2 py-1.5 rounded-md text-xs transition-colors ${
+                className={`px-2 py-1.5 rounded-lg text-xs transition-colors ${
                   filter === 'not-started'
                     ? 'bg-primary text-primary-foreground font-medium'
                     : 'bg-muted/50 text-muted-foreground hover:bg-muted'
@@ -270,7 +270,7 @@ export function ResearchToolNav({
                       <TooltipTrigger asChild>
                         <button
                           onClick={() => onToolClick(tool.id)}
-                          className={`w-full flex items-center justify-between px-2 py-2 rounded-md transition-all ${
+                          className={`w-full flex items-center justify-between px-2 py-2 rounded-lg transition-all ${
                             isActive 
                               ? 'bg-secondary' 
                               : 'hover:bg-muted/50'

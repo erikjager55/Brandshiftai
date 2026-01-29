@@ -59,7 +59,7 @@ export function TopNavigationBar({
             variant="outline"
             size="sm"
             onClick={onSearchClick}
-            className="gap-2 hidden sm:flex"
+            className="gap-2 hidden sm:flex transition-colors duration-200"
           >
             <Search className="h-4 w-4" />
             <span className="hidden md:inline">Search</span>
@@ -75,7 +75,7 @@ export function TopNavigationBar({
           <Button
             variant="ghost"
             size="sm"
-            className="h-9 w-9 p-0 relative"
+            className="h-9 w-9 p-0 relative transition-colors duration-200"
             title={`Activity Feed ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
             onClick={onActivityClick}
           >
@@ -97,7 +97,7 @@ export function TopNavigationBar({
             variant="ghost"
             size="sm"
             onClick={onSearchClick}
-            className="sm:hidden h-9 w-9 p-0"
+            className="sm:hidden h-9 w-9 p-0 transition-colors duration-200"
           >
             <Search className="h-4 w-4" />
           </Button>

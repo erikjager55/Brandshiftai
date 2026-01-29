@@ -169,33 +169,56 @@ export function ResearchStatusOverview({
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h2 className="text-2xl font-semibold">Research Methods</h2>
+              <h2 className="text-xl font-semibold">Research Methods</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Validate and enrich this asset through research
               </p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-primary">{calculatedProgress}%</div>
-              <p className="text-xs text-muted-foreground">Unlocked</p>
+              <div 
+                className={`text-2xl font-semibold ${
+                  calculatedProgress < 50 ? 'text-red-600 dark:text-red-400' :
+                  calculatedProgress < 80 ? 'text-amber-600 dark:text-amber-400' :
+                  'text-green-600 dark:text-green-400'
+                }`}
+              >
+                {calculatedProgress}%
+              </div>
+              <p className="text-xs text-muted-foreground">Validated</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {calculatedCompleted} of {calculatedTotal} completed
+              </p>
             </div>
           </div>
           
           {showProgress && (
-            <div className="flex items-center gap-3 mt-4">
-              <Progress value={calculatedProgress} className="h-2 flex-1" />
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {calculatedCompleted} of {calculatedTotal} completed
-              </span>
+            <div className="mt-4 mb-6">
+              <div 
+                className="h-2 w-full rounded-full bg-muted overflow-hidden"
+              >
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    calculatedProgress < 50 ? 'bg-red-500' :
+                    calculatedProgress < 80 ? 'bg-amber-500' :
+                    'bg-green-500'
+                  }`}
+                  style={{ width: `${calculatedProgress}%` }}
+                />
+              </div>
             </div>
           )}
 
           {/* Metadata row */}
           {showMetadata && (lastUpdated || generatedArtifacts !== undefined) && (
-            <div className="flex items-center gap-6 mt-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
               {lastUpdated && (
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span>Last updated: {lastUpdated}</span>
+                  <span>Last updated: {new Date(lastUpdated).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}</span>
                 </div>
               )}
               {generatedArtifacts !== undefined && (

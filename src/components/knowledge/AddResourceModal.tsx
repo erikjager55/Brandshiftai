@@ -11,13 +11,12 @@ import { BookOpen, Video, Globe, Image, FileText, Headphones, FileType, Graduati
 import { KnowledgeResource } from '../../data/knowledge-resources';
 
 interface AddResourceModalProps {
-  isOpen: boolean;
   onClose: () => void;
-  onAdd: (resource: Omit<KnowledgeResource, 'id' | 'dateAdded' | 'views' | 'favorites' | 'completions'>) => void;
+  onAddResource: (resource: Omit<KnowledgeResource, 'id' | 'dateAdded' | 'views' | 'favorites' | 'completions'>) => void;
   initialType?: KnowledgeResource['type'];
 }
 
-export function AddResourceModal({ isOpen, onClose, onAdd, initialType }: AddResourceModalProps) {
+export function AddResourceModal({ onClose, onAddResource, initialType }: AddResourceModalProps) {
   const [activeTab, setActiveTab] = useState<'manual' | 'import' | 'upload'>('manual');
   const [currentTag, setCurrentTag] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -130,7 +129,7 @@ export function AddResourceModal({ isOpen, onClose, onAdd, initialType }: AddRes
       status: manualResource.status
     };
 
-    onAdd(newResource);
+    onAddResource(newResource);
     handleClose();
   };
 
@@ -293,7 +292,7 @@ export function AddResourceModal({ isOpen, onClose, onAdd, initialType }: AddRes
   const TypeIcon = typeIcons[manualResource.type];
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={true} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

@@ -4,9 +4,11 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 import { Persona, ResearchMethodStatus } from '../../types/persona';
 import { PersonaContent } from './PersonaContent';
 import { ValidationMethodButton, ValidationMethodStatus } from '../validation/ValidationMethodButton';
+import { RegenerateAssetWizard } from '../wizard/RegenerateAssetWizard';
 import { toast } from 'sonner';
 import {
   ArrowLeft,
@@ -28,7 +30,7 @@ import {
   ChartBar,
   FlaskConical,
   BookOpen,
-  Edit3,
+  Edit,
   Save,
   X,
   Lock,
@@ -44,6 +46,9 @@ import {
   Search,
   Clock,
   Shield,
+  Sparkles,
+  HelpCircle,
+  IdCard,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { 
@@ -67,13 +72,17 @@ interface PersonaDetailPageProps {
   onBack: () => void;
   onUpdate?: (updated: Persona) => void;
   onNavigateToAIExploration?: () => void;
+  onNavigateToInterviews?: () => void;
+  onNavigateToQuestionnaire?: () => void;
+  onNavigateToUserTesting?: () => void;
 }
 
-export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExploration }: PersonaDetailPageProps) {
+export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExploration, onNavigateToInterviews, onNavigateToQuestionnaire, onNavigateToUserTesting }: PersonaDetailPageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [lockedBy, setLockedBy] = useState<string | null>(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [showRegenerateWizard, setShowRegenerateWizard] = useState(false);
   const [localPersona, setLocalPersona] = useState(persona);
   
   // Calculate metrics
@@ -136,6 +145,15 @@ export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExp
     if (methodId === 'ai-exploration' && onNavigateToAIExploration) {
       // Navigate to fullscreen AI exploration page
       onNavigateToAIExploration();
+    } else if (methodId === 'interviews' && onNavigateToInterviews) {
+      // Navigate to interviews page
+      onNavigateToInterviews();
+    } else if ((methodId === 'questionnaire' || methodId === 'surveys') && onNavigateToQuestionnaire) {
+      // Navigate to questionnaire page
+      onNavigateToQuestionnaire();
+    } else if (methodId === 'user-testing' && onNavigateToUserTesting) {
+      // Navigate to user testing page
+      onNavigateToUserTesting();
     } else {
       toast.success(`Starting ${methodId} research...`);
     }
@@ -188,55 +206,84 @@ export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExp
       <div className="max-w-7xl mx-auto px-8 py-6">
       {/* Header */}
       <div className={SPACING.section.marginSmall}>
-        <Button variant="ghost" onClick={onBack} className="mb-4">
-          <ArrowLeft className={ICON_SIZES.sm + " mr-2"} />
+        <button 
+          onClick={onBack} 
+          className="mb-4 text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
           Back to Personas
-        </Button>
+        </button>
 
-        <div className="flex items-start justify-between gap-6">
+        <div className="flex items-start justify-between gap-6 mb-6">
           <div className="flex items-start space-x-4 flex-1">
-            {/* Persona Avatar/Icon */}
-            <div className={ICON_CONTAINERS.xlarge + " bg-gradient-to-br from-indigo-500 to-purple-600"}>
-              <User className={ICON_SIZES.xl + " text-white"} />
-            </div>
+            {/* Persona Avatar - groot */}
+            <Avatar className="h-16 w-16 rounded-full">
+              <AvatarImage src={persona.avatar} alt={persona.name} />
+              <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xl font-semibold">
+                {persona.name.split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
+            </Avatar>
 
             {/* Persona Info */}
             <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <h1 className={TYPOGRAPHY.pageTitle}>{persona.name}</h1>
-                <Badge className={personaStatusInfo.color} variant="secondary">
-                  {personaStatusInfo.label}
-                </Badge>
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-3xl font-semibold">{persona.name}</h1>
+                {persona.status === 'validated' && (
+                  <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800" variant="outline">
+                    Validated
+                  </Badge>
+                )}
               </div>
-              <p className={TYPOGRAPHY.pageSubtitle + " mb-3"}>{persona.tagline}</p>
+              <p className="text-sm text-muted-foreground mb-4">{persona.tagline}</p>
               
-              {/* Stats */}
-              <div className="flex items-center space-x-2">
-                <QualityBadge 
-                  score={qualityScore}
-                  completedCount={completedMethods}
-                  totalCount={totalMethods}
-                  size="lg"
-                  showIcon={true}
-                  showScore={true}
-                  showLabel={true}
-                  showTooltip={true}
-                />
-                <span className={TYPOGRAPHY.muted}>
-                  {completedMethods}/{totalMethods} methods completed
-                </span>
+              {/* Meta row */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <svg className="h-12 w-12" viewBox="0 0 36 36">
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="text-muted-foreground/20"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeDasharray={`${(qualityScore / 100) * 100.53}, 100.53`}
+                        strokeLinecap="round"
+                        transform="rotate(-90 18 18)"
+                        className={cn(
+                          qualityScore >= 80 ? "text-green-600" : 
+                          qualityScore >= 50 ? "text-amber-600" : 
+                          "text-red-600"
+                        )}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xs font-semibold">{qualityScore}%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">Research Confidence</div>
+                    <div className="text-xs text-muted-foreground">{qualityScore >= 80 ? 'High' : qualityScore >= 50 ? 'Medium' : 'Low'}</div>
+                  </div>
+                </div>
+                <div className="h-10 w-px bg-border" />
+                <div>
+                  <div className="text-sm font-medium">Methods Completed</div>
+                  <div className="text-lg font-semibold">{completedMethods}/{totalMethods}</div>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Quality Display Card */}
-          <QualityDisplay
-            score={qualityScore}
-            completedCount={completedMethods}
-            totalCount={totalMethods}
-            label="Persona Quality"
-            className="w-80"
-          />
         </div>
       </div>
 
@@ -341,17 +388,17 @@ export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExp
                 onClick={() => setIsEditing(true)}
                 variant="outline"
                 size="sm"
-                className={cn(BUTTON_VARIANTS.sm)}
+                className={cn(BUTTON_VARIANTS.sm, "transition-colors duration-200")}
               >
-                <Edit3 className="h-4 w-4 mr-2" />
+                <Edit className="h-4 w-4 mr-2" />
                 Edit Content
               </Button>
               <Button
-                onClick={handleRegenerate}
+                onClick={() => setShowRegenerateWizard(true)}
                 variant="outline"
                 size="sm"
                 disabled={isRegenerating || (isLocked && lockedBy !== 'You')}
-                className={cn(BUTTON_VARIANTS.sm, BUTTON_VARIANTS.secondary)}
+                className="transition-colors duration-200 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRegenerating ? 'animate-spin' : ''}`} />
                 {isRegenerating ? 'Regenerating...' : 'Regenerate with AI'}
@@ -425,7 +472,7 @@ export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExp
         </CardHeader>
         <CardContent className="space-y-2">
           {VALIDATION_METHODS
-            .filter(method => ['ai-exploration', 'interviews', 'surveys', 'user-testing'].includes(method.id))
+            .filter(method => ['ai-exploration', 'interviews', 'questionnaire', 'user-testing'].includes(method.id))
             .map((method) => {
               const personaMethod = localPersona.researchMethods.find((m) => m.type === method.id);
               
@@ -471,6 +518,31 @@ export function PersonaDetailPage({ persona, onBack, onUpdate, onNavigateToAIExp
         </div>
       )}
       </div>
+
+      {/* Regenerate Asset Wizard */}
+      <RegenerateAssetWizard
+        open={showRegenerateWizard}
+        onClose={() => setShowRegenerateWizard(false)}
+        assetName={persona.name}
+        assetType="Persona"
+        currentContent={JSON.stringify({
+          name: persona.name,
+          role: persona.role,
+          age: persona.age,
+          location: persona.location,
+          bio: persona.bio,
+          goals: persona.goals,
+          frustrations: persona.frustrations,
+          behaviors: persona.behaviors,
+        }, null, 2)}
+        onSave={(newContent, researchSources) => {
+          console.log('Saved new persona content based on', researchSources.length, 'research sources');
+          toast.success(`${persona.name} updated!`, {
+            description: `Persona regenerated based on ${researchSources.length} research source${researchSources.length > 1 ? 's' : ''}.`,
+          });
+          setShowRegenerateWizard(false);
+        }}
+      />
     </div>
   );
 }

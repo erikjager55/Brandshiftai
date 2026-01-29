@@ -52,7 +52,7 @@ export function BulkSelectionControls<T = any>({
         variant="outline"
         size="sm"
         onClick={onToggleAll}
-        className="gap-2"
+        className="gap-2 transition-colors duration-200"
       >
         {isAllSelected ? (
           <>
@@ -73,7 +73,7 @@ export function BulkSelectionControls<T = any>({
           variant="ghost"
           size="sm"
           onClick={onClearSelection}
-          className="gap-2"
+          className="gap-2 transition-colors duration-200"
         >
           <X className="h-4 w-4" />
           Clear ({selectedCount})
@@ -90,7 +90,7 @@ export function BulkSelectionControls<T = any>({
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-2"
+                className="gap-2 transition-colors duration-200"
               >
                 <Filter className="h-4 w-4" />
                 Select By...
@@ -110,7 +110,7 @@ export function BulkSelectionControls<T = any>({
                     onSelectByCriteria(criterion.predicate);
                     setIsOpen(false);
                   }}
-                  className="gap-2"
+                  className="gap-2 transition-colors duration-200"
                 >
                   {criterion.icon}
                   {criterion.label}

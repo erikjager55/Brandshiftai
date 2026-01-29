@@ -21,7 +21,7 @@ import {
   Play,
   Check,
   ChevronDown,
-  CheckCircle,
+  CheckCircle2,
   Calendar,
   MoreVertical,
   FileText,
@@ -63,13 +63,15 @@ import {
 import { WorkshopReport } from './WorkshopReport';
 import { CanvasWorkshopInProgress } from './CanvasWorkshopInProgress';
 import { CanvasWorkshopApproved } from './CanvasWorkshopApproved';
+import { formatDate } from '../../utils/date-format';
 
 interface CanvasWorkshopManagerProps {
   onBack: () => void;
 }
 
 export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
-  const [viewStatus, setViewStatus] = useState<'to-buy' | 'in-progress' | 'approved'>('in-progress');
+  // ✅ TAAK 1: 'approved' vervangen door 'completed'
+  const [viewStatus, setViewStatus] = useState<'to-buy' | 'in-progress' | 'completed'>('in-progress');
   const [showDropdown, setShowDropdown] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [stepResults, setStepResults] = useState<Record<number, string>>({});
@@ -385,8 +387,8 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
         return 'To Buy';
       case 'in-progress':
         return 'In Progress';
-      case 'approved':
-        return 'Approved';
+      case 'completed':
+        return 'Completed';
     }
   };
 
@@ -396,21 +398,21 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
         return <ShoppingCart className="h-5 w-5" />;
       case 'in-progress':
         return <Play className="h-5 w-5" />;
-      case 'approved':
-        return <Check className="h-5 w-5" />;
+      case 'completed':
+        return <CheckCircle2 className="h-5 w-5" />;
     }
   };
 
   const getStatusColor = () => {
     switch (viewStatus) {
       case 'to-buy':
-        return 'text-orange-600';
+        return 'text-amber-600';
       case 'in-progress':
         return 'text-blue-600';
-      case 'approved':
+      case 'completed':
         return 'text-green-600';
       default:
-        return 'text-orange-600';
+        return 'text-amber-600';
     }
   };
 
@@ -479,27 +481,27 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                 <h4 className="font-medium mb-2">What's Included:</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>Professional facilitation by brand strategy experts</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>Custom workshop materials and digital canvas templates</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>In-person or virtual session options</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>Collaborative exercises and team alignment activities</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>Digital canvas outputs and documentation</span>
                   </li>
                   <li className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                     <span>Post-workshop summary and key insights report</span>
                   </li>
                 </ul>
@@ -598,7 +600,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                           <p className="text-sm text-muted-foreground">{pkg.description}</p>
                         </div>
                         {isSelected && (
-                          <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 ml-2" />
+                          <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 ml-2" />
                         )}
                       </div>
 
@@ -680,7 +682,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                             </div>
                           </div>
                           {isSelected && (
-                            <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                            <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
                           )}
                         </div>
                       </div>
@@ -871,9 +873,9 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
         selectedWorkshopId={selectedWorkshopId}
         onWorkshopSelect={setSelectedWorkshopId}
         availableAssets={availableAssets}
-        onApproveSession={() => setViewStatus('approved')}
+        onApproveSession={() => setViewStatus('completed')}
         onBack={onBack}
-        onSwitchToApproved={() => setViewStatus('approved')}
+        onSwitchToApproved={() => setViewStatus('completed')}
       />
     );
   };
@@ -898,7 +900,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
           <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top">
             <Card className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900">
               <CardContent className="p-4 flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <span className="text-sm font-medium text-green-900 dark:text-green-100">
                   Progress saved successfully
                 </span>
@@ -977,7 +979,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                       {selectedWorkshop ? (
                         <div className="flex items-center space-x-2">
                           <Calendar className="h-4 w-4 text-primary" />
-                          <span>{selectedWorkshop.date}</span>
+                          <span>{formatDate(selectedWorkshop.date)}</span>
                           <Badge variant="outline" className="ml-2">
                             <Clock className="h-3 w-3 mr-1" />
                             {selectedWorkshop.time}
@@ -997,9 +999,9 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                       >
                         <div className="flex items-center space-x-2 flex-1">
                           <Calendar className="h-4 w-4 text-primary" />
-                          <span>{workshop.date} at {workshop.time}</span>
+                          <span>{formatDate(workshop.date)} at {workshop.time}</span>
                           {selectedWorkshopId === workshop.id && (
-                            <CheckCircle className="h-4 w-4 text-primary ml-auto" />
+                            <CheckCircle2 className="h-4 w-4 text-primary ml-auto" />
                           )}
                         </div>
                       </DropdownMenuItem>
@@ -1135,7 +1137,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                               : 'bg-gray-200 dark:bg-gray-700 text-gray-500'
                           }`}
                         >
-                          {isCompleted ? <CheckCircle className="h-4 w-4" /> : stepNumber}
+                          {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : stepNumber}
                         </div>
                         <p className={`text-xs text-center mt-2 max-w-[80px] ${isCurrent ? 'font-medium' : 'text-muted-foreground'}`}>
                           {step.title.split(' ')[0]}
@@ -1206,7 +1208,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
             {/* Step-by-Step Guide */}
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-5 w-5 text-primary" />
+                <CheckCircle2 className="h-5 w-5 text-primary" />
                 <h3 className="font-medium">Step-by-Step Guide</h3>
               </div>
               <ol className="space-y-3">
@@ -1379,20 +1381,20 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start space-x-2">
-                <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Watch the video tutorial first to understand the step objectives</span>
               </li>
               <li className="flex items-start space-x-2">
-                <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Follow the guide sequentially for best results</span>
               </li>
               <li className="flex items-start space-x-2">
-                <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Progress auto-saves every few minutes - use Save buttons for manual saves</span>
               </li>
               {workshopAssets.length > 1 && (
                 <li className="flex items-start space-x-2">
-                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>Remember to document results for each asset using the tabs above</span>
                 </li>
               )}
@@ -1465,13 +1467,13 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                           <div className="flex items-center space-x-2 mb-1">
                             <span className={`font-medium ${
                               selectedWorkshopId === workshop.id ? 'text-primary' : ''
-                            }`}>{workshop.date}</span>
+                            }`}>{formatDate(workshop.date)}</span>
                             <Badge variant="outline" className="flex items-center space-x-1">
                               <Clock className="h-3 w-3" />
                               <span>{workshop.time}</span>
                             </Badge>
                             <Badge className="bg-green-500 text-white">
-                              <CheckCircle className="h-3 w-3 mr-1" />
+                              <CheckCircle2 className="h-4 w-4 mr-1" />
                               Completed
                             </Badge>
                             {selectedWorkshopId === workshop.id && (
@@ -1504,7 +1506,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                         <div className="flex items-center space-x-3 flex-1">
                           <Calendar className="h-4 w-4 text-primary" />
                           <div className="flex items-center space-x-2">
-                            <span>{selectedWorkshop.date}</span>
+                            <span>{formatDate(selectedWorkshop.date)}</span>
                             <Badge variant="outline" className="flex items-center space-x-1">
                               <Clock className="h-3 w-3" />
                               <span>{selectedWorkshop.time}</span>
@@ -1528,7 +1530,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                           <Calendar className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-1">
-                              <span className="font-medium">{workshop.date}</span>
+                              <span className="font-medium">{formatDate(workshop.date)}</span>
                               <Badge variant="outline" className="flex items-center space-x-1">
                                 <Clock className="h-3 w-3" />
                                 <span>{workshop.time}</span>
@@ -1537,7 +1539,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                             <p className="text-xs text-muted-foreground">{workshop.description}</p>
                           </div>
                           {selectedWorkshopId === workshop.id && (
-                            <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
                           )}
                         </div>
                       </DropdownMenuItem>
@@ -1582,7 +1584,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
               <p className="text-sm text-muted-foreground mt-1">
                 {viewStatus === 'to-buy' && 'Purchase and plan your workshop sessions'}
                 {viewStatus === 'in-progress' && 'Active workshop sessions in progress'}
-                {viewStatus === 'approved' && 'Completed and approved workshops'}
+                {viewStatus === 'completed' && 'Completed and approved workshops'}
               </p>
             </div>
           </div>
@@ -1601,7 +1603,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[220px]">
                 <DropdownMenuItem onClick={() => setViewStatus('to-buy')} className="cursor-pointer py-3">
-                  <ShoppingCart className="h-4 w-4 mr-2 text-orange-600" />
+                  <ShoppingCart className="h-4 w-4 mr-2 text-amber-600" />
                   <span>To Buy</span>
                   {viewStatus === 'to-buy' && <Check className="h-4 w-4 ml-auto" />}
                 </DropdownMenuItem>
@@ -1610,10 +1612,10 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                   <span>In Progress</span>
                   {viewStatus === 'in-progress' && <Check className="h-4 w-4 ml-auto" />}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setViewStatus('approved')} className="cursor-pointer py-3">
-                  <Check className="h-4 w-4 mr-2 text-green-600" />
-                  <span>Approved</span>
-                  {viewStatus === 'approved' && <Check className="h-4 w-4 ml-auto" />}
+                <DropdownMenuItem onClick={() => setViewStatus('completed')} className="cursor-pointer py-3">
+                  <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
+                  <span>Completed</span>
+                  {viewStatus === 'completed' && <Check className="h-4 w-4 ml-auto" />}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -1623,7 +1625,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
 
       {viewStatus === 'to-buy' && renderToBuyView()}
       {viewStatus === 'in-progress' && renderInProgressView()}
-      {viewStatus === 'approved' && renderApprovedView()}
+      {viewStatus === 'completed' && renderApprovedView()}
 
       {/* Schedule Workshop Dialog */}
       <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
@@ -1774,7 +1776,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                     const getStatusColor = () => {
                       switch(asset.currentStatus) {
                         case 'approved': return 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/20';
-                        case 'draft': return 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/20';
+                        case 'draft': return 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20';
                         case 'empty': return 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950/20';
                       }
                     };
@@ -1810,7 +1812,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                       }
                       switch(asset.currentStatus) {
                         case 'approved': return 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/20';
-                        case 'draft': return 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/20';
+                        case 'draft': return 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/20';
                         case 'empty': return 'border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-950/20';
                       }
                     };
@@ -1826,7 +1828,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                             </p>
                           </div>
                           {willBeUpdated && (
-                            <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                           )}
                         </div>
                       </div>
@@ -1889,24 +1891,24 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
                     <h3 className="font-medium text-blue-900 dark:text-blue-100 mb-3">What will happen:</h3>
                     <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
                       <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <span>Your results will be saved and organized by asset</span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <span>All{workshopAssets.length > 0 && ` ${workshopAssets.length}`} brand asset page{workshopAssets.length !== 1 ? 's' : ''} will be updated with workshop insights</span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <span>A comprehensive workshop report will be generated</span>
                       </li>
                       <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <span>You can still edit results after completion</span>
                       </li>
                       {selectedWorkshop?.hasFacilitator && (
                         <li className="flex items-start space-x-2">
-                          <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                          <CheckCircle2 className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                           <span>Facilitator will receive a copy of all results for final review</span>
                         </li>
                       )}
@@ -1951,7 +1953,7 @@ export function CanvasWorkshopManager({ onBack }: CanvasWorkshopManagerProps) {
             <Button
               onClick={() => {
                 setShowCompletionPreview(false);
-                setViewStatus('approved');
+                setViewStatus('completed');
               }}
             >
               Complete Workshop

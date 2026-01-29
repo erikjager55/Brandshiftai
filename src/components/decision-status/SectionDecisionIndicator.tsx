@@ -13,7 +13,7 @@
 
 import React, { useState } from 'react';
 import { Badge } from '../ui/badge';
-import { CheckCircle, AlertTriangle, ShieldAlert, Info } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ShieldAlert, Info } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -44,7 +44,7 @@ export function SectionDecisionIndicator({
   // Status configuratie - consistent met header
   const statusConfig = {
     'safe': {
-      icon: CheckCircle,
+      icon: CheckCircle2,
       label: 'Veilig',
       color: 'text-green-600',
       bg: 'bg-green-100/80 dark:bg-green-900/20',

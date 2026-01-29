@@ -66,6 +66,14 @@ class Logger {
   }
 
   /**
+   * Log user actions
+   */
+  action(message: string, data?: any) {
+    if (!this.enabled) return;
+    console.log(`[ACTION] ${message}`, data !== undefined ? data : '');
+  }
+
+  /**
    * Enable or disable logging programmatically
    */
   setEnabled(enabled: boolean) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, Command, ArrowRight, Clock, Zap } from 'lucide-react';
+import { Search, ArrowRight, Command, X } from 'lucide-react';
 import { globalSearch } from '../services/GlobalSearchService';
 import { SearchSection } from '../types/workflow';
 import * as LucideIcons from 'lucide-react';
@@ -57,7 +57,10 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate, onAction }: Glo
           break;
         case 'Enter':
           e.preventDefault();
-          handleSelect(allResults[selectedIndex]);
+          const selectedResult = allResults[selectedIndex];
+          if (selectedResult) {
+            handleSelect(selectedResult);
+          }
           break;
         case 'Escape':
           e.preventDefault();
@@ -79,7 +82,9 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate, onAction }: Glo
   }, [selectedIndex]);
 
   const handleSelect = (result: any) => {
-    if (result.action) {
+    if (!result) return;
+    
+    if (result.action && typeof result.action === 'function') {
       result.action();
       onAction?.(result.id);
     } else if (result.route) {
@@ -93,119 +98,76 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate, onAction }: Glo
     [sections]
   );
 
+  const hasQuery = query.trim().length > 0;
+  const hasResults = sections.length > 0;
+
   if (!isOpen) return null;
 
   return (
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-black/50 z-50"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
+      <div className="fixed inset-0 z-50 flex items-start justify-center">
         <div 
-          className="w-full max-w-2xl mx-4 bg-background border border-border rounded-lg shadow-2xl overflow-hidden"
+          className="w-full max-w-lg mx-4 mt-[15vh] bg-background border rounded-2xl shadow-2xl max-h-[70vh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Input */}
-          <div className="flex items-center gap-3 px-4 py-4 border-b border-border">
-            <Search className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+          <div className="px-4 py-3 border-b flex items-center gap-3">
+            <Search className="h-5 w-5 text-muted-foreground" />
             <input
               ref={inputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search everything..."
-              className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
+              className="flex-1 bg-transparent border-none outline-none text-sm placeholder:text-muted-foreground"
             />
-            <div className="flex items-center gap-2">
-              <kbd className="hidden sm:inline-block px-2 py-1 text-xs font-mono bg-muted rounded border border-border">
-                ESC
-              </kbd>
-            </div>
+            <kbd className="text-xs bg-muted px-2 py-1 rounded">ESC</kbd>
           </div>
 
-          {/* Results */}
+          {/* Content Area (scrollable) */}
           <div 
             ref={resultsRef}
-            className="max-h-[60vh] overflow-y-auto"
+            className="flex-1 overflow-y-auto py-2"
           >
-            {sections.length === 0 && query.length >= 2 ? (
-              <div className="px-4 py-12 text-center text-muted-foreground">
-                <Search className="h-12 w-12 mx-auto mb-3 opacity-20" />
-                <p>No results found for "{query}"</p>
-                <p className="text-sm mt-1">Try a different search term</p>
-              </div>
-            ) : (
-              sections.map((section, sectionIdx) => (
-                <div key={section.id} className={sectionIdx > 0 ? 'border-t border-border' : ''}>
-                  {/* Section Header */}
-                  <div className="px-4 py-2 text-xs font-medium text-muted-foreground bg-muted/30">
-                    {section.label}
+            {/* No results state */}
+            {hasQuery && !hasResults ? (
+              <div className="px-4 py-12">
+                <div className="text-center">
+                  <div className="text-sm font-medium mb-2">No results found</div>
+                  <p className="text-sm text-muted-foreground mb-8">
+                    Try a different search term or browse<br />
+                    the options below.
+                  </p>
+                </div>
+
+                {/* Show Go To section as fallback */}
+                <div>
+                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-4 py-2">
+                    Go To
                   </div>
-
-                  {/* Section Results */}
-                  <div>
-                    {section.results.map((result, resultIdx) => {
-                      const globalIndex = sections
-                        .slice(0, sectionIdx)
-                        .reduce((acc, s) => acc + s.results.length, 0) + resultIdx;
-                      
-                      const isSelected = globalIndex === selectedIndex;
+                  <div className="space-y-1">
+                    {globalSearch.search('').find(s => s.id === 'go-to')?.results.map((result) => {
                       const Icon = (LucideIcons as any)[result.icon || 'Circle'];
-
                       return (
                         <button
                           key={result.id}
-                          data-index={globalIndex}
                           onClick={() => handleSelect(result)}
-                          className={`w-full flex items-start gap-3 px-4 py-3 transition-colors ${
-                            isSelected 
-                              ? 'bg-accent text-accent-foreground' 
-                              : 'hover:bg-accent/50'
-                          }`}
+                          className="w-full px-4 py-3 hover:bg-muted rounded-lg mx-2 cursor-pointer flex items-start gap-3 transition-colors duration-200"
                         >
-                          {/* Icon */}
-                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                            isSelected 
-                              ? 'bg-primary/20 text-primary' 
-                              : 'bg-muted text-muted-foreground'
-                          }`}>
-                            {Icon && <Icon className="h-5 w-5" />}
+                          <div className="flex-shrink-0 mt-0.5">
+                            {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
                           </div>
-
-                          {/* Content */}
-                          <div className="flex-1 text-left min-w-0">
-                            <div className="font-medium truncate">{result.title}</div>
-                            {result.subtitle && (
-                              <div className="text-sm text-muted-foreground truncate">
-                                {result.subtitle}
-                              </div>
-                            )}
+                          <div className="flex-1 text-left">
+                            <div className="text-sm font-medium">{result.title}</div>
                             {result.description && (
-                              <div className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                                {result.description}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Action indicator */}
-                          <div className="flex-shrink-0 flex items-center gap-2">
-                            {result.metadata?.status && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${
-                                result.metadata.status === 'approved' 
-                                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                  : result.metadata.status === 'ready-to-validate'
-                                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                                  : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-                              }`}>
-                                {result.metadata.status}
-                              </span>
-                            )}
-                            {isSelected && (
-                              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                              <div className="text-xs text-muted-foreground">{result.description}</div>
                             )}
                           </div>
                         </button>
@@ -213,28 +175,97 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate, onAction }: Glo
                     })}
                   </div>
                 </div>
-              ))
+              </div>
+            ) : (
+              <>
+                {/* Search results header */}
+                {hasQuery && hasResults && (
+                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-4 py-2">
+                    Results for "{query}"
+                  </div>
+                )}
+
+                {/* Sections */}
+                {sections.map((section, sectionIdx) => {
+                  let globalIndexOffset = 0;
+                  for (let i = 0; i < sectionIdx; i++) {
+                    globalIndexOffset += sections[i].results.length;
+                  }
+
+                  return (
+                    <div key={section.id}>
+                      {/* Section Label - only show if no query or it's a default section */}
+                      {!hasQuery && (
+                        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-4 py-2">
+                          {section.label}
+                        </div>
+                      )}
+
+                      {/* Section Items */}
+                      <div className="space-y-1">
+                        {section.results.map((result, resultIdx) => {
+                          const globalIndex = globalIndexOffset + resultIdx;
+                          const isSelected = globalIndex === selectedIndex;
+                          const Icon = (LucideIcons as any)[result.icon || 'Circle'];
+                          const isQuickAction = section.id === 'quick-actions';
+
+                          return (
+                            <button
+                              key={result.id}
+                              data-index={globalIndex}
+                              onClick={() => handleSelect(result)}
+                              className={`w-full px-4 py-3 rounded-lg mx-2 cursor-pointer flex items-start gap-3 transition-colors duration-200 ${
+                                isSelected ? 'bg-muted' : 'hover:bg-muted'
+                              }`}
+                            >
+                              <div className="flex-shrink-0 mt-0.5">
+                                {Icon && (
+                                  <Icon 
+                                    className={`h-5 w-5 ${
+                                      isQuickAction ? 'text-primary' : 'text-muted-foreground'
+                                    }`} 
+                                  />
+                                )}
+                              </div>
+                              <div className="flex-1 text-left min-w-0">
+                                <div className="text-sm font-medium">{result.title}</div>
+                                {(result.subtitle || result.description) && (
+                                  <div className="text-xs text-muted-foreground">
+                                    {result.subtitle || result.description}
+                                  </div>
+                                )}
+                              </div>
+                              {isQuickAction && isSelected && (
+                                <div className="flex-shrink-0 mt-0.5">
+                                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
             )}
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 border-t border-border bg-muted/30">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-background rounded border border-border font-mono">↑</kbd>
-                  <kbd className="px-1.5 py-0.5 bg-background rounded border border-border font-mono">↓</kbd>
-                  <span className="ml-1">Navigate</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-background rounded border border-border font-mono">↵</kbd>
-                  <span className="ml-1">Select</span>
-                </div>
+          <div className="px-4 py-2 border-t bg-muted/30 flex items-center justify-between">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <span>↑ ↓</span>
+                <span>Navigate</span>
               </div>
               <div className="flex items-center gap-1">
-                <Command className="h-3 w-3" />
-                <span>Powered by search</span>
+                <span>↵</span>
+                <span>Select</span>
               </div>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Command className="h-3 w-3" />
+              <span>Powered by search</span>
             </div>
           </div>
         </div>
