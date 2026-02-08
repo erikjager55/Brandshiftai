@@ -1,5 +1,5 @@
 
-  # Brandshift.ai
+  # Branddoc
 
   This is a code bundle for Brandshift.ai. The original project is available at https://www.figma.com/design/WTXNV6zhzsTyYLUOdkFGge/Brandshift.ai.
 
