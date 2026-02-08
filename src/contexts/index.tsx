@@ -19,6 +19,7 @@ import { ChangeImpactConnector } from '../components/impact/ChangeImpactConnecto
 import { ProductTierProvider } from './ProductTierContext';
 import { ProductsProvider } from './ProductsContext';
 import { DemoModeProvider } from './DemoModeContext';
+import { VersionHistoryProvider } from './VersionHistoryContext';
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -28,28 +29,30 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <ProductTierProvider>
       <DemoModeProvider>
-        <BrandAssetsProvider>
-          <ChangeImpactProvider>
-            <ChangeImpactConnector />
-            <PersonasProvider>
-              <ProductsProvider>
-                <ResearchPlanProvider>
-                  <ResearchBundleProvider>
-                    <CollaborationProvider>
-                      <WhiteLabelProvider>
-                        <TemplateProvider>
-                          <UIStateProvider>
-                            {children}
-                          </UIStateProvider>
-                        </TemplateProvider>
-                      </WhiteLabelProvider>
-                    </CollaborationProvider>
-                  </ResearchBundleProvider>
-                </ResearchPlanProvider>
-              </ProductsProvider>
-            </PersonasProvider>
-          </ChangeImpactProvider>
-        </BrandAssetsProvider>
+        <VersionHistoryProvider>
+          <BrandAssetsProvider>
+            <ChangeImpactProvider>
+              <ChangeImpactConnector />
+              <PersonasProvider>
+                <ProductsProvider>
+                  <ResearchPlanProvider>
+                    <ResearchBundleProvider>
+                      <CollaborationProvider>
+                        <WhiteLabelProvider>
+                          <TemplateProvider>
+                            <UIStateProvider>
+                              {children}
+                            </UIStateProvider>
+                          </TemplateProvider>
+                        </WhiteLabelProvider>
+                      </CollaborationProvider>
+                    </ResearchBundleProvider>
+                  </ResearchPlanProvider>
+                </ProductsProvider>
+              </PersonasProvider>
+            </ChangeImpactProvider>
+          </BrandAssetsProvider>
+        </VersionHistoryProvider>
       </DemoModeProvider>
     </ProductTierProvider>
   );
@@ -68,3 +71,4 @@ export { useChangeImpact } from './ChangeImpactContext';
 export { useProductTier } from './ProductTierContext';
 export { useProducts } from './ProductsContext';
 export { useDemoMode } from './DemoModeContext';
+export { useVersionHistory } from './VersionHistoryContext';

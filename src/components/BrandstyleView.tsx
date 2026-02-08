@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
+import { copyToClipboard } from '../utils/clipboard';
 
 type TabType = 'url' | 'pdf';
 type PageState = 'input' | 'processing' | 'result';
@@ -230,7 +231,7 @@ export function BrandstyleView({ onNavigateToResult }: BrandstyleViewProps) {
   };
 
   const handleCopyHex = (hex: string) => {
-    navigator.clipboard.writeText(hex);
+    copyToClipboard(hex);
     toast.success(`Copied ${hex}`);
   };
 

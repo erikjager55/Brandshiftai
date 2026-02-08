@@ -23,6 +23,7 @@ import {
   UserPlus,
   Building,
   Zap,
+  Shield,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import logo from 'figma:asset/e0e0a87a533427f73679f2a4dcecdf2a949b2149.png';
@@ -79,6 +80,7 @@ export function EnhancedSidebarSimple({
     { id: 'products', label: 'Products & Services', icon: Target },
     { id: 'trends', label: 'Market Insights', icon: Lightbulb },
     { id: 'knowledge', label: 'Knowledge Library', icon: Database },
+    { id: 'brand-alignment', label: 'Brand Alignment', icon: Shield, badge: '4' },
   ];
 
   const strategyItems: NavigationItem[] = [
@@ -277,6 +279,7 @@ export function EnhancedSidebarSimple({
             const Icon = item.icon;
             const isActive = activeSection === item.id || activeSection.startsWith(item.id + '-');
             const showBadge = item.id === 'brand' && needsAttentionCount > 0;
+            const showAlignmentBadge = item.id === 'brand-alignment' && item.badge;
 
             return (
               <Button
@@ -295,6 +298,11 @@ export function EnhancedSidebarSimple({
                 {showBadge && (
                   <Badge className="rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-0 text-xs font-semibold h-5 px-2">
                     {needsAttentionCount}
+                  </Badge>
+                )}
+                {showAlignmentBadge && (
+                  <Badge className="rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-0 text-xs font-semibold h-5 px-2">
+                    {item.badge}
                   </Badge>
                 )}
               </Button>
@@ -353,7 +361,12 @@ export function EnhancedSidebarSimple({
         {/* Help & Support */}
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2 h-9 px-3 text-foreground dark:text-gray-300 hover:bg-muted/50 dark:hover:bg-gray-800 transition-colors duration-200"
+          className={`w-full justify-start gap-2 h-9 px-3 transition-colors duration-200 ${
+            activeSection === 'help-support'
+              ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
+              : 'text-foreground dark:text-gray-300 hover:bg-muted/50 dark:hover:bg-gray-800'
+          }`}
+          onClick={() => setActiveSection('help-support')}
         >
           <HelpCircle className="h-4 w-4 flex-shrink-0" />
           <span className="flex-1 text-left text-sm">Help & Support</span>

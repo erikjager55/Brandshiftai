@@ -418,6 +418,7 @@ export function ActiveCampaignsPage({ onNavigateToCampaign }: ActiveCampaignsPag
                             onClick={e => e.stopPropagation()}
                           >
                             <MoreVertical className="h-4 w-4" />
+                            <span className="sr-only">Open campaign menu</span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">

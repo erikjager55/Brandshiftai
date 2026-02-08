@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { StrategyTool } from '../../types/strategy';
+import { copyToClipboard } from '../../utils/clipboard';
 
 interface UniversalAIExplorationProps {
   tool: StrategyTool;
@@ -865,9 +866,13 @@ export function UniversalAIExploration({ tool, onBack, onComplete }: UniversalAI
     setCurrentStep('processing');
   };
 
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(generatedContent);
-    alert('✅ Copied to clipboard!');
+  const handleCopyToClipboard = async () => {
+    try {
+      await copyToClipboard(generatedContent);
+      alert('✅ Copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   const handleExportMarkdown = () => {

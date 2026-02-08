@@ -1,49 +1,75 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { 
-  ArrowLeft, 
-  Download, 
-  Copy, 
-  Check, 
-  Paintbrush, 
-  Type, 
-  Layout, 
-  Circle,
-  Square,
-  FileCode,
-  Share2,
-  Image as ImageIcon,
-  Camera,
-  Shapes,
-  Megaphone,
-  MessageSquare,
-  CheckCircle2,
-  XCircle,
-  Tag,
-  Sparkles,
-  Lock,
-  Unlock,
-  Edit,
-  Save,
-  X as XIcon,
-  Plus,
-  Trash2
-} from 'lucide-react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { BrandStyleData } from './BrandstyleAnalyzer';
+import { Label } from './ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Code, Copy, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { copyToClipboard } from '../utils/clipboard';
 
 interface StyleGuideViewerProps {
   styleData: BrandStyleData;
   onBack: () => void;
 }
 
-interface NavSection {
-  id: string;
-  label: string;
-  ref: React.RefObject<HTMLDivElement>;
+interface BrandStyleData {
+  url: string;
+  logo: {
+    primary: string;
+    variations: string[];
+    favicon: string;
+  };
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    text: string;
+    background: string;
+  };
+  typography: {
+    headingFont: string;
+    bodyFont: string;
+    fontSize: {
+      h1: string;
+      h2: string;
+      body: string;
+    };
+  };
+  spacing: {
+    small: string;
+    medium: string;
+    large: string;
+  };
+  borderRadius: {
+    small: string;
+    medium: string;
+    large: string;
+  };
+  shapes: {
+    description: string;
+    primaryShapes: string[];
+    examples: {
+      shape: string;
+      usage: string;
+    }[];
+  };
+  icons: {
+    style: string;
+    examples: string[];
+  };
+  corporatePhotos: string[];
+  campaignPhotos: string[];
+  illustrations: string[];
+  tonology: {
+    tone: string;
+    voice: string;
+    keywords: string[];
+    dosDonts: {
+      dos: string[];
+      donts: string[];
+    };
+  };
 }
 
 export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
@@ -101,7 +127,7 @@ export function StyleGuideViewer({ styleData, onBack }: StyleGuideViewerProps) {
 }`;
 
   const handleCopy = (text: string, itemId: string) => {
-    navigator.clipboard.writeText(text);
+    copyToClipboard(text);
     setCopiedItem(itemId);
     setTimeout(() => setCopiedItem(null), 2000);
   };

@@ -4,23 +4,24 @@
  * AI chat voor custom verzoeken en edge cases
  */
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../../ui/button';
-import { Badge } from '../../ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { Textarea } from '../../ui/textarea';
+import { Badge } from '../../ui/badge';
+import { ScrollArea } from '../../ui/radio';
 import {
-  MessageSquare,
-  Send,
-  Sparkles,
-  User,
   Bot,
-  Download,
+  Send,
   Copy,
-  ThumbsUp,
-  ThumbsDown,
-  RefreshCw
+  Sparkles,
+  CheckCircle,
+  RefreshCw,
+  ChevronRight,
+  User
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { copyToClipboard } from '../../../utils/clipboard';
 
 interface ChatAssistantProps {
   campaignConfig: {
@@ -218,7 +219,7 @@ Wil je dat ik een van deze stappen verder voor je uitwerk? Of heb je een andere 
   };
 
   const handleCopy = (content: string) => {
-    navigator.clipboard.writeText(content);
+    copyToClipboard(content);
     // In real app: show toast notification
     alert('Copied to clipboard!');
   };

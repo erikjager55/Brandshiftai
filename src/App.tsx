@@ -14,6 +14,7 @@ import { ProductsServicesSection } from './components/ProductsServicesSection';
 import { ProductServiceView } from './components/ProductServiceView';
 import { MarketInsights } from './components/MarketInsights';
 import { KnowledgeLibrary } from './components/KnowledgeLibrary';
+import { BrandAlignmentDashboard } from './components/BrandAlignmentDashboard';
 import { BusinessStrategyOverview } from './components/BusinessStrategyOverview';
 import { BusinessStrategyDetail } from './components/BusinessStrategyDetail';
 import { mockBusinessStrategies } from './data/mock-business-strategies';
@@ -76,6 +77,7 @@ import { ErrorStatesLibrary } from './components/error-states/ErrorStatesLibrary
 import { DemoModeBanner, DemoControlPanel, DemoQuickActions, DemoSpotlight, InvestorMetricsDashboard, DemoModeSettings } from './components/demo';
 import { StatusDropdownDemo } from './components/StatusDropdownDemo';
 import { WorkshopImprovementsDemo } from './components/WorkshopImprovementsDemo';
+import { HelpSupportPage } from './components/help/HelpSupportPage';
 
 function AppContent() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -709,6 +711,8 @@ function AppContent() {
         );
       case 'knowledge':
         return <KnowledgeLibrary />;
+      case 'brand-alignment':
+        return <BrandAlignmentDashboard />;
       case 'research-validation':
         return <ResearchValidationPage />;
       
@@ -849,6 +853,10 @@ function AppContent() {
       // 🎨 WORKSHOP IMPROVEMENTS: Workshop Improvements Demo
       case 'workshop-improvements-demo':
         return <WorkshopImprovementsDemo />;
+      
+      // ❓ HELP: Help & Support Page
+      case 'help-support':
+        return <HelpSupportPage />;
       
       // 🎬 DEMO: Demo Mode Settings
       case 'demo-settings':

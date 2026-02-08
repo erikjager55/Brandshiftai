@@ -33,10 +33,32 @@ export function AIExportOptions({
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
   const [exportingPDF, setExportingPDF] = useState(false);
 
-  const handleCopy = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedItem(label);
-    setTimeout(() => setCopiedItem(null), 2000);
+  const handleCopy = async (text: string, label: string) => {
+    try {
+      // Try modern clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+      setCopiedItem(label);
+      setTimeout(() => setCopiedItem(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+      // Show error but still provide feedback
+      setCopiedItem(label);
+      setTimeout(() => setCopiedItem(null), 2000);
+    }
   };
 
   const handleCopyAll = () => {

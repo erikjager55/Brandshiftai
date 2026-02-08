@@ -85,6 +85,14 @@ import {
   Loader2,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { ImproveScorePanel } from './content-studio/ImproveScorePanel';
+import { mockQualityMetrics, applySuggestion, applyAllSuggestions, dismissSuggestion, calculateQualityScore } from '../data/mock-quality-suggestions';
+import type { QualityMetric } from '../data/mock-quality-suggestions';
+import { toast } from 'sonner';
+import { InsertInsightPopover } from './content-studio/InsertInsightPopover';
+import { ResearchInsightsLibrary } from './content-studio/ResearchInsightsLibrary';
+import { mockResearchInsights, markInsightAsUsed, getUsedInsightsCount } from '../data/mock-research-insights';
+import type { ResearchInsight, InsertMode, InsertLocation } from './content-studio/InsertInsightPopover';
 
 interface ContentStudioProps {
   deliverableId: string;
@@ -188,6 +196,18 @@ export function ContentStudioNew({ deliverableId, campaignId, onBack }: ContentS
     { id: 'c5', label: 'Within word target', completed: false },
   ]);
 
+  // Improve Score Panel
+  const [showImprovePanel, setShowImprovePanel] = useState(false);
+  const [qualityMetricsData, setQualityMetricsData] = useState<QualityMetric[]>(mockQualityMetrics);
+  const [previewSuggestionId, setPreviewSuggestionId] = useState<string | null>(null);
+
+  // Research Insights
+  const [researchInsights, setResearchInsights] = useState<ResearchInsight[]>(mockResearchInsights);
+  const [showInsertPopover, setShowInsertPopover] = useState(false);
+  const [selectedInsight, setSelectedInsight] = useState<ResearchInsight | null>(null);
+  const [showInsightsLibrary, setShowInsightsLibrary] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState(0);
+  
   // Content type tabs
   const contentTypes = [
     { id: 'text' as ContentType, icon: FileText, label: 'Text', hasContent: !!textContent },
@@ -306,6 +326,118 @@ export function ContentStudioNew({ deliverableId, campaignId, onBack }: ContentS
 
   const completedChecklist = getChecklist().filter(c => c.completed).length;
   const totalChecklist = getChecklist().length;
+
+  // Handlers for Improve Score Panel
+  const handleApplySuggestion = (suggestionId: string) => {
+    const updatedMetrics = applySuggestion(qualityMetricsData, suggestionId);
+    setQualityMetricsData(updatedMetrics);
+    const newScore = calculateQualityScore(updatedMetrics);
+    setQualityScore(newScore);
+    
+    // Find the applied suggestion to show in toast
+    const suggestion = qualityMetricsData
+      .flatMap(m => m.suggestions)
+      .find(s => s.id === suggestionId);
+    
+    if (suggestion) {
+      toast.success(`Applied: ${suggestion.title}`, {
+        description: `Score improved by +${suggestion.points} points`,
+      });
+    }
+  };
+
+  const handleApplyAll = () => {
+    const totalSuggestions = qualityMetricsData.reduce((sum, m) => sum + m.suggestions.length, 0);
+    const updatedMetrics = applyAllSuggestions(qualityMetricsData);
+    setQualityMetricsData(updatedMetrics);
+    const newScore = calculateQualityScore(updatedMetrics);
+    setQualityScore(newScore);
+    setShowImprovePanel(false);
+    
+    toast.success('All suggestions applied!', {
+      description: `${totalSuggestions} improvements applied. New score: ${newScore}/100`,
+    });
+  };
+
+  const handlePreview = (suggestionId: string) => {
+    setPreviewSuggestionId(suggestionId);
+    // In a real implementation, this would scroll to and highlight the content
+    toast.info('Preview functionality', {
+      description: 'This would highlight the relevant section in the editor',
+    });
+  };
+
+  const handleDismiss = (suggestionId: string) => {
+    const updatedMetrics = dismissSuggestion(qualityMetricsData, suggestionId);
+    setQualityMetricsData(updatedMetrics);
+    toast('Suggestion dismissed', {
+      description: 'You can always re-scan for suggestions',
+    });
+  };
+
+  // Handlers for Research Insights
+  const handleInsertClick = (insight: ResearchInsight) => {
+    setSelectedInsight(insight);
+    setShowInsertPopover(true);
+  };
+
+  const handleInsertFromLibrary = (insightId: string) => {
+    const insight = researchInsights.find(i => i.id === insightId);
+    if (insight) {
+      setSelectedInsight(insight);
+      setShowInsightsLibrary(false);
+      setShowInsertPopover(true);
+    }
+  };
+
+  const handleInsert = (mode: InsertMode, location: InsertLocation) => {
+    if (!selectedInsight) return;
+
+    let insertedText = '';
+    
+    switch (mode) {
+      case 'inline':
+        insertedText = `According to our research, ${selectedInsight.fullText || selectedInsight.text}`;
+        break;
+      case 'quote':
+        insertedText = `\n\n> "${selectedInsight.fullText || selectedInsight.text}"\n> — ${selectedInsight.source}\n\n`;
+        break;
+      case 'visualization':
+        insertedText = `\n\n[Data Visualization: ${selectedInsight.text}]\n\n`;
+        break;
+      case 'ai-adapted':
+        insertedText = ` ${selectedInsight.fullText || selectedInsight.text}`;
+        break;
+    }
+
+    // Insert at cursor or AI best position
+    if (location === 'cursor') {
+      const before = textContent.slice(0, cursorPosition);
+      const after = textContent.slice(cursorPosition);
+      setTextContent(before + insertedText + after);
+    } else {
+      // AI best location - append for demo
+      setTextContent(textContent + '\n\n' + insertedText);
+    }
+
+    // Mark insight as used
+    const updatedInsights = markInsightAsUsed(selectedInsight.id, researchInsights);
+    setResearchInsights(updatedInsights);
+
+    // Update quality score (research-backed content improves quality)
+    const newScore = Math.min(100, qualityScore + 2);
+    setQualityScore(newScore);
+
+    // Update word count
+    setWordCount(prev => prev + insertedText.split(/\s+/).filter(Boolean).length);
+
+    toast.success('Research insight inserted!', {
+      description: `Quality score improved to ${newScore}/100`,
+    });
+
+    setShowInsertPopover(false);
+    setSelectedInsight(null);
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -877,6 +1009,14 @@ export function ContentStudioNew({ deliverableId, campaignId, onBack }: ContentS
                       setTextContent(e.target.value);
                       setWordCount(e.target.value.split(/\s+/).filter(Boolean).length);
                     }}
+                    onClick={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      setCursorPosition(target.selectionStart);
+                    }}
+                    onKeyUp={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      setCursorPosition(target.selectionStart);
+                    }}
                     placeholder="Start writing or generate with AI above..."
                     className="w-full min-h-[400px] border-none shadow-none resize-none focus-visible:ring-0 text-base leading-relaxed"
                   />
@@ -1087,45 +1227,85 @@ export function ContentStudioNew({ deliverableId, campaignId, onBack }: ContentS
                 ))}
               </div>
 
-              <Button variant="outline" className="w-full mt-4">
+              <Button
+                variant="outline"
+                className="w-full mt-4"
+                onClick={() => setShowImprovePanel(true)}
+              >
                 Improve Score
               </Button>
             </div>
 
             {/* Research Insights */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-lg font-semibold">Research Insights</h3>
-                <Sparkles className="h-4 w-4 text-primary" />
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-semibold">Research Insights</h3>
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </div>
+                <button
+                  onClick={() => setShowInsightsLibrary(true)}
+                  className="text-xs text-primary hover:underline"
+                >
+                  See All
+                </button>
               </div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-2">
                 Validated findings to strengthen your content
+              </p>
+              <p className="text-xs text-muted-foreground mb-4">
+                From: {mockCampaign.name}
               </p>
 
               <div className="space-y-3">
-                {mockInsights.map(insight => (
-                  <div key={insight.id} className="bg-muted/50 rounded-lg p-3">
-                    <Badge
-                      className={cn(
-                        'text-xs px-2 py-0.5 rounded-full mb-2',
-                        insight.source === 'survey' && 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-                        insight.source === 'analysis' && 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-                        insight.source === 'interview' && 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                      )}
-                    >
-                      {insight.source}
-                    </Badge>
-                    <p className="text-sm line-clamp-2 mb-2">{insight.text}</p>
-                    <button className="text-xs text-primary hover:underline">
-                      Insert
-                    </button>
-                  </div>
-                ))}
+                {researchInsights.slice(0, 3).map(insight => {
+                  const badgeStyles = insight.type === 'survey' 
+                    ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
+                    : insight.type === 'analysis'
+                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                    : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400';
+                  
+                  return (
+                    <div key={insight.id} className="bg-muted/50 rounded-lg p-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge className={cn('text-xs px-2 py-0.5 rounded-full', badgeStyles)}>
+                          {insight.type}
+                        </Badge>
+                        {insight.used && (
+                          <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs px-2 py-0.5 rounded-full">
+                            <Check className="h-3 w-3 mr-1" />
+                            Used
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm line-clamp-2 mb-2">{insight.text}</p>
+                      <button
+                        onClick={() => handleInsertClick(insight)}
+                        disabled={insight.used}
+                        className={cn(
+                          'text-xs hover:underline',
+                          insight.used ? 'text-muted-foreground cursor-not-allowed' : 'text-primary'
+                        )}
+                      >
+                        {insight.used ? 'Already Used' : 'Insert'}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
 
-              <a href="#" className="text-sm text-primary hover:underline block mt-3">
-                View All →
-              </a>
+              <div className="mt-4 p-3 bg-muted/30 rounded-lg border border-dashed">
+                <button
+                  onClick={() => setShowInsightsLibrary(true)}
+                  className="text-sm text-primary hover:underline w-full text-center"
+                >
+                  + Browse all research findings
+                </button>
+              </div>
+
+              <p className="text-xs text-muted-foreground mt-3">
+                {getUsedInsightsCount(researchInsights)} of {researchInsights.length} insights used
+              </p>
             </div>
 
             {/* Content Checklist */}
@@ -1238,6 +1418,39 @@ export function ContentStudioNew({ deliverableId, campaignId, onBack }: ContentS
           </div>
         </div>
       </div>
+
+      {/* Improve Score Panel */}
+      <ImproveScorePanel
+        isOpen={showImprovePanel}
+        onClose={() => setShowImprovePanel(false)}
+        currentScore={qualityScore}
+        metrics={qualityMetricsData}
+        onApplySuggestion={handleApplySuggestion}
+        onApplyAll={handleApplyAll}
+        onPreview={handlePreview}
+        onDismiss={handleDismiss}
+      />
+
+      {/* Insert Insight Popover */}
+      {selectedInsight && (
+        <InsertInsightPopover
+          insight={selectedInsight}
+          isOpen={showInsertPopover}
+          onClose={() => {
+            setShowInsertPopover(false);
+            setSelectedInsight(null);
+          }}
+          onInsert={handleInsert}
+        />
+      )}
+
+      {/* Research Insights Library */}
+      <ResearchInsightsLibrary
+        isOpen={showInsightsLibrary}
+        onClose={() => setShowInsightsLibrary(false)}
+        insights={researchInsights}
+        onInsert={handleInsertFromLibrary}
+      />
     </div>
   );
 }

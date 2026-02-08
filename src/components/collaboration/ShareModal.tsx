@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { useCollaboration } from '../../contexts';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Switch } from '../ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Badge } from '../ui/badge';
-import { Copy, Link2, Mail, Users, Lock, Calendar, Check } from 'lucide-react';
-import { ShareSettings } from '../../types/collaboration';
+import { Share2, Copy, Mail, Users, Eye, Edit, Lock, Check } from 'lucide-react';
+import { toast } from 'sonner';
+import { copyToClipboard } from '../utils/clipboard';
 
 interface ShareModalProps {
   open: boolean;
@@ -46,7 +45,7 @@ export function ShareModal({ open, onClose, resourceId, resourceType, resourceNa
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareLink);
+    copyToClipboard(shareLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

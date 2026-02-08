@@ -4,32 +4,38 @@
  * PROMPT 1 of 2: Page structure + Logo, Colors, Typography sections
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { Badge } from './ui/badge';
-import {
-  Palette,
-  Type,
-  Image,
-  Download,
-  Edit,
-  Copy,
-  CheckCircle2,
-  Save,
-  RefreshCw,
-  Lightbulb,
-  FileText,
-  Mic,
-  ImageIcon,
-  X,
-  Plus,
-  Upload,
-  Trash2,
-} from 'lucide-react';
+import { motion } from 'motion/react';
+import { copyToClipboard } from '../utils/clipboard';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { AnalyzingModal } from './AnalyzingModal';
+import { ColorDetailModal } from './brandstyle/ColorDetailModal';
+import { FontDetailModal } from './brandstyle/FontDetailModal';
+import {
+  Palette,
+  Download,
+  Save,
+  ArrowLeft,
+  Copy,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  FileText,
+  Sparkles,
+  Image,
+  Type,
+  Mic,
+  ImageIcon,
+  Edit,
+  Upload,
+  X,
+  Lightbulb,
+  ChevronUp,
+  ChevronDown
+} from 'lucide-react';
 
 type TabId = 'logo' | 'colors' | 'typography' | 'tone' | 'imagery';
 
@@ -156,6 +162,10 @@ export function BrandstyleResult() {
   const [hasChanges, setHasChanges] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [showAnalyzingModal, setShowAnalyzingModal] = useState(false);
+  const [showColorDetailModal, setShowColorDetailModal] = useState(false);
+  const [showFontDetailModal, setShowFontDetailModal] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<ColorSwatch | null>(null);
+  const [selectedFont, setSelectedFont] = useState<string | null>(null);
 
   const logoRef = useRef<HTMLDivElement>(null);
   const colorsRef = useRef<HTMLDivElement>(null);
@@ -186,7 +196,7 @@ export function BrandstyleResult() {
   };
 
   const handleCopyHex = (hex: string) => {
-    navigator.clipboard.writeText(hex);
+    copyToClipboard(hex);
     toast.success(`Copied ${hex}`);
   };
 
@@ -219,6 +229,24 @@ export function BrandstyleResult() {
   const handleDiscard = () => {
     setHasChanges(false);
     toast.info('Changes discarded');
+  };
+
+  const handleColorClick = (color: ColorSwatch) => {
+    // Transform ColorSwatch to ColorData
+    const colorData = {
+      id: color.hex, // Use hex as ID for now
+      name: color.name,
+      hex: color.hex,
+      tags: ['Brand', 'Primary'], // Mock tags
+      description: undefined,
+    };
+    setSelectedColor(colorData as any);
+    setShowColorDetailModal(true);
+  };
+
+  const handleFontClick = (font: string) => {
+    setSelectedFont(font);
+    setShowFontDetailModal(true);
   };
 
   return (
@@ -421,7 +449,7 @@ export function BrandstyleResult() {
                   <ColorSwatchCard
                     key={color.hex}
                     color={color}
-                    onClick={() => handleCopyHex(color.hex)}
+                    onClick={() => handleColorClick(color)}
                   />
                 ))}
               </div>
@@ -435,7 +463,7 @@ export function BrandstyleResult() {
                   <ColorSwatchCard
                     key={color.hex}
                     color={color}
-                    onClick={() => handleCopyHex(color.hex)}
+                    onClick={() => handleColorClick(color)}
                   />
                 ))}
               </div>
@@ -449,7 +477,7 @@ export function BrandstyleResult() {
                   <ColorSwatchCard
                     key={color.hex}
                     color={color}
-                    onClick={() => handleCopyHex(color.hex)}
+                    onClick={() => handleColorClick(color)}
                   />
                 ))}
               </div>
@@ -814,6 +842,20 @@ export function BrandstyleResult() {
         analysisType="brandstyle"
         inputType="url"
         source="brandshift.ai"
+      />
+
+      {/* Color Detail Modal */}
+      <ColorDetailModal
+        isOpen={showColorDetailModal}
+        onClose={() => setShowColorDetailModal(false)}
+        color={selectedColor}
+      />
+
+      {/* Font Detail Modal */}
+      <FontDetailModal
+        isOpen={showFontDetailModal}
+        onClose={() => setShowFontDetailModal(false)}
+        font={selectedFont}
       />
     </div>
   );

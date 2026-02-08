@@ -1,7 +1,7 @@
 
-  # Branddoc
+  # Branddock
 
-  This is a code bundle for Brandshift.ai. The original project is available at https://www.figma.com/design/WTXNV6zhzsTyYLUOdkFGge/Brandshift.ai.
+  This is a code bundle for Branddock. The original project is available at https://www.figma.com/design/WTXNV6zhzsTyYLUOdkFGge/Branddock.
 
   ## Running the code
 
